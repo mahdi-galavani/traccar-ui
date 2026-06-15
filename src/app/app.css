@@ -1,0 +1,35 @@
+.app-container {
+  min-height: 100vh;
+}
+
+header {
+  background: #1a1a2e;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.language-selector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.language-selector button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #4a4a6a;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.language-selector button.active {
+  background: #007bff;
+  border-color: #007bff;
+}
+
+main {
+  padding: 2rem;
+}

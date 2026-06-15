@@ -1,0 +1,514 @@
+{
+  "common": {
+    "save": "Save",
+    "update": "Update",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "search": "Search",
+    "filter": "Filter",
+    "refresh": "Refresh",
+    "export": "Export",
+    "import": "Import",
+    "print": "Print",
+    "edit": "Edit",
+    "view": "View",
+    "add": "Add New",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "loading": "Loading...",
+    "noData": "No data available",
+    "actions": "Actions",
+    "status": "Status",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "all": "All",
+    "select": "Select",
+    "submit": "Submit",
+    "reset": "Reset",
+    "clear": "Clear",
+    "details": "Details",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Logout",
+    "login": "Login",
+    "dashboard": "Dashboard",
+    "reports": "Reports"
+  },
+
+  "nav": {
+    "fleetManagement": "Fleet Management",
+    "flightSchedule": "Flight Schedule",
+    "airplanes": "Airplanes",
+    "airports": "Airports",
+    "locations": "Locations",
+    "baseInfo": "Base Information",
+    "baseInfoHeader": "Base Info Headers",
+    "users": "Users Management",
+    "roles": "Roles & Permissions",
+    "menu": "Menu Management",
+    "persons": "Persons",
+    "reports": "Reports & Analytics"
+  },
+
+  "dashboard": {
+    "title": "Fleet Management Dashboard",
+    "welcome": "Welcome to Fleet Management System",
+    "totalFlights": "Total Flights",
+    "activeFlights": "Active Flights",
+    "delayedFlights": "Delayed Flights",
+    "cancelledFlights": "Cancelled Flights",
+    "scheduledFlights": "Scheduled Flights",
+    "totalAirplanes": "Total Airplanes",
+    "totalAirports": "Total Airports",
+    "totalUsers": "Total Users",
+    "onTimePerformance": "On-Time Performance",
+    "recentActivities": "Recent Activities",
+    "flightStatistics": "Flight Statistics",
+    "monthlyReport": "Monthly Report"
+  },
+
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "username": "Username",
+      "password": "Password",
+      "rememberMe": "Remember Me",
+      "forgotPassword": "Forgot Password?",
+      "loginButton": "Login",
+      "invalidCredentials": "Invalid username or password",
+      "required": "Username and password are required"
+    },
+    "logout": {
+      "success": "Logged out successfully",
+      "confirm": "Are you sure you want to logout?"
+    }
+  },
+
+  "airplane": {
+    "title": "Airplane Management",
+    "list": "Airplanes List",
+    "add": "Add New Airplane",
+    "edit": "Edit Airplane",
+    "delete": "Delete Airplane",
+    "details": "Airplane Details",
+    "register": "Registration Number",
+    "seatStyle": "Seat Configuration",
+    "ownership": "Ownership Type",
+    "type": "Aircraft Type",
+    "model": "Model",
+    "manufacturer": "Manufacturer",
+    "capacity": "Capacity",
+    "yearOfManufacture": "Year of Manufacture",
+    "status": "Airplane Status",
+    "selectAirplane": "Select Airplane",
+    "validation": {
+      "registerRequired": "Registration number is required",
+      "typeRequired": "Aircraft type is required",
+      "seatStyleRequired": "Seat configuration is required"
+    },
+    "messages": {
+      "saveSuccess": "Airplane saved successfully",
+      "updateSuccess": "Airplane updated successfully",
+      "deleteSuccess": "Airplane deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this airplane?"
+    }
+  },
+
+  "airport": {
+    "title": "Airport Management",
+    "list": "Airports List",
+    "add": "Add New Airport",
+    "edit": "Edit Airport",
+    "delete": "Delete Airport",
+    "details": "Airport Details",
+    "code": "Airport Code",
+    "location": "Location",
+    "name": "Airport Name",
+    "city": "City",
+    "country": "Country",
+    "terminal": "Number of Terminals",
+    "runway": "Number of Runways",
+    "timezone": "Timezone",
+    "selectAirport": "Select Airport",
+    "validation": {
+      "codeRequired": "Airport code is required",
+      "locationRequired": "Location is required"
+    },
+    "messages": {
+      "saveSuccess": "Airport saved successfully",
+      "updateSuccess": "Airport updated successfully",
+      "deleteSuccess": "Airport deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this airport?"
+    }
+  },
+
+  "flight": {
+    "title": "Flight Management",
+    "list": "Flights List",
+    "add": "Add New Flight",
+    "edit": "Edit Flight",
+    "delete": "Delete Flight",
+    "details": "Flight Details",
+    "number": "Flight Number",
+    "from": "Origin Airport",
+    "to": "Destination Airport",
+    "firstClassSeat": "First Class Seats",
+    "businessClassSeat": "Business Class Seats",
+    "economicClassSeat": "Economy Class Seats",
+    "payload": "Payload (kg)",
+    "crew": "Crew Members",
+    "crewJob": "Crew Position",
+    "addCrew": "Add Crew Member",
+    "removeCrew": "Remove Crew Member",
+    "schedule": "Flight Schedule",
+    "departureTime": "Departure Time",
+    "arrivalTime": "Arrival Time",
+    "gate": "Gate",
+    "terminal": "Terminal",
+    "status": "Flight Status",
+    "duration": "Duration",
+    "distance": "Distance",
+    "selectFlight": "Select Flight",
+    "validation": {
+      "numberRequired": "Flight number is required",
+      "fromRequired": "Origin airport is required",
+      "toRequired": "Destination airport is required",
+      "crewRequired": "At least one crew member is required"
+    },
+    "statuses": {
+      "SCHEDULED": "Scheduled",
+      "ON_TIME": "On Time",
+      "DELAYED": "Delayed",
+      "BOARDING": "Boarding",
+      "DEPARTED": "Departed",
+      "ARRIVED": "Arrived",
+      "CANCELLED": "Cancelled",
+      "DRAFT": "Draft"
+    },
+    "messages": {
+      "saveSuccess": "Flight saved successfully",
+      "updateSuccess": "Flight updated successfully",
+      "deleteSuccess": "Flight deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this flight?"
+    }
+  },
+
+  "fleetSchedule": {
+    "title": "Fleet Schedule",
+    "list": "Schedules List",
+    "add": "Add New Schedule",
+    "edit": "Edit Schedule",
+    "delete": "Delete Schedule",
+    "details": "Schedule Details",
+    "airplane": "Airplane",
+    "actualStartTime": "Actual Start Time",
+    "actualEndTime": "Actual End Time",
+    "event": "Event",
+    "type": "Schedule Type",
+    "flight": "Flight",
+    "status": "Schedule Status",
+    "updateStatus": "Update Status",
+    "selectAirplane": "Select Airplane",
+    "selectEvent": "Select Event",
+    "types": {
+      "FLIGHT": "Flight",
+      "CHECK": "Maintenance Check",
+      "DFDR": "Digital Flight Data Recorder"
+    },
+    "statuses": {
+      "DRAFT": "Draft",
+      "SCHEDULED": "Scheduled",
+      "CANCELLED": "Cancelled"
+    },
+    "validation": {
+      "airplaneRequired": "Airplane is required",
+      "startTimeRequired": "Start time is required",
+      "endTimeRequired": "End time is required",
+      "typeRequired": "Schedule type is required"
+    },
+    "messages": {
+      "saveSuccess": "Schedule saved successfully",
+      "updateSuccess": "Schedule updated successfully",
+      "statusUpdated": "Schedule status updated successfully",
+      "deleteSuccess": "Schedule deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this schedule?"
+    }
+  },
+
+  "location": {
+    "title": "Location Management",
+    "list": "Locations List",
+    "add": "Add New Location",
+    "edit": "Edit Location",
+    "delete": "Delete Location",
+    "details": "Location Details",
+    "title": "Location Title",
+    "code": "Location Code",
+    "parent": "Parent Location",
+    "type": "Location Type",
+    "enabled": "Enabled",
+    "root": "Root Locations",
+    "childLocations": "Child Locations",
+    "types": {
+      "CONTINENT": "Continent",
+      "COUNTRY": "Country",
+      "PROVINCE": "Province"
+    },
+    "validation": {
+      "titleRequired": "Location title is required",
+      "codeRequired": "Location code is required",
+      "typeRequired": "Location type is required"
+    },
+    "messages": {
+      "saveSuccess": "Location saved successfully",
+      "updateSuccess": "Location updated successfully",
+      "deleteSuccess": "Location deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this location?",
+      "deleteError": "Cannot delete location with child locations"
+    }
+  },
+
+  "baseInfo": {
+    "title": "Base Information",
+    "headerTitle": "Base Info Headers",
+    "list": "Base Info List",
+    "add": "Add Base Info",
+    "edit": "Edit Base Info",
+    "delete": "Delete Base Info",
+    "details": "Base Info Details",
+    "header": "Info Header",
+    "title": "Title",
+    "code": "Code",
+    "description": "Description",
+    "selectHeader": "Select Header",
+    "headers": {
+      "list": "Headers List",
+      "add": "Add Header",
+      "edit": "Edit Header",
+      "delete": "Delete Header"
+    },
+    "validation": {
+      "titleRequired": "Title is required",
+      "codeRequired": "Code is required",
+      "headerRequired": "Header is required"
+    },
+    "messages": {
+      "saveSuccess": "Base info saved successfully",
+      "updateSuccess": "Base info updated successfully",
+      "deleteSuccess": "Base info deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this base info?",
+      "headerSaveSuccess": "Header saved successfully",
+      "headerDeleteSuccess": "Header deleted successfully"
+    }
+  },
+
+  "user": {
+    "title": "User Management",
+    "list": "Users List",
+    "add": "Add New User",
+    "edit": "Edit User",
+    "delete": "Delete User",
+    "details": "User Details",
+    "username": "Username",
+    "password": "Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "enabled": "Account Enabled",
+    "roles": "User Roles",
+    "assignRole": "Assign Role",
+    "removeRole": "Remove Role",
+    "person": "Associated Person",
+    "selectPerson": "Select Person",
+    "validation": {
+      "usernameRequired": "Username is required",
+      "passwordRequired": "Password is required",
+      "passwordsMatch": "Passwords do not match",
+      "usernameExists": "Username already exists"
+    },
+    "messages": {
+      "saveSuccess": "User saved successfully",
+      "updateSuccess": "User updated successfully",
+      "deleteSuccess": "User deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this user?"
+    }
+  },
+
+  "role": {
+    "title": "Role Management",
+    "list": "Roles List",
+    "add": "Add New Role",
+    "edit": "Edit Role",
+    "delete": "Delete Role",
+    "details": "Role Details",
+    "code": "Role Code",
+    "title": "Role Title",
+    "permissions": "Permissions",
+    "users": "Users with this Role",
+    "validation": {
+      "codeRequired": "Role code is required",
+      "titleRequired": "Role title is required"
+    },
+    "messages": {
+      "saveSuccess": "Role saved successfully",
+      "updateSuccess": "Role updated successfully",
+      "deleteSuccess": "Role deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this role?",
+      "cannotDelete": "Cannot delete role assigned to users"
+    }
+  },
+
+  "menu": {
+    "title": "Menu Management",
+    "list": "Menus List",
+    "add": "Add New Menu",
+    "edit": "Edit Menu",
+    "delete": "Delete Menu",
+    "details": "Menu Details",
+    "code": "Menu Code",
+    "title": "Menu Title",
+    "route": "Route Path",
+    "show": "Show in Menu",
+    "parent": "Parent Menu",
+    "authority": "Required Authority",
+    "order": "Display Order",
+    "icon": "Menu Icon",
+    "validation": {
+      "codeRequired": "Menu code is required",
+      "titleRequired": "Menu title is required"
+    },
+    "messages": {
+      "saveSuccess": "Menu saved successfully",
+      "updateSuccess": "Menu updated successfully",
+      "deleteSuccess": "Menu deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this menu?"
+    }
+  },
+
+  "person": {
+    "title": "Person Management",
+    "list": "Persons List",
+    "add": "Add New Person",
+    "edit": "Edit Person",
+    "delete": "Delete Person",
+    "details": "Person Details",
+    "name": "First Name",
+    "family": "Last Name",
+    "fullName": "Full Name",
+    "nationalCode": "National Code",
+    "email": "Email",
+    "phone": "Phone Number",
+    "mobile": "Mobile Number",
+    "address": "Address",
+    "birthDate": "Birth Date",
+    "validation": {
+      "nameRequired": "First name is required",
+      "familyRequired": "Last name is required",
+      "nationalCodeRequired": "National code is required",
+      "nationalCodeInvalid": "Invalid national code format"
+    },
+    "messages": {
+      "saveSuccess": "Person saved successfully",
+      "updateSuccess": "Person updated successfully",
+      "deleteSuccess": "Person deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this person?"
+    }
+  },
+
+  "search": {
+    "title": "Advanced Search",
+    "criteria": "Search Criteria",
+    "field": "Field",
+    "operator": "Operator",
+    "value": "Value",
+    "valueTo": "Value To",
+    "addCriteria": "Add Criteria",
+    "removeCriteria": "Remove Criteria",
+    "operators": {
+      "eq": "Equals",
+      "neq": "Not Equals",
+      "contains": "Contains",
+      "startsWith": "Starts With",
+      "endsWith": "Ends With",
+      "gt": "Greater Than",
+      "gte": "Greater Than or Equal",
+      "lt": "Less Than",
+      "lte": "Less Than or Equal",
+      "between": "Between",
+      "in": "In List",
+      "isNull": "Is Null",
+      "isNotNull": "Is Not Null"
+    },
+    "page": "Page",
+    "size": "Items per page",
+    "sortBy": "Sort By",
+    "sortDirection": "Sort Direction",
+    "directions": {
+      "ASC": "Ascending",
+      "DESC": "Descending"
+    }
+  },
+
+  "errors": {
+    "general": "An error occurred",
+    "network": "Network error. Please check your connection",
+    "serverError": "Server error. Please try again later",
+    "unauthorized": "You are not authorized to perform this action",
+    "forbidden": "Access denied",
+    "notFound": "Resource not found",
+    "validationError": "Please check the form for errors",
+    "saveError": "Error saving data",
+    "loadError": "Error loading data",
+    "deleteError": "Error deleting data",
+    "sessionExpired": "Your session has expired. Please login again"
+  },
+
+  "validation": {
+    "required": "This field is required",
+    "minLength": "Minimum length is {{min}} characters",
+    "maxLength": "Maximum length is {{max}} characters",
+    "min": "Minimum value is {{min}}",
+    "max": "Maximum value is {{max}}",
+    "email": "Please enter a valid email address",
+    "pattern": "Please enter a valid value",
+    "number": "Please enter a valid number",
+    "date": "Please enter a valid date",
+    "time": "Please enter a valid time"
+  },
+
+  "buttons": {
+    "save": "Save",
+    "update": "Update",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "search": "Search",
+    "clear": "Clear",
+    "reset": "Reset",
+    "refresh": "Refresh",
+    "export": "Export",
+    "import": "Import",
+    "print": "Print"
+  },
+
+  "messages": {
+    "welcome": "Welcome to Fleet Management System",
+    "selectRecord": "Please select a record",
+    "noRecordsFound": "No records found",
+    "loading": "Loading data...",
+    "saving": "Saving...",
+    "deleting": "Deleting...",
+    "confirmDelete": "Are you sure you want to delete this record?",
+    "confirmBulkDelete": "Are you sure you want to delete {{count}} selected records?",
+    "operationSuccessful": "Operation completed successfully",
+    "operationFailed": "Operation failed",
+    "dataSaved": "Data saved successfully",
+    "dataUpdated": "Data updated successfully",
+    "dataDeleted": "Data deleted successfully"
+  }
+}
