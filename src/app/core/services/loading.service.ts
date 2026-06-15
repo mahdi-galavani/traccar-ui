@@ -1,0 +1,20 @@
+import { Injectable, signal } from '@angular/core';
+
+/** Counts in-flight HTTP requests; loading-spinner reads isLoading(). */
+@Injectable({ providedIn: 'root' })
+export class LoadingService {
+  private activeRequests = 0;
+  readonly isLoading = signal(false);
+
+  show(): void {
+    this.activeRequests++;
+    this.isLoading.set(true);
+  }
+
+  hide(): void {
+    this.activeRequests = Math.max(0, this.activeRequests - 1);
+    if (this.activeRequests === 0) {
+      this.isLoading.set(false);
+    }
+  }
+}

@@ -1,0 +1,29 @@
+<div class="login-page">
+  <form class="login-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h1 class="login-title">{{ 'AUTH.LOGIN_TITLE' | translate }}</h1>
+
+    <div class="field">
+      <label for="username">{{ 'AUTH.USERNAME' | translate }}</label>
+      <input id="username" type="text" formControlName="username" autocomplete="username" />
+      @if (form.controls.username.invalid && form.controls.username.touched) {
+        <span class="error">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+      }
+    </div>
+
+    <div class="field">
+      <label for="password">{{ 'AUTH.PASSWORD' | translate }}</label>
+      <input id="password" type="password" formControlName="password" autocomplete="current-password" />
+      @if (form.controls.password.invalid && form.controls.password.touched) {
+        <span class="error">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+      }
+    </div>
+
+    @if (errorMessage()) {
+      <div class="form-error">{{ errorMessage() | translate }}</div>
+    }
+
+    <button type="submit" class="submit-btn" [disabled]="loading()">
+      {{ (loading() ? 'COMMON.LOADING' : 'AUTH.LOGIN_BUTTON') | translate }}
+    </button>
+  </form>
+</div>
