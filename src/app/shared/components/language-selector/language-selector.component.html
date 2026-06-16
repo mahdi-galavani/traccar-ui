@@ -1,0 +1,12 @@
+<div class="lang-selector">
+  @for (lang of languages; track lang) {
+    <button
+      type="button"
+      class="lang-btn"
+      [class.active]="language.current() === lang"
+      (click)="select(lang)"
+    >
+      {{ lang.toUpperCase() }}
+    </button>
+  }
+</div>

@@ -1,0 +1,26 @@
+.page-header {
+  margin-bottom: 1rem;
+}
+
+.page-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.header-list-extra {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.link-btn {
+  text-align: start;
+  background: none;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.3rem 0;
+}

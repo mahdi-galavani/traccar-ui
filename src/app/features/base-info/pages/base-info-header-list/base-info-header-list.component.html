@@ -1,0 +1,33 @@
+<div class="page-header">
+  <h1 class="page-title">{{ 'BASE_INFO_HEADER.PAGE_TITLE' | translate }}</h1>
+</div>
+
+<app-data-table
+  [columns]="columns"
+  [items]="items"
+  [loading]="loading"
+  (add)="onAdd()"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+>
+</app-data-table>
+
+@if (!loading && items.length) {
+  <div class="header-list-extra">
+    @for (item of items; track item.id) {
+      <button type="button" class="link-btn" (click)="openItems(item)">
+        {{ 'BASE_INFO_HEADER.VIEW_ITEMS' | translate }}: {{ item.title }}
+      </button>
+    }
+  </div>
+}
+
+@if (showForm) {
+  <app-dynamic-form
+    [title]="formTitle"
+    [fields]="fields"
+    [model]="selected"
+    (saved)="onSave($event)"
+    (cancelled)="onCancel()"
+  />
+}

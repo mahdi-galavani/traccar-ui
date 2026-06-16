@@ -1,0 +1,48 @@
+<div class="dialog-overlay" (click)="cancel()">
+  <form class="dialog-card" [formGroup]="form" (ngSubmit)="submit()" (click)="$event.stopPropagation()">
+    <h2 class="dialog-title">{{ title | translate }}</h2>
+
+    <div class="form-grid">
+      @for (field of fields; track field.key) {
+        <div class="field" [class.field-span-2]="field.colSpan === 2">
+          <label [for]="field.key">{{ field.label | translate }}</label>
+
+          @switch (field.type) {
+            @case ('textarea') {
+              <textarea [id]="field.key" [formControlName]="field.key" rows="3"></textarea>
+            }
+            @case ('checkbox') {
+              <input [id]="field.key" type="checkbox" [formControlName]="field.key" />
+            }
+            @case ('select') {
+              <select [id]="field.key" [formControlName]="field.key">
+                <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
+                @for (option of optionsFor(field); track option.value) {
+                  <option [ngValue]="option.value">{{ option.label }}</option>
+                }
+              </select>
+            }
+            @case ('date') {
+              <input [id]="field.key" type="date" [formControlName]="field.key" />
+            }
+            @case ('number') {
+              <input [id]="field.key" type="number" [formControlName]="field.key" />
+            }
+            @default {
+              <input [id]="field.key" type="text" [formControlName]="field.key" [placeholder]="field.placeholder ?? ''" />
+            }
+          }
+
+          @if (isInvalid(field.key)) {
+            <span class="error">{{ 'validation.required' | translate }}</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="dialog-actions">
+      <button type="button" class="btn-secondary" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
+      <button type="submit" class="btn-primary">{{ 'common.save' | translate }}</button>
+    </div>
+  </form>
+</div>

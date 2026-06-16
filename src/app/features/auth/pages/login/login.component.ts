@@ -41,7 +41,7 @@ export class LoginComponent {
       },
       error: () => {
         this.loading.set(false);
-        this.errorMessage.set('AUTH.INVALID_CREDENTIALS');
+        this.errorMessage.set('auth.invalid_credentials');
       },
     });
   }

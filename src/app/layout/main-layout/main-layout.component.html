@@ -1,0 +1,27 @@
+<div class="layout">
+  <app-sidebar />
+
+  <div class="layout-main">
+    <app-header />
+
+    <main class="layout-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+@if (loading.isLoading()) {
+  <div class="global-loading">
+    <app-loading-spinner size="lg" />
+  </div>
+}
+
+<div class="toast-stack">
+  @for (n of notification.notifications(); track n.id) {
+    <div class="toast" [class]="'toast-' + n.type">
+      {{ n.message | translate }}
+    </div>
+  }
+</div>
+
+<app-confirm-dialog />

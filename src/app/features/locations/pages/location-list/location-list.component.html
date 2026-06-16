@@ -1,0 +1,20 @@
+<div class="page-header">
+  <h1 class="page-title">{{ 'LOCATION.PAGE_TITLE' | translate }}</h1>
+</div>
+
+<app-location-tree
+  [isRoot]="true"
+  (addChild)="onAddChild($event)"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+/>
+
+@if (showForm()) {
+  <app-dynamic-form
+    title="LOCATION.FORM_TITLE"
+    [fields]="fields"
+    [model]="formModel()"
+    (saved)="onSave($event)"
+    (cancelled)="onCancel()"
+  />
+}

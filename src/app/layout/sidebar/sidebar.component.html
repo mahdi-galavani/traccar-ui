@@ -1,0 +1,27 @@
+<nav class="sidebar">
+  <ul class="menu-list">
+    @for (item of menu; track item.route) {
+      <li>
+        @if (item.route) {
+          <a [routerLink]="item.route" routerLinkActive="active" class="menu-link">
+            {{ item.titleKey | translate }}
+          </a>
+        } @else {
+          <span class="menu-group">{{ item.titleKey | translate }}</span>
+        }
+
+        @if (item.children?.length) {
+          <ul class="submenu">
+            @for (child of item.children; track child.route) {
+              <li>
+                <a [routerLink]="child.route" routerLinkActive="active" class="menu-link">
+                  {{ child.titleKey | translate }}
+                </a>
+              </li>
+            }
+          </ul>
+        }
+      </li>
+    }
+  </ul>
+</nav>

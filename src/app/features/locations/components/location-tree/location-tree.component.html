@@ -1,0 +1,64 @@
+@if (isRoot) {
+  <div class="tree-root">
+    <div class="tree-root-header">
+      <span class="tree-root-title">{{ 'LOCATION.ROOT_TITLE' | translate }}</span>
+      <button type="button" class="btn-icon-add" (click)="emitAddRoot()">
+        {{ 'common.add' | translate }}
+      </button>
+    </div>
+
+    @if (loadingChildren()) {
+      <div class="tree-loading">{{ 'common.loading' | translate }}</div>
+    } @else if (!children().length) {
+      <div class="tree-empty">{{ 'common.no_data' | translate }}</div>
+    }
+  </div>
+}
+
+@for (child of children(); track child.id) {
+  <div class="tree-node">
+    <div class="tree-row">
+      <button
+        type="button"
+        class="toggle-btn"
+        [class.has-children]="child.type !== 'PROVINCE'"
+        (click)="toggle()"
+      >
+        @if (child.type !== 'PROVINCE') {
+          {{ expanded() ? '▾' : '▸' }}
+        }
+      </button>
+
+      <span class="node-label" [class.disabled]="child.enabled === false">
+        {{ child.title }}
+        <span class="node-code">({{ child.code }})</span>
+        <span class="node-type">{{ ('LOCATION.TYPES.' + child.type) | translate }}</span>
+      </span>
+
+      <div class="node-actions">
+        @if (child.type !== 'PROVINCE') {
+          <button type="button" class="btn-icon" (click)="addChild.emit(child)">
+            {{ 'common.add' | translate }}
+          </button>
+        }
+        <button type="button" class="btn-icon" (click)="edit.emit(child)">
+          {{ 'common.edit' | translate }}
+        </button>
+        <button type="button" class="btn-icon btn-danger" (click)="delete.emit(child)">
+          {{ 'common.delete' | translate }}
+        </button>
+      </div>
+    </div>
+
+    @if (expanded() && child.type !== 'PROVINCE') {
+      <div class="tree-children">
+        <app-location-tree
+          [node]="child"
+          (addChild)="addChild.emit($event)"
+          (edit)="edit.emit($event)"
+          (delete)="delete.emit($event)"
+        />
+      </div>
+    }
+  </div>
+}

@@ -1,0 +1,8 @@
+<label class="page-size">
+  {{ 'common.page_size' | translate }}
+  <select [value]="pageSize" (change)="onChange($any($event.target).value)">
+    @for (option of options; track option) {
+      <option [value]="option">{{ option }}</option>
+    }
+  </select>
+</label>

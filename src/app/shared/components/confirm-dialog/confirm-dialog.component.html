@@ -1,0 +1,16 @@
+@if (service.options(); as options) {
+  <div class="dialog-overlay" (click)="cancel()">
+    <div class="dialog-card" (click)="$event.stopPropagation()">
+      <h3 class="dialog-title">{{ (options.title ?? 'common.confirm') | translate }}</h3>
+      <p class="dialog-message">{{ options.message | translate }}</p>
+      <div class="dialog-actions">
+        <button type="button" class="btn-secondary" (click)="cancel()">
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button type="button" class="btn-danger" (click)="confirm()">
+          {{ 'common.confirm' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

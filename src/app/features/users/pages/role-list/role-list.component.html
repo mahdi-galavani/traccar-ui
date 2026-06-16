@@ -1,0 +1,22 @@
+<div class="page-header">
+  <h1 class="page-title">{{ 'ROLE.PAGE_TITLE' | translate }}</h1>
+</div>
+
+<app-data-table
+  [columns]="columns"
+  [items]="items"
+  [loading]="loading"
+  (add)="onAdd()"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+/>
+
+@if (showForm) {
+  <app-dynamic-form
+    [title]="formTitle"
+    [fields]="fields"
+    [model]="selected"
+    (saved)="onSave($event)"
+    (cancelled)="onCancel()"
+  />
+}

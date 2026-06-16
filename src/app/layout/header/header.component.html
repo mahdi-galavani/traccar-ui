@@ -1,0 +1,15 @@
+<header class="app-header">
+  <div class="header-title">{{ 'app.title' | translate }}</div>
+
+  <div class="header-actions">
+    <app-language-selector />
+
+    @if (currentUser(); as user) {
+      <span class="username">{{ user.username }}</span>
+    }
+
+    <button type="button" class="logout-btn" (click)="logout()">
+      {{ 'auth.logout' | translate }}
+    </button>
+  </div>
+</header>

@@ -1,18 +1,1 @@
-<div class="app-container">
-  <header>
-    <h1>{{ 'dashboard.title' | translate }}</h1>
-
-    <div class="language-selector">
-      <button (click)="changeLanguage('en')" [class.active]="currentLang === 'en'">
-        🇬🇧 English
-      </button>
-      <button (click)="changeLanguage('fa')" [class.active]="currentLang === 'fa'">
-        🇮🇷 فارسی
-      </button>
-    </div>
-  </header>
-
-  <main>
-    <router-outlet />
-  </main>
-</div>
+<router-outlet />

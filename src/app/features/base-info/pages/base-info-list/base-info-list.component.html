@@ -1,0 +1,23 @@
+<div class="page-header">
+  <button type="button" class="back-btn" (click)="goBack()">← {{ 'common.back' | translate }}</button>
+  <h1 class="page-title">{{ 'BASE_INFO.PAGE_TITLE' | translate }}</h1>
+</div>
+
+<app-data-table
+  [columns]="columns"
+  [items]="items"
+  [loading]="loading"
+  (add)="onAdd()"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+/>
+
+@if (showForm) {
+  <app-dynamic-form
+    title="BASE_INFO.FORM_TITLE"
+    [fields]="fields"
+    [model]="selected"
+    (saved)="onSave($event)"
+    (cancelled)="onCancel()"
+  />
+}

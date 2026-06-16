@@ -1,0 +1,59 @@
+<div class="table-toolbar">
+  @if (canAdd) {
+    <button type="button" class="btn-primary" (click)="add.emit()">
+      {{ addLabel | translate }}
+    </button>
+  }
+</div>
+
+@if (loading) {
+  <app-loading-spinner />
+} @else if (!items.length) {
+  <app-empty-state />
+} @else {
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+      <tr>
+        @for (col of columns; track col.key) {
+          <th [style.width]="col.width">{{ col.label | translate }}</th>
+        }
+        <th class="actions-col">{{ 'common.actions' | translate }}</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (item of items; track item['id']) {
+          <tr>
+            @for (col of columns; track col.key) {
+              <td>
+                @switch (col.pipe) {
+                  @case ('boolean') {
+                    {{ (resolve(item, col.key) ? 'common.yes' : 'common.no') | translate }}
+                  }
+                  @case ('date') {
+                    {{ resolveDate(item, col.key) | date: 'short' }}
+                  }
+                  @default {
+                    {{ resolve(item, col.key) }}
+                  }
+                }
+              </td>
+            }
+            <td class="actions-col">
+              @if (canEdit) {
+                <button type="button" class="btn-icon" (click)="edit.emit(item)">
+                  {{ 'common.edit' | translate }}
+                </button>
+              }
+              @if (canDelete) {
+                <button type="button" class="btn-icon btn-danger" (click)="delete.emit(item)">
+                  {{ 'common.delete' | translate }}
+                </button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

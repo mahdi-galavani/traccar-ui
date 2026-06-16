@@ -1,4 +1,4 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, provideAppInitializer, inject } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideTranslateService } from '@ngx-translate/core';
@@ -7,6 +7,7 @@ import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { LanguageService } from './core/services/language.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,6 +23,9 @@ export const appConfig: ApplicationConfig = {
           },
         ],
       }),
+    }),
+    provideAppInitializer(() => {
+      inject(LanguageService).init();
     }),
   ],
 };
