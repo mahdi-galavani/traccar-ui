@@ -6,11 +6,6 @@
   }
 </div>
 
-@if (loading) {
-  <app-loading-spinner />
-} @else if (!items.length) {
-  <app-empty-state />
-} @else {
   <div class="table-wrapper">
     <table class="data-table">
       <thead>
@@ -56,4 +51,3 @@
       </tbody>
     </table>
   </div>
-}

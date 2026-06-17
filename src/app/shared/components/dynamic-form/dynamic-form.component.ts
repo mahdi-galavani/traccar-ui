@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FieldConfig, SelectOption } from '../../../core/models/base/crud-field.model';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -52,9 +53,11 @@ export class DynamicFormComponent<T extends Record<string, any> = Record<string,
   private loadDynamicOptions(): void {
     for (const field of this.fields) {
       if (field.type === 'select' && field.loadOptions) {
-        field.loadOptions().subscribe((options) => {
-          this.optionsByKey.update((map) => ({ ...map, [field.key]: options }));
-        });
+        field.loadOptions()
+          .pipe(take(1)) // <--- اضافه کنید تا پس از یک‌بار دریافت دیتا، درخواست فوراً بسته شود
+          .subscribe((options) => {
+            this.optionsByKey.update((map) => ({ ...map, [field.key]: options }));
+          });
       }
     }
   }

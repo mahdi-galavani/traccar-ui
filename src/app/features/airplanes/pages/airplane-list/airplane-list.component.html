@@ -4,18 +4,18 @@
 
 <app-data-table
   [columns]="columns"
-  [items]="items"
-  [loading]="loading"
+  [items]="items()"
+  [loading]="loading()"
   (add)="onAdd()"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)"
 />
 
-@if (showForm) {
+@if (showForm()) {
   <app-dynamic-form
     [title]="formTitle"
     [fields]="fields"
-    [model]="selected"
+    [model]="selected()"
     (saved)="onSave($event)"
     (cancelled)="onCancel()"
   />

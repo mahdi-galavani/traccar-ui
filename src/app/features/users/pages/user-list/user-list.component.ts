@@ -19,13 +19,8 @@ export class UserListComponent extends BaseCrudPage<AppUserDto, string> {
   fields = USER_FIELDS;
   formTitle = 'USER.FORM_TITLE';
 
-  /**
-   * Override: when editing and the password field is left blank,
-   * don't send an empty password (writeOnly field, backend would
-   * otherwise overwrite it with an empty string).
-   */
   override onSave(dto: AppUserDto): void {
-    if (this.selected && !dto.password) {
+    if (this.selected() && !dto.password) {
       delete (dto as Partial<AppUserDto>).password;
     }
     super.onSave(dto);
