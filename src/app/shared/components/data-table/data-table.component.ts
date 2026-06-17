@@ -2,13 +2,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { CrudColumn } from '../../../core/models/base/crud-field.model';
-import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
-import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [CommonModule, TranslatePipe, LoadingSpinnerComponent, EmptyStateComponent],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.css',
 })
@@ -38,7 +36,12 @@ export class DataTableComponent<T extends Record<string, any> = Record<string, a
   /** narrows an unknown value to a type the `date` pipe accepts */
   resolveDate(item: T, key: string): string | number | Date | null | undefined {
     const value = this.resolve(item, key);
-    if (value == null || typeof value === 'string' || typeof value === 'number' || value instanceof Date) {
+    if (
+      value == null ||
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      value instanceof Date
+    ) {
       return value;
     }
     return null;
