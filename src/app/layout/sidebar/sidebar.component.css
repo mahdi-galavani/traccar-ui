@@ -1,42 +1,154 @@
+:host {
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 70px;
+  --sidebar-bg: #1e293b;
+  --sidebar-hover: #334155;
+  --sidebar-active: #3b82f6;
+  --text-color: #f8fafc;
+  --text-muted: #94a3b8;
+  display: block;
+}
+
 .sidebar {
-  width: 240px;
-  height: 100%;
-  background: #111827;
-  color: #e5e7eb;
-  padding: 1rem 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background-color: var(--sidebar-bg);
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+  overflow-x: hidden;
+  border-inline-end: 1px solid #2e3e52;
+}
+
+/* استایل سایدبار در حالت جمع شده (Collapsed) */
+.sidebar.collapsed {
+  width: var(--sidebar-collapsed-width);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem;
+  border-bottom: 1px solid #2e3e52;
+  min-height: 64px;
+}
+
+.sidebar.collapsed .sidebar-header {
+  justify-content: center;
+  padding: 1.25rem 0;
+}
+
+.brand-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.toggle-btn:hover {
+  background-color: var(--sidebar-hover);
+  color: var(--text-color);
+}
+
+.menu-list {
+  list-style: none;
+  padding: 0.75rem 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
   overflow-y: auto;
 }
 
-.menu-list,
+.menu-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  position: relative;
+}
+
+.menu-link:hover {
+  background-color: var(--sidebar-hover);
+  color: var(--text-color);
+}
+
+.menu-link.active {
+  background-color: var(--sidebar-active);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+}
+
+.menu-text {
+  margin-inline-start: 1rem;
+  font-size: 0.95rem;
+  flex: 1;
+}
+
+.arrow-icon {
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.submenu-open .arrow-icon {
+  transform: rotate(180deg);
+}
+
+/* استایل زیرمنو درختی */
 .submenu {
   list-style: none;
-  margin: 0;
   padding: 0;
-}
-
-.menu-link,
-.menu-group {
-  display: block;
-  padding: 0.6rem 1.25rem;
-  color: #d1d5db;
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-
-.menu-group {
-  font-weight: 600;
-  color: #9ca3af;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  margin-top: 0.5rem;
-}
-
-.menu-link:hover,
-.menu-link.active {
-  background: #1f2937;
-  color: #fff;
+  margin: 0;
+  background-color: #111827;
 }
 
 .submenu .menu-link {
-  padding-inline-start: 2.25rem;
+  padding-inline-start: 2.75rem;
+  font-size: 0.88rem;
+}
+
+.submenu-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--text-muted);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.submenu .menu-link.active .submenu-dot {
+  background-color: #ffffff;
+}
+
+/* مدیریت هاور مینیاتوری در زمان بسته بودن سایدبار */
+.sidebar.collapsed .menu-link {
+  justify-content: center;
+  padding: 0.75rem 0;
 }

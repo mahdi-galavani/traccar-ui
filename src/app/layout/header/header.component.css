@@ -1,34 +1,180 @@
+:host {
+  display: block;
+  position: sticky; /* 👈 هدر را در بالای صفحه ثابت نگه می‌دارد تا موقع اسکرول شناور بماند */
+  top: 0;
+  z-index: 50; /* 👈 مطمئن می‌شویم هدر همیشه روی تمام کامپوننت‌های زیری قرار می‌گیرد */
+  --header-height: 70px;
+  --bg-glass: rgba(255, 255, 255, 0.80); /* 👈 شفافیت ملایم برای عبور نور محتوای زیرین */
+  --border-color: rgba(241, 245, 249, 0.8);
+  --text-dark: #0f172a;
+  --text-muted: #64748b;
+  --primary-gradient: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  --danger-soft: #fff1f2;
+  --danger-text: #f43f5e;
+}
+
 .app-header {
-  height: 60px;
+  height: var(--header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.5rem;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 0 2rem;
+
+  /* 🎨 بک‌گراند تفکیک‌کننده شیشه‌ای (Premium Glass Effect) */
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+
+  /* 📏 خط جداکننده پایینی بسیار ظریف */
+  border-bottom: 1px solid var(--border-color);
+
+  /* 👥 سایه سه بعدی محیطی (Ambient Shadow) برای جدا شدن کامل از سطح زیرین */
+  box-shadow:
+    0 4px 6px -1px rgba(15, 23, 42, 0.05),
+    0 10px 15px -3px rgba(15, 23, 42, 0.03),
+    0 12px 24px -4px rgba(0, 0, 0, 0.02);
+
+  transition: all 0.3s ease;
 }
 
-.header-title {
-  font-weight: 700;
-  font-size: 1.05rem;
-}
-
-.header-actions {
+/* ─── سایر استایل‌های هدر بدون تغییر ─── */
+.header-left-side {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.username {
-  font-size: 0.85rem;
-  color: #4b5563;
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.logout-btn {
-  padding: 0.4rem 0.9rem;
-  border-radius: 0.4rem;
-  border: 1px solid #d1d5db;
-  background: #fff;
+.brand-logo-mock {
+  width: 34px;
+  height: 34px;
+  background: var(--primary-gradient);
+  color: #ffffff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(3, 105, 161, 0.25);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  line-height: 1.2;
+}
+
+.sub-title {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.lang-zone {
+  border-inline-end: 1px solid #e2e8f0;
+  padding-inline-end: 1.25rem;
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: #f8fafc;
+  padding: 0.4rem 0.5rem 0.4rem 1rem;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.profile-card:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+:host-context([dir="ltr"]) .user-info {
+  align-items: flex-start;
+}
+
+.username {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.user-role {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.avatar-gradient {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(2, 132, 199, 0.2);
+}
+
+.logout-action-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
   cursor: pointer;
-  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.logout-action-btn:hover {
+  background-color: var(--danger-soft);
+  color: var(--danger-text);
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .sub-title, .user-info {
+    display: none;
+  }
+  .profile-card {
+    padding: 0.3rem;
+    gap: 0.4rem;
+    background: transparent;
+    border-color: transparent;
+  }
+  .profile-card:hover {
+    background: transparent;
+  }
 }

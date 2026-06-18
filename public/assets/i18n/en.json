@@ -215,13 +215,13 @@
       "delete_confirm": "Are you sure you want to delete this user?"
     }
   },
-  "MENU": {
-    "USERS": "Users",
-    "ROLES": "Roles",
-    "AIRPLANES": "Airplanes",
-    "AIRPORTS": "Airports",
-    "LOCATIONS": "Locations",
-    "BASE_INFO": "Base Info"
+  "menu": {
+    "users": "Users",
+    "roles": "Roles",
+    "airplanes": "Airplanes",
+    "airports": "Airports",
+    "locations": "Locations",
+    "base_info": "Base Info"
   },
 
 
@@ -433,6 +433,7 @@
     "locations": "Locations",
     "baseInfo": "Base Information",
     "baseInfoHeader": "Base Info Headers",
+    "accessManagement": "Access Management",
     "users": "Users Management",
     "roles": "Roles & Permissions",
     "menu": "Menu Management",

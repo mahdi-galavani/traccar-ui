@@ -1,21 +1,48 @@
-<nav class="sidebar">
-  <ul class="menu-list">
-    @for (item of menu; track item.route) {
-      <li>
-        @if (item.route) {
-          <a [routerLink]="item.route" routerLinkActive="active" class="menu-link">
-            {{ item.titleKey | translate }}
-          </a>
-        } @else {
-          <span class="menu-group">{{ item.titleKey | translate }}</span>
-        }
+<nav class="sidebar" [class.collapsed]="isCollapsed()">
+  <div class="sidebar-header">
+    <span class="brand-title" *ngIf="!isCollapsed()">{{ 'app.title' | translate }}</span>
+    <button type="button" class="toggle-btn" (click)="toggleSidebar()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" x1="20" y1="12" y2="12"></line>
+        <line x1="4" x1="20" y1="6" y2="6"></line>
+        <line x1="4" x1="20" y1="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
 
-        @if (item.children?.length) {
+  <ul class="menu-list">
+    @for (item of menu; track item.titleKey) {
+      <li [class.has-children]="item.children?.length" [class.submenu-open]="isSubmenuOpen(item.titleKey)">
+
+        <ng-container *ngIf="!item.children?.length; else groupTemplate">
+          <a [routerLink]="item.route" routerLinkActive="active" class="menu-link" [title]="item.titleKey | translate">
+            <span class="menu-icon">
+              <ng-container *ngTemplateOutlet="iconTemplate; context: { icon: item.icon }"></ng-container>
+            </span>
+            <span class="menu-text" *ngIf="!isCollapsed()">{{ item.titleKey | translate }}</span>
+          </a>
+        </ng-container>
+
+        <ng-template #groupTemplate>
+          <div class="menu-link" (click)="toggleSubmenu(item.titleKey, $event)" [title]="item.titleKey | translate">
+            <span class="menu-icon">
+              <ng-container *ngTemplateOutlet="iconTemplate; context: { icon: item.icon }"></ng-container>
+            </span>
+            <span class="menu-text" *ngIf="!isCollapsed()">{{ item.titleKey | translate }}</span>
+
+            <span class="arrow-icon" *ngIf="!isCollapsed()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
+          </div>
+        </ng-template>
+
+        @if (item.children?.length && isSubmenuOpen(item.titleKey) && !isCollapsed()) {
           <ul class="submenu">
-            @for (child of item.children; track child.route) {
+            @for (child of item.children; track child.titleKey) {
               <li>
-                <a [routerLink]="child.route" routerLinkActive="active" class="menu-link">
-                  {{ child.titleKey | translate }}
+                <a [routerLink]="child.route" routerLinkActive="active" class="menu-link" [routerLinkActiveOptions]="{ exact: true }">
+                  <span class="submenu-dot"></span>
+                  <span class="menu-text">{{ child.titleKey | translate }}</span>
                 </a>
               </li>
             }
@@ -25,3 +52,16 @@
     }
   </ul>
 </nav>
+
+<ng-template #iconTemplate let-icon="icon">
+  <svg [ngSwitch]="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <g *ngSwitchCase="'lock'"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></g>
+    <g *ngSwitchCase="'users'"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></g>
+    <g *ngSwitchCase="'shield'"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></g>
+    <g *ngSwitchCase="'plane'"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path></g>
+    <g *ngSwitchCase="'map-pin'"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></g>
+    <g *ngSwitchCase="'globe'"><circle cx="12" cy="12" r="10"></circle><line x1="2" x1="22" y1="12" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></g>
+    <g *ngSwitchCase="'database'"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path></g>
+    <g *ngSwitchDefault><circle cx="12" cy="12" r="10"></circle><line x1="12" x1="12" y1="16" y2="12"></line><line x1="12" x1="12.01" y1="8" y2="8"></line></g>
+  </svg>
+</ng-template>
