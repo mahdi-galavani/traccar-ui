@@ -6,14 +6,19 @@ import { API_BASE_PATH } from '../../../shared/constants/api-endpoints.constants
 
 @Injectable({ providedIn: 'root' })
 export class LocationApiService extends BaseApiService<LocationDto, number> {
-  protected readonly resourcePath = API_BASE_PATH.LOCATION;
+  // مقدار پیش‌فرض آن احتمالاً '/api/location' است
+  protected override readonly resourcePath = API_BASE_PATH.LOCATION;
 
-  /** Top-level nodes (continents) for the location tree. */
+  /** * دریافت لوکیشن‌های سطح ریشه (قاره‌ها)
+   * منطبق با GET /api/location/load-root در Swagger بک‌اند
+   */
   loadRoot(): Observable<LocationDto[]> {
     return this.http.get<LocationDto[]>(`${this.resourcePath}/load/root`);
   }
 
-  /** Children of a given node, used to lazily expand the tree. */
+  /** * دریافت فرزندان یک لوکیشن بر اساس آیدی پدر
+   * منطبق با GET /api/location/load-by-parent-id/{parentId} در Swagger بک‌اند
+   */
   loadByParentId(parentId: number): Observable<LocationDto[]> {
     return this.http.get<LocationDto[]>(`${this.resourcePath}/load/parent/${parentId}`);
   }

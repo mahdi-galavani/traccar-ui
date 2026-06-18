@@ -1,64 +1,77 @@
 @if (isRoot) {
   <div class="tree-root">
     <div class="tree-root-header">
-      <span class="tree-root-title">{{ 'LOCATION.ROOT_TITLE' | translate }}</span>
-      <button type="button" class="btn-icon-add" (click)="emitAddRoot()">
-        {{ 'common.add' | translate }}
+      <span class="tree-root-title">
+        <i class="fas fa-globe-americas text-blue-500 mr-2"></i>
+        {{ 'location.root_title' | translate }}
+      </span>
+      <button type="button" class="btn-primary text-xs" (click)="addChild.emit(null)">
+        <i class="fas fa-plus"></i> {{ 'common.add' | translate }}
       </button>
     </div>
 
     @if (loadingChildren()) {
-      <div class="tree-loading">{{ 'common.loading' | translate }}</div>
+      <div class="tree-loading">
+        <i class="fas fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}
+      </div>
     } @else if (!children().length) {
-      <div class="tree-empty">{{ 'common.no_data' | translate }}</div>
+      <div class="tree-empty">{{ 'common.noData' | translate }}</div>
     }
   </div>
 }
 
-@for (child of children(); track child.id) {
-  <div class="tree-node">
-    <div class="tree-row">
-      <button
-        type="button"
-        class="toggle-btn"
-        [class.has-children]="child.type !== 'PROVINCE'"
-        (click)="toggle()"
-      >
-        @if (child.type !== 'PROVINCE') {
-          {{ expanded() ? '▾' : '▸' }}
-        }
-      </button>
+<div class="tree-nodes-container" [class.pl-6]="!isRoot" [class.rtl:pr-6]="!isRoot">
+  @for (child of children(); track child.id) {
+    <div class="tree-node">
+      <div class="tree-row">
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.has-children]="child.type !== 'PROVINCE'"
+          (click)="toggle(child)"
+        >
+          @if (child.type !== 'PROVINCE') {
+            <i class="fas" [class.fa-chevron-down]="isExpanded(child.id)" [class.fa-chevron-left]="!isExpanded(child.id)"></i>
+          }
+        </button>
 
-      <span class="node-label" [class.disabled]="child.enabled === false">
-        {{ child.title }}
-        <span class="node-code">({{ child.code }})</span>
-        <span class="node-type">{{ ('LOCATION.TYPES.' + child.type) | translate }}</span>
-      </span>
+        <span class="node-label" [class.disabled]="child.enabled === false">
+          <i class="fas"
+             [class.fa-globe]="child.type === 'CONTINENT'"
+             [class.fa-flag]="child.type === 'COUNTRY'"
+             [class.fa-map-marker-alt]="child.type === 'PROVINCE'">
+          </i>
+          <span class="font-medium mx-1">{{ child.title }}</span>
+          <span class="node-code text-gray-400 text-xs">({{ child.code }})</span>
+          <span class="node-type text-gray-400 text-xs">
+            ({{ 'location.types.' + (child.type | lowercase) | translate }})
+          </span>
+        </span>
 
-      <div class="node-actions">
-        @if (child.type !== 'PROVINCE') {
-          <button type="button" class="btn-icon" (click)="addChild.emit(child)">
-            {{ 'common.add' | translate }}
+        <div class="node-actions">
+          @if (child.type !== 'PROVINCE') {
+            <button type="button" class="btn-icon text-green-600" (click)="addChild.emit(child)" [title]="'common.add' | translate">
+              <i class="fas fa-plus-circle"></i>
+            </button>
+          }
+          <button type="button" class="btn-icon text-blue-600" (click)="edit.emit(child)" [title]="'common.edit' | translate">
+            <i class="fas fa-edit"></i>
           </button>
-        }
-        <button type="button" class="btn-icon" (click)="edit.emit(child)">
-          {{ 'common.edit' | translate }}
-        </button>
-        <button type="button" class="btn-icon btn-danger" (click)="delete.emit(child)">
-          {{ 'common.delete' | translate }}
-        </button>
+          <button type="button" class="btn-icon text-red-600" (click)="delete.emit(child)" [title]="'common.delete' | translate">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
       </div>
-    </div>
 
-    @if (expanded() && child.type !== 'PROVINCE') {
-      <div class="tree-children">
+      @if (isExpanded(child.id)) {
         <app-location-tree
           [node]="child"
+          [isRoot]="false"
           (addChild)="addChild.emit($event)"
           (edit)="edit.emit($event)"
           (delete)="delete.emit($event)"
         />
-      </div>
-    }
-  </div>
-}
+      }
+    </div>
+  }
+</div>

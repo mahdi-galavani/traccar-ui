@@ -1,33 +1,130 @@
-<div class="page-header">
-  <h1 class="page-title">{{ 'BASE_INFO_HEADER.PAGE_TITLE' | translate }}</h1>
-</div>
+<div class="base-info-header-container">
 
-<app-data-table
-  [columns]="columns"
-  [items]="items()"
-  [loading]="loading()"
-  (add)="onAdd()"
-  (edit)="onEdit($event)"
-  (delete)="onDelete($event)"
->
-</app-data-table>
+  <div class="page-header-wrapper">
+    <div class="header-main-info">
+      <h1 class="page-title">
+        <i class="fas fa-folder-open title-icon"></i>
+        {{ 'baseInfoHeader.pageTitle' | translate }}
+      </h1>
+      <span class="stat-chip">
+        <i class="fas fa-layer-group"></i>
+        {{ stats().total }} {{ 'baseInfoHeader.total' | translate }}
+      </span>
+    </div>
 
-@if (!loading() && items().length) {
-  <div class="header-list-extra">
-    @for (item of items(); track item.id) {
-      <button type="button" class="link-btn" (click)="openItems(item)">
-        {{ 'BASE_INFO_HEADER.VIEW_ITEMS' | translate }}: {{ item.title }}
-      </button>
+    <div class="header-actions-bar">
+      <div class="search-wrapper">
+        <i class="fas fa-search search-icon"></i>
+        <input
+          type="text"
+          [placeholder]="'baseInfoHeader.searchPlaceholder' | translate"
+          [value]="searchQuery()"
+          (input)="onSearch($any($event.target).value)"
+          class="custom-search-input"
+        />
+        @if (searchQuery()) {
+          <button class="btn-clear" (click)="onSearch('')">
+            <i class="fas fa-times"></i>
+          </button>
+        }
+      </div>
+
+      <div class="action-group">
+        <div class="view-toggle-container">
+          <button
+            type="button"
+            [class.active]="viewMode() === 'grid'"
+            (click)="toggleViewMode('grid')"
+            [attr.title]="'baseInfoHeader.gridView' | translate"
+            class="toggle-btn">
+            <i class="fas fa-grid-horizontal fa-th"></i>
+          </button>
+          <button
+            type="button"
+            [class.active]="viewMode() === 'table'"
+            (click)="toggleViewMode('table')"
+            [attr.title]="'baseInfoHeader.tableView' | translate"
+            class="toggle-btn">
+            <i class="fas fa-bars fa-list"></i>
+          </button>
+        </div>
+
+        <button type="button" class="btn-solid-add" (click)="onAdd()">
+          <i class="fas fa-plus"></i>
+          {{ 'baseInfoHeader.addNew' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-body">
+    @if (loading()) {
+      <div class="loading-placeholder">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>{{ 'common.loading' | translate }}</span>
+      </div>
+    } @else if (filteredItems().length === 0) {
+      <div class="empty-placeholder">
+        <i class="fas fa-inbox"></i>
+        <p>{{ 'common.noData' | translate }}</p>
+      </div>
+    } @else {
+      @if (viewMode() === 'grid') {
+        <div class="grid-layout-cards">
+          @for (item of filteredItems(); track item.id) {
+            <div class="modern-header-card">
+              <div class="card-badge-row">
+                <span class="tech-code">{{ item.code }}</span>
+                <div class="card-crud-actions">
+                  <button type="button" class="action-sub-btn edit" (click)="onEdit(item); $event.stopPropagation()">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button type="button" class="action-sub-btn delete" (click)="onDelete(item); $event.stopPropagation()">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-clickable-area" (click)="openItems(item)">
+                <h3 class="item-card-title">{{ item.title }}</h3>
+                <p class="item-card-desc">{{ item.description || ('baseInfoHeader.noDescription' | translate) }}</p>
+                <div class="card-interactive-footer">
+                  <span class="footer-link-text">{{ 'baseInfoHeader.viewItems' | translate }}</span>
+                  <i class="fas fa-arrow-left arrow-effect"></i>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      @if (viewMode() === 'table') {
+        <div class="table-card-wrapper">
+          <app-data-table
+            [columns]="columns"
+            [items]="filteredItems()"
+            [loading]="loading()"
+            [canAdd]="false"
+            [canViewItems]="true"
+            (edit)="onEdit($event)"
+            (delete)="onDelete($event)"
+            (viewItems)="openItems($event)"
+          />
+        </div>
+      }
     }
   </div>
-}
 
-@if (showForm()) {
-  <app-dynamic-form
-    [title]="formTitle"
-    [fields]="fields"
-    [model]="selected()"
-    (saved)="onSave($event)"
-    (cancelled)="onCancel()"
-  />
-}
+  @if (showForm()) {
+    <div class="modal-backdrop-blur" (click)="onCancel()">
+      <div class="modal-surface" (click)="$event.stopPropagation()">
+        <app-dynamic-form
+          [title]="formTitle"
+          [fields]="fields"
+          [model]="selected()"
+          (saved)="onSave($event)"
+          (cancelled)="onCancel()"
+        />
+      </div>
+    </div>
+  }
+</div>

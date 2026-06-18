@@ -1,3 +1,4 @@
+// data-table.component.ts
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -18,10 +19,12 @@ export class DataTableComponent<T extends Record<string, any> = Record<string, a
   @Input() canAdd = true;
   @Input() canEdit = true;
   @Input() canDelete = true;
+  @Input() canViewItems = false; // 👈 قابلیت نمایش دکمه ورود به زیرمجموعه (پیش‌فرض غیرفعال)
 
   @Output() add = new EventEmitter<void>();
   @Output() edit = new EventEmitter<T>();
   @Output() delete = new EventEmitter<T>();
+  @Output() viewItems = new EventEmitter<T>(); // 👈 ارسال آبجکت ردیف کلیک شده به کامپوننت پدر
 
   /** resolves nested keys like 'type.title' */
   resolve(item: T, key: string): unknown {

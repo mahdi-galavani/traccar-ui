@@ -1,20 +1,35 @@
-<div class="page-header">
-  <h1 class="page-title">{{ 'LOCATION.PAGE_TITLE' | translate }}</h1>
+<div class="location-page-container">
+
+  <div class="page-header-wrapper">
+    <div class="header-main-info">
+      <h1 class="page-title">
+        <i class="fas fa-map-marked-alt title-icon"></i>
+        {{ 'location.page_title' | translate }}
+      </h1>
+      <p class="page-subtitle">مدیریت و پیکربندی ساختار درختی قاره‌ها، کشورها و استان‌ها</p>
+    </div>
+  </div>
+
+  <div class="tree-content-card">
+    <app-location-tree
+      [isRoot]="true"
+      (addChild)="onAddChild($event)"
+      (edit)="onEdit($event)"
+      (delete)="onDelete($event)"
+    />
+  </div>
+
+  @if (showForm()) {
+    <div class="modal-backdrop-blur" (click)="onCancel()">
+      <div class="modal-surface-form" (click)="$event.stopPropagation()">
+        <app-dynamic-form
+          title="location.form_title"
+          [fields]="fields"
+          [model]="formModel()"
+          (saved)="onSave($event)"
+          (cancelled)="onCancel()"
+        />
+      </div>
+    </div>
+  }
 </div>
-
-<app-location-tree
-  [isRoot]="true"
-  (addChild)="onAddChild($event)"
-  (edit)="onEdit($event)"
-  (delete)="onDelete($event)"
-/>
-
-@if (showForm()) {
-  <app-dynamic-form
-    title="LOCATION.FORM_TITLE"
-    [fields]="fields"
-    [model]="formModel()"
-    (saved)="onSave($event)"
-    (cancelled)="onCancel()"
-  />
-}

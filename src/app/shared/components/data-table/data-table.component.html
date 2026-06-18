@@ -6,48 +6,54 @@
   }
 </div>
 
-  <div class="table-wrapper">
-    <table class="data-table">
-      <thead>
-      <tr>
-        @for (col of columns; track col.key) {
-          <th [style.width]="col.width">{{ col.label | translate }}</th>
-        }
-        <th class="actions-col">{{ 'common.actions' | translate }}</th>
-      </tr>
-      </thead>
-      <tbody>
-        @for (item of items; track item['id']) {
-          <tr>
-            @for (col of columns; track col.key) {
-              <td>
-                @switch (col.pipe) {
-                  @case ('boolean') {
-                    {{ (resolve(item, col.key) ? 'common.yes' : 'common.no') | translate }}
-                  }
-                  @case ('date') {
-                    {{ resolveDate(item, col.key) | date: 'short' }}
-                  }
-                  @default {
-                    {{ resolve(item, col.key) }}
-                  }
+<div class="table-wrapper">
+  <table class="data-table">
+    <thead>
+    <tr>
+      @for (col of columns; track col.key) {
+        <th [style.width]="col.width">{{ col.label | translate }}</th>
+      }
+      <th class="actions-col">{{ 'common.actions' | translate }}</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (item of items; track item['id']) {
+        <tr>
+          @for (col of columns; track col.key) {
+            <td>
+              @switch (col.pipe) {
+                @case ('boolean') {
+                  {{ (resolve(item, col.key) ? 'common.yes' : 'common.no') | translate }}
                 }
-              </td>
-            }
-            <td class="actions-col">
-              @if (canEdit) {
-                <button type="button" class="btn-icon" (click)="edit.emit(item)">
-                  {{ 'common.edit' | translate }}
-                </button>
-              }
-              @if (canDelete) {
-                <button type="button" class="btn-icon btn-danger" (click)="delete.emit(item)">
-                  {{ 'common.delete' | translate }}
-                </button>
+                @case ('date') {
+                  {{ resolveDate(item, col.key) | date: 'short' }}
+                }
+                @default {
+                  {{ resolve(item, col.key) }}
+                }
               }
             </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+          }
+          <td class="actions-col">
+            @if (canViewItems) {
+              <button type="button" class="btn-icon text-blue-600" (click)="viewItems.emit(item)">
+                <i class="fas fa-folder-open"></i>
+                {{ 'baseInfoHeader.viewItems' | translate }}
+              </button>
+            }
+            @if (canEdit) {
+              <button type="button" class="btn-icon" (click)="edit.emit(item)">
+                {{ 'common.edit' | translate }}
+              </button>
+            }
+            @if (canDelete) {
+              <button type="button" class="btn-icon btn-danger" (click)="delete.emit(item)">
+                {{ 'common.delete' | translate }}
+              </button>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

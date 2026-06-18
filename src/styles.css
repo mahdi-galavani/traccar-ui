@@ -1,6 +1,10 @@
+/* ۱. ابتدا کتابخانه‌های خارجی را لود کنید تا تایلند بتواند روی آن‌ها لایه‌بندی کند */
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
+/* ۲. لود هسته اصلی تایلند نسخه ۴ */
 @import "tailwindcss";
 
-/* تعریف فونت‌ها */
+/* ۳. تعریف فونت‌های محلی */
 @font-face {
   font-family: 'Vazirmatn';
   src: url('/fonts/webfonts/Vazirmatn-Regular.woff2') format('woff2');
@@ -25,15 +29,17 @@
   font-display: swap;
 }
 
-/* اعمال فونت به المان‌ها */
-html, body, button, input, select, textarea {
-  margin: 0;
-  padding: 0;
-  font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif !important;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* ۴. اعمال فونت اصلی به لایه Base تایلند جهت جلوگیری از رفتارهای غیرمنتظره */
+@layer base {
+  html, body, button, input, select, textarea {
+    margin: 0;
+    padding: 0;
+    font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-html, body {
-  height: 100%;
+  html, body {
+    height: 100%;
+  }
 }

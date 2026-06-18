@@ -16,9 +16,9 @@
             }
             @case ('select') {
               <select [id]="field.key" [formControlName]="field.key">
-                <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
+                <option [ngValue]="null">{{ 'common.select' | translate }}</option>
                 @for (option of optionsFor(field); track option.value) {
-                  <option [ngValue]="option.value">{{ option.label }}</option>
+                  <option [ngValue]="option.value">{{ option.label | translate }}</option>
                 }
               </select>
             }

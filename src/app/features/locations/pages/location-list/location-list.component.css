@@ -1,9 +1,104 @@
-.page-header {
-  margin-bottom: 1rem;
+/* container اصلی صفحه */
+.location-page-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* هدر صفحه */
+.page-header-wrapper {
+  margin-bottom: 28px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 16px;
 }
 
 .page-title {
-  font-size: 1.15rem;
-  font-weight: 700;
-  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title-icon {
+  color: #3b82f6;
+}
+
+.page-subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* کارت نگهدارنده درخت */
+.tree-content-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f3f4f6;
+  padding: 20px;
+}
+
+/* ==========================================================================
+   طراحی مدرن و کاربرپسند مودال فرم (Modal Backdrop & Surface)
+   ========================================================================== */
+.modal-backdrop-blur {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.3); /* تم تیره بسیار ملایم */
+  backdrop-filter: blur(8px); /* مات کردن پشت صفحه مشابه سیستم‌عامل‌های مدرن */
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+  animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-surface-form {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  max-width: 600px;
+  width: 92%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  animation: modalSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* انیمیشن‌های فرم */
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* سفارشی‌سازی ظاهر درونی فرم داینامیک زمانی که در این مودال قرار دارد */
+::v-deep .dialog-card {
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 28px !important;
+}
+
+::v-deep .dialog-title {
+  font-size: 1.3rem !important;
+  font-weight: 700 !important;
+  color: #1f2937 !important;
+  margin-bottom: 24px !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+  padding-bottom: 14px !important;
 }

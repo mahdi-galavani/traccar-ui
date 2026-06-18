@@ -13,14 +13,23 @@ export const LOCATION_TYPE_OPTIONS: SelectOption[] = [
   { label: 'location.types.province', value: 'PROVINCE' },
 ];
 
-/**
- * Fields for the "add child" form. The `parent` value is injected
- * by the tree component before opening the form (see location-tree),
- * so it's not part of the visible field list.
- */
 export const LOCATION_FIELDS: FieldConfig[] = [
-  { key: 'code', label: 'location.code', type: 'text', required: true, minLength: 1 },
-  { key: 'title', label: 'location.title', type: 'text', required: true, minLength: 1 },
+  {
+    key: 'code',
+    label: 'location.code',
+    type: 'text',
+    required: true,
+    minLength: 1,
+    placeholder: 'مثال: IR یا Asia'
+  },
+  {
+    key: 'title',
+    label: 'location.title',
+    type: 'text',
+    required: true,
+    minLength: 1,
+    placeholder: 'عنوان موقعیت را وارد کنید'
+  },
   {
     key: 'type',
     label: 'location.type',
@@ -28,5 +37,16 @@ export const LOCATION_FIELDS: FieldConfig[] = [
     required: true,
     options: LOCATION_TYPE_OPTIONS,
   },
-  { key: 'enabled', label: 'LOCATION.ENABLED', type: 'checkbox' },
+  {
+    key: 'enabled',
+    label: 'location.enabled',
+    type: 'checkbox'
+  },
+  {
+    key: 'description',
+    label: 'common.description',
+    type: 'textarea',
+    colSpan: 2,
+    placeholder: 'توضیحات تکمیلی درباره این موقعیت جغرافیایی...'
+  },
 ];

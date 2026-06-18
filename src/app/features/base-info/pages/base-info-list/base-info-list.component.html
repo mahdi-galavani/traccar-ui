@@ -1,23 +1,55 @@
-<div class="page-header">
-  <button type="button" class="back-btn" (click)="goBack()">← {{ 'common.back' | translate }}</button>
-  <h1 class="page-title">{{ 'BASE_INFO.PAGE_TITLE' | translate }}</h1>
+<div class="base-info-items-container">
+
+  <div class="items-page-header">
+    <div class="header-right-side">
+      <button type="button" class="modern-back-btn" (click)="goBack()">
+        <i class="fas fa-arrow-right"></i>
+        <span>{{ 'common.back' | translate }}</span>
+      </button>
+      <div class="title-meta-group">
+        <h1 class="page-main-title">{{ 'baseInfo.pageTitle' | translate }}</h1>
+        @if (headerTitle()) {
+          <span class="active-header-badge">{{ headerTitle() }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="header-left-side">
+      <div class="items-search-box">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          [placeholder]="'common.search' | translate"
+          [value]="searchQuery()"
+          (input)="onSearch($any($event.target).value)"
+          class="items-search-input"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="table-card-container">
+    <app-data-table
+      [columns]="columns"
+      [items]="filteredItems()"
+      [loading]="loading()"
+      (add)="onAdd()"
+      (edit)="onEdit($event)"
+      (delete)="onDelete($event)"
+    />
+  </div>
+
+  @if (showForm()) {
+    <div class="items-modal-backdrop" (click)="onCancel()">
+      <div class="items-modal-content" (click)="$event.stopPropagation()">
+        <app-dynamic-form
+          title="baseInfo.formTitle"
+          [fields]="fields"
+          [model]="selected()"
+          (saved)="onSave($event)"
+          (cancelled)="onCancel()"
+        />
+      </div>
+    </div>
+  }
 </div>
-
-<app-data-table
-  [columns]="columns"
-  [items]="items"
-  [loading]="loading"
-  (add)="onAdd()"
-  (edit)="onEdit($event)"
-  (delete)="onDelete($event)"
-/>
-
-@if (showForm) {
-  <app-dynamic-form
-    title="BASE_INFO.FORM_TITLE"
-    [fields]="fields"
-    [model]="selected"
-    (saved)="onSave($event)"
-    (cancelled)="onCancel()"
-  />
-}

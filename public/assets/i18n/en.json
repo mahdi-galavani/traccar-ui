@@ -40,6 +40,7 @@
     "logout": "Logout",
     "login": "Login",
     "dashboard": "Dashboard",
+    "description": "description",
     "reports": "Reports"
   },
   "auth": {
@@ -123,102 +124,39 @@
       "DELETE_CONFIRM": "Are you sure you want to delete this airport?"
     }
   },
-  "baseInfo": {
-    "pageTitle": "Base Information",
-    "formTitle": "Base Information Form",
-    "list": "Base Info List",
-    "add": "Add Base Info",
-    "edit": "Edit Base Info",
-    "delete": "Delete Base Info",
-    "details": "Base Info Details",
-    "header": "Info Header",
-    "title": "Title",
-    "code": "Code",
-    "description": "Description",
-    "selectHeader": "Select Header",
-    "headers": {
-      "list": "Headers List",
-      "add": "Add Header",
-      "edit": "Edit Header",
-      "delete": "Delete Header"
-    },
-    "validation": {
-      "titleRequired": "Title is required",
-      "codeRequired": "Code is required",
-      "headerRequired": "Header is required"
-    },
-    "messages": {
-      "saveSuccess": "Base info saved successfully",
-      "updateSuccess": "Base info updated successfully",
-      "deleteSuccess": "Base info deleted successfully",
-      "deleteConfirm": "Are you sure you want to delete this base info?",
-      "headerSaveSuccess": "Header saved successfully",
-      "headerDeleteSuccess": "Header deleted successfully"
-    }
-  },
   "baseInfoHeader": {
     "pageTitle": "Base Information Headers",
+    "formTitle": "Manage Base Info Header",
+    "total": "Headers",
+    "searchPlaceholder": "Search by code, title, description...",
+    "gridView": "Grid View",
+    "tableView": "Table View",
+    "addNew": "Add New Header",
+    "noDescription": "No description available.",
     "viewItems": "View Items",
-    "formTitle": "Header Form"
+    "code": "Header Code",
+    "title": "Header Title",
+    "description": "Description"
   },
-  "BASE_INFO_HEADER": {
-    "PAGE_TITLE": "Base Information Headers",
-    "FORM_TITLE": "Base Info Header Form",
-    "CODE": "Header Code",
-    "TITLE": "Header Title",
-    "DESCRIPTION": "Description",
-    "VIEW_ITEMS": "View Items"
-  },
-  "BASE_INFO": {
-    "PAGE_TITLE": "Base Information Items",
-    "FORM_TITLE": "Base Info Item Form",
-    "CODE": "Item Code",
-    "TITLE": "Item Title",
-    "DESCRIPTION": "Description"
+  "baseInfo": {
+    "pageTitle": "Base Information",
+    "formTitle": "Manage Base Information",
+    "code": "Code",
+    "title": "Title",
+    "description": "Description"
   },
   "location": {
-    "pageTitle": "Location Management",
-    "formTitle": "Location Form",
-    "rootTitle": "Root Locations",
-    "list": "Locations List",
-    "add": "Add New Location",
-    "edit": "Edit Location",
-    "delete": "Delete Location",
-    "details": "Location Details",
-    "title": "Location Title",
     "code": "Location Code",
-    "parent": "Parent Location",
+    "title": "Location Title",
     "type": "Location Type",
-    "enabled": "Enabled",
-    "root": "Root Locations",
-    "childLocations": "Child Locations",
+    "enabled": "Enabled Status",
+    "page_title": "Location Management",
+    "root_title": "Location Tree Structure",
+    "form_title": "Location Details Form",
     "types": {
       "continent": "Continent",
       "country": "Country",
-      "province": "Province/State"
-    },
-    "validation": {
-      "titleRequired": "Location title is required",
-      "codeRequired": "Location code is required",
-      "typeRequired": "Location type is required"
-    },
-    "messages": {
-      "saveSuccess": "Location saved successfully",
-      "updateSuccess": "Location updated successfully",
-      "deleteSuccess": "Location deleted successfully",
-      "deleteConfirm": "Are you sure you want to delete this location?",
-      "deleteError": "Cannot delete location with child locations"
-    }
-  },
-  "LOCATION": {
-    "PAGE_TITLE": "Location Management",
-    "FORM_TITLE": "Location Form",
-    "ROOT_TITLE": "World Locations Tree",
-    "ENABLED": "Enabled",
-    "TYPES": {
-      "CONTINENT": "Continent",
-      "COUNTRY": "Country",
-      "PROVINCE": "Province/State"
+      "province": "Province"
     }
   },
   "ROLE": {
