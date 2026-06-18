@@ -18,19 +18,19 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           storage.remove(STORAGE_KEYS.TOKEN);
           storage.remove(STORAGE_KEYS.USER);
           router.navigate(['/auth/login']);
-          notification.error('ERRORS.SESSION_EXPIRED');
+          notification.error('errors.session_expired');
           break;
         case error.status === 403:
-          notification.error('ERRORS.FORBIDDEN');
+          notification.error('errors.forbidden');
           break;
         case error.status === 0:
-          notification.error('ERRORS.NETWORK_ERROR');
+          notification.error('errors.network_error');
           break;
         case error.status >= 500:
-          notification.error('ERRORS.SERVER_ERROR');
+          notification.error('errors.server_error');
           break;
         default:
-          notification.error('ERRORS.GENERIC');
+          notification.error('errors.generic');
       }
       return throwError(() => error);
     }),

@@ -5,7 +5,8 @@ import { DynamicFormComponent } from '../../../../shared/components/dynamic-form
 import { BaseCrudPage } from '../../../../shared/components/crud-page/base-crud-page';
 import { AirplaneApiService } from '../../../../core/services/api/airplane-api.service';
 import { AirplaneDto } from '../../../../core/models/airplane.model';
-import { AIRPLANE_COLUMNS, AIRPLANE_FIELDS } from '../../airplanes.config';
+import { AIRPLANE_COLUMNS, getAirplaneFields } from '../../airplanes.config';
+import { BaseInfoApiService } from '../../../../core/services/api/base-info-api.service';
 
 @Component({
   selector: 'app-airplane-list',
@@ -15,7 +16,8 @@ import { AIRPLANE_COLUMNS, AIRPLANE_FIELDS } from '../../airplanes.config';
 })
 export class AirplaneListComponent extends BaseCrudPage<AirplaneDto, string> {
   protected api = inject(AirplaneApiService);
+  private baseInfoApi = inject(BaseInfoApiService);
   columns = AIRPLANE_COLUMNS;
-  fields = AIRPLANE_FIELDS;
-  formTitle = 'AIRPLANE.FORM_TITLE';
+  fields = getAirplaneFields(this.baseInfoApi);
+  formTitle = 'airplane.form_title';
 }

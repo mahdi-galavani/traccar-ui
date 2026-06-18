@@ -1,41 +1,41 @@
-import { inject } from '@angular/core';
 import { CrudColumn, FieldConfig } from '../../core/models/base/crud-field.model';
 import { BaseInfoApiService } from '../../core/services/api/base-info-api.service';
 import { BASE_INFO_HEADER_CODE } from '../../shared/constants/app.constants';
 
 export const AIRPLANE_COLUMNS: CrudColumn[] = [
-  { key: 'register', label: 'AIRPLANE.REGISTER' },
-  { key: 'type.title', label: 'AIRPLANE.TYPE' },
-  { key: 'ownership.title', label: 'AIRPLANE.OWNERSHIP' },
-  { key: 'seatStyle.title', label: 'AIRPLANE.SEAT_STYLE' },
+  { key: 'register', label: 'airplane.register' },
+  { key: 'type.title', label: 'airplane.type' },
+  { key: 'ownership.title', label: 'airplane.ownership' },
+  { key: 'seatStyle.title', label: 'airplane.seat_style' },
 ];
 
-export const AIRPLANE_FIELDS: FieldConfig[] = [
-  { key: 'register', label: 'AIRPLANE.REGISTER', type: 'text', required: true },
+// تبدیل به یک تابع که سرویس اطلاعات پایه را به عنوان ورودی دریافت می‌کند
+export const getAirplaneFields = (baseInfoApi: BaseInfoApiService): FieldConfig[] => [
+  { key: 'register', label: 'airplane.register', type: 'text', required: true },
   {
     key: 'type',
-    label: 'AIRPLANE.TYPE',
+    label: 'airplane.type',
     type: 'select',
     required: true,
-    loadOptions: () => inject(BaseInfoApiService).loadOptionsByHeaderCode(BASE_INFO_HEADER_CODE.AIRPLANE_TYPE),
+    loadOptions: () => baseInfoApi.loadOptionsByHeaderCode(BASE_INFO_HEADER_CODE.AIRPLANE_TYPE),
     fromDto: (dto) => dto?.type?.id ?? null,
     toDto: (id) => (id ? { id } : null),
   },
   {
     key: 'ownership',
-    label: 'AIRPLANE.OWNERSHIP',
+    label: 'airplane.ownership',
     type: 'select',
     required: true,
-    loadOptions: () => inject(BaseInfoApiService).loadOptionsByHeaderCode(BASE_INFO_HEADER_CODE.AIRPLANE_OWNERSHIP),
+    loadOptions: () => baseInfoApi.loadOptionsByHeaderCode(BASE_INFO_HEADER_CODE.AIRPLANE_OWNERSHIP),
     fromDto: (dto) => dto?.ownership?.id ?? null,
     toDto: (id) => (id ? { id } : null),
   },
   {
     key: 'seatStyle',
-    label: 'AIRPLANE.SEAT_STYLE',
+    label: 'airplane.seat_style',
     type: 'select',
     required: true,
-    loadOptions: () => inject(BaseInfoApiService).loadOptionsByHeaderCode(BASE_INFO_HEADER_CODE.SEAT_STYLE),
+    loadOptions: () => baseInfoApi.loadOptionsByHeaderCode(BASE_INFO_HEADER_CODE.SEAT_STYLE),
     fromDto: (dto) => dto?.seatStyle?.id ?? null,
     toDto: (id) => (id ? { id } : null),
   },

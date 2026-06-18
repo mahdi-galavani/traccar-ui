@@ -66,36 +66,36 @@
     "date": "لطفاً یک تاریخ معتبر وارد کنید",
     "time": "لطفاً یک زمان معتبر وارد کنید"
   },
-  "AIRPLANE": {
-    "PAGE_TITLE": "مدیریت هواپیماها",
-    "LIST": "لیست هواپیماها",
-    "ADD": "افزودن هواپیمای جدید",
-    "EDIT": "ویرایش هواپیما",
-    "DELETE": "حذف هواپیما",
-    "DETAILS": "جزئیات هواپیما",
-    "REGISTER": "شماره ثبت",
-    "SEAT_STYLE": "چیدمان صندلی‌ها",
-    "OWNERSHIP": "نوع مالکیت",
-    "TYPE": "نوع هواپیما",
-    "MODEL": "مدل",
-    "MANUFACTURER": "سازنده",
-    "CAPACITY": "ظرفیت",
-    "YEAR_OF_MANUFACTURE": "سال ساخت",
-    "STATUS": "وضعیت هواپیما",
-    "SELECT_AIRPLANE": "انتخاب هواپیما",
-    "FORM_TITLE": "فرم هواپیما",
-    "CANCEL": "انصراف",
-    "SAVE": "ذخیره",
-    "VALIDATION": {
-      "REGISTER_REQUIRED": "شماره ثبت الزامی است",
-      "TYPE_REQUIRED": "نوع هواپیما الزامی است",
-      "SEAT_STYLE_REQUIRED": "چیدمان صندلی‌ها الزامی است"
+  "airplane": {
+    "page_title": "مدیریت هواپیماها",
+    "list": "لیست هواپیماها",
+    "add": "افزودن هواپیمای جدید",
+    "edit": "ویرایش هواپیما",
+    "delete": "حذف هواپیما",
+    "details": "جزئیات هواپیما",
+    "register": "شماره ثبت",
+    "seat_style": "چیدمان صندلی‌ها",
+    "ownership": "نوع مالکیت",
+    "type": "نوع هواپیما",
+    "model": "مدل",
+    "manufacturer": "سازنده",
+    "capacity": "ظرفیت",
+    "year_of_manufacture": "سال ساخت",
+    "status": "وضعیت هواپیما",
+    "select_airplane": "انتخاب هواپیما",
+    "form_title": "فرم اطلاعات هواپیما",
+    "cancel": "انصراف",
+    "save": "ذخیره",
+    "validation": {
+      "register_required": "شماره ثبت الزامی است",
+      "type_required": "نوع هواپیما الزامی است",
+      "seat_style_required": "چیدمان صندلی‌ها الزامی است"
     },
-    "MESSAGES": {
-      "SAVE_SUCCESS": "هواپیما با موفقیت ذخیره شد",
-      "UPDATE_SUCCESS": "هواپیما با موفقیت به‌روزرسانی شد",
-      "DELETE_SUCCESS": "هواپیما با موفقیت حذف شد",
-      "DELETE_CONFIRM": "آیا از حذف این هواپیما اطمینان دارید؟"
+    "messages": {
+      "save_success": "هواپیما با موفقیت ذخیره شد",
+      "update_success": "هواپیما با موفقیت به‌روزرسانی شد",
+      "delete_success": "هواپیما با موفقیت حذف شد",
+      "delete_confirm": "آیا از حذف این هواپیما اطمینان دارید؟"
     }
   },
   "airport": {
@@ -161,33 +161,33 @@
       "province": "استان"
     }
   },
-  "ROLE": {
-    "PAGE_TITLE": "مدیریت نقش‌ها",
-    "FORM_TITLE": "فرم نقش",
-    "LIST": "لیست نقش‌ها",
-    "ADD": "افزودن نقش جدید",
-    "EDIT": "ویرایش نقش",
-    "DELETE": "حذف نقش",
-    "DETAILS": "جزئیات نقش",
-    "CODE": "کد نقش",
-    "TITLE": "عنوان نقش",
-    "PERMISSIONS": "دسترسی‌ها",
-    "USERS": "کاربران دارای این نقش",
-    "VALIDATION": {
-      "CODE_REQUIRED": "کد نقش الزامی است",
-      "TITLE_REQUIRED": "عنوان نقش الزامی است"
+  "role": {
+    "page_title": "مدیریت نقش‌ها",
+    "form_title": "فرم نقش",
+    "list": "لیست نقش‌ها",
+    "add": "افزودن نقش جدید",
+    "edit": "ویرایش نقش",
+    "delete": "حذف نقش",
+    "details": "جزئیات نقش",
+    "code": "کد نقش",
+    "title": "عنوان نقش",
+    "permissions": "دسترسی‌ها",
+    "users": "کاربران دارای این نقش",
+    "validation": {
+      "code_required": "کد نقش الزامی است",
+      "title_required": "عنوان نقش الزامی است"
     },
-    "MESSAGES": {
-      "SAVE_SUCCESS": "نقش با موفقیت ذخیره شد",
-      "UPDATE_SUCCESS": "نقش با موفقیت به‌روزرسانی شد",
-      "DELETE_SUCCESS": "نقش با موفقیت حذف شد",
-      "DELETE_CONFIRM": "آیا از حذف این نقش اطمینان دارید؟",
-      "CANNOT_DELETE": "امکان حذف نقش‌های اختصاص داده شده به کاربر وجود ندارد"
+    "messages": {
+      "save_success": "نقش با موفقیت ذخیره شد",
+      "update_success": "نقش با موفقیت به‌روزرسانی شد",
+      "delete_success": "نقش با موفقیت حذف شد",
+      "delete_confirm": "آیا از حذف این نقش اطمینان دارید؟",
+      "cannot_delete": "امکان حذف نقش‌های اختصاص داده شده به کاربر وجود ندارد"
     }
   },
   "user": {
-    "pageTitle": "مدیریت کاربران",
-    "formTitle": "فرم کاربر",
+    "page_title": "مدیریت کاربران",
+    "form_title": "فرم اطلاعات کاربر",
     "list": "لیست کاربران",
     "add": "افزودن کاربر جدید",
     "edit": "ویرایش کاربر",
@@ -195,28 +195,27 @@
     "details": "جزئیات کاربر",
     "username": "نام کاربری",
     "password": "رمز عبور",
-    "newPassword": "رمز عبور جدید",
-    "confirmPassword": "تکرار رمز عبور",
+    "new_password": "رمز عبور جدید",
+    "confirm_password": "تکرار رمز عبور",
     "enabled": "حساب کاربری فعال",
     "roles": "نقش‌های کاربر",
-    "assignRole": "اختصاص نقش",
-    "removeRole": "حذف نقش",
+    "assign_role": "اختصاص نقش",
+    "remove_role": "حذف نقش",
     "person": "شخص مرتبط",
-    "selectPerson": "انتخاب شخص",
+    "select_person": "انتخاب شخص",
+    "password_placeholder": "برای عدم تغییر، خالی بگذارید",
     "validation": {
-      "usernameRequired": "نام کاربری الزامی است",
-      "passwordRequired": "رمز عبور الزامی است",
-      "passwordsMatch": "رمز عبور با تکرار آن مطابقت ندارد",
-      "usernameExists": "این نام کاربری قبلاً ثبت شده است"
+      "username_required": "نام کاربری الزامی است",
+      "password_required": "رمز عبور الزامی است",
+      "passwords_match": "رمز عبور با تکرار آن مطابقت ندارد",
+      "username_exists": "این نام کاربری قبلاً ثبت شده است"
     },
     "messages": {
-      "saveSuccess": "کاربر با موفقیت ذخیره شد",
-      "updateSuccess": "کاربر با موفقیت به‌روزرسانی شد",
-      "deleteSuccess": "کاربر با موفقیت حذف شد",
-      "deleteConfirm": "آیا از حذف این کاربر اطمینان دارید؟"
-    },
-    "password_placeholder": "برای عدم تغییر، خالی بگذارید",
-    "form_title": "فرم کاربر"
+      "save_success": "کاربر با موفقیت ذخیره شد",
+      "update_success": "کاربر با موفقیت به‌روزرسانی شد",
+      "delete_success": "کاربر با موفقیت حذف شد",
+      "delete_confirm": "آیا از حذف این کاربر اطمینان دارید؟"
+    }
   },
   "MENU": {
     "USERS": "کاربران",
@@ -390,7 +389,10 @@
     "saveError": "خطا در ذخیره اطلاعات",
     "loadError": "خطا در بارگذاری اطلاعات",
     "deleteError": "خطا در حذف اطلاعات",
-    "sessionExpired": "نشست شما منقضی شده است. لطفاً مجدداً وارد شوید"
+    "session_expired": "نشست کاربری شما منقضی شده است. لطفا دوباره وارد شوید.",
+    "network_error": "خطا در اتصال به شبکه! لطفا وضعیت اینترنت خود را بررسی کنید.",
+    "server_error": "خطایی در سمت سرور رخ داده است. لطفا بعدا تلاش کنید.",
+    "generic": "خطایی نامشخص رخ داده است."
   },
   "buttons": {
     "save": "ذخیره",

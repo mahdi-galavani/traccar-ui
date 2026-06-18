@@ -17,5 +17,5 @@ export class RoleListComponent extends BaseCrudPage<AppRoleDto, string> {
   protected api = inject(AppRoleApiService);
   columns = ROLE_COLUMNS;
   fields = ROLE_FIELDS;
-  formTitle = 'ROLE.FORM_TITLE';
+  formTitle = 'role.form_title';
 }

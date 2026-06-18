@@ -64,36 +64,36 @@
     "date": "Please enter a valid date",
     "time": "Please enter a valid time"
   },
-  "AIRPLANE": {
-    "PAGE_TITLE": "Airplane Management",
-    "LIST": "Airplane List",
-    "ADD": "Add New Airplane",
-    "EDIT": "Edit Airplane",
-    "DELETE": "Delete Airplane",
-    "DETAILS": "Airplane Details",
-    "REGISTER": "Registration Number",
-    "SEAT_STYLE": "Seat Configuration",
-    "OWNERSHIP": "Ownership Type",
-    "TYPE": "Airplane Type",
-    "MODEL": "Model",
-    "MANUFACTURER": "Manufacturer",
-    "CAPACITY": "Capacity",
-    "YEAR_OF_MANUFACTURE": "Manufacture Year",
-    "STATUS": "Status",
-    "SELECT_AIRPLANE": "Select Airplane",
-    "FORM_TITLE": "Airplane Form",
-    "CANCEL": "Cancel",
-    "SAVE": "Save",
-    "VALIDATION": {
-      "REGISTER_REQUIRED": "Registration number is required",
-      "TYPE_REQUIRED": "Airplane type is required",
-      "SEAT_STYLE_REQUIRED": "Seat configuration is required"
+  "airplane": {
+    "page_title": "Airplane Management",
+    "list": "Airplane List",
+    "add": "Add New Airplane",
+    "edit": "Edit Airplane",
+    "delete": "Delete Airplane",
+    "details": "Airplane Details",
+    "register": "Registration Number",
+    "seat_style": "Seat Configuration",
+    "ownership": "Ownership Type",
+    "type": "Airplane Type",
+    "model": "Model",
+    "manufacturer": "Manufacturer",
+    "capacity": "Capacity",
+    "year_of_manufacture": "Manufacture Year",
+    "status": "Status",
+    "select_airplane": "Select Airplane",
+    "form_title": "Airplane Form",
+    "cancel": "Cancel",
+    "save": "Save",
+    "validation": {
+      "register_required": "Registration number is required",
+      "type_required": "Airplane type is required",
+      "seat_style_required": "Seat configuration is required"
     },
-    "MESSAGES": {
-      "SAVE_SUCCESS": "Airplane saved successfully",
-      "UPDATE_SUCCESS": "Airplane updated successfully",
-      "DELETE_SUCCESS": "Airplane deleted successfully",
-      "DELETE_CONFIRM": "Are you sure you want to delete this airplane?"
+    "messages": {
+      "save_success": "Airplane saved successfully",
+      "update_success": "Airplane updated successfully",
+      "delete_success": "Airplane deleted successfully",
+      "delete_confirm": "Are you sure you want to delete this airplane?"
     }
   },
   "airport": {
@@ -159,33 +159,33 @@
       "province": "Province"
     }
   },
-  "ROLE": {
-    "PAGE_TITLE": "Role Management",
-    "FORM_TITLE": "Role Form",
-    "LIST": "Roles List",
-    "ADD": "Add New Role",
-    "EDIT": "Edit Role",
-    "DELETE": "Delete Role",
-    "DETAILS": "Role Details",
-    "CODE": "Role Code",
-    "TITLE": "Role Title",
-    "PERMISSIONS": "Permissions",
-    "USERS": "Users with this Role",
-    "VALIDATION": {
-      "CODE_REQUIRED": "Role code is required",
-      "TITLE_REQUIRED": "Role title is required"
+  "role": {
+    "page_title": "Role Management",
+    "form_title": "Role Form",
+    "list": "Roles List",
+    "add": "Add New Role",
+    "edit": "Edit Role",
+    "delete": "Delete Role",
+    "details": "Role Details",
+    "code": "Role Code",
+    "title": "Role Title",
+    "permissions": "Permissions",
+    "users": "Users with this Role",
+    "validation": {
+      "code_required": "Role code is required",
+      "title_required": "Role title is required"
     },
-    "MESSAGES": {
-      "SAVE_SUCCESS": "Role saved successfully",
-      "UPDATE_SUCCESS": "Role updated successfully",
-      "DELETE_SUCCESS": "Role deleted successfully",
-      "DELETE_CONFIRM": "Are you sure you want to delete this role?",
-      "CANNOT_DELETE": "Cannot delete role assigned to users"
+    "messages": {
+      "save_success": "Role saved successfully",
+      "update_success": "Role updated successfully",
+      "delete_success": "Role deleted successfully",
+      "delete_confirm": "Are you sure you want to delete this role?",
+      "cannot_delete": "Cannot delete role assigned to users"
     }
   },
   "user": {
-    "pageTitle": "User Management",
-    "formTitle": "User Form",
+    "page_title": "User Management",
+    "form_title": "User Form",
     "list": "Users List",
     "add": "Add New User",
     "edit": "Edit User",
@@ -193,27 +193,27 @@
     "details": "User Details",
     "username": "Username",
     "password": "Password",
-    "newPassword": "New Password",
-    "confirmPassword": "Confirm Password",
+    "new_password": "New Password",
+    "confirm_password": "Confirm Password",
     "enabled": "Account Enabled",
     "roles": "User Roles",
-    "assignRole": "Assign Role",
-    "removeRole": "Remove Role",
+    "assign_role": "Assign Role",
+    "remove_role": "Remove Role",
     "person": "Associated Person",
-    "selectPerson": "Select Person",
+    "select_person": "Select Person",
+    "password_placeholder": "Leave empty to keep unchanged",
     "validation": {
-      "usernameRequired": "Username is required",
-      "passwordRequired": "Password is required",
-      "passwordsMatch": "Passwords do not match",
-      "usernameExists": "Username already exists"
+      "username_required": "Username is required",
+      "password_required": "Password is required",
+      "passwords_match": "Passwords do not match",
+      "username_exists": "Username already exists"
     },
     "messages": {
-      "saveSuccess": "User saved successfully",
-      "updateSuccess": "User updated successfully",
-      "deleteSuccess": "User deleted successfully",
-      "deleteConfirm": "Are you sure you want to delete this user?"
-    },
-    "form_title": "User Form"
+      "save_success": "User saved successfully",
+      "update_success": "User updated successfully",
+      "delete_success": "User deleted successfully",
+      "delete_confirm": "Are you sure you want to delete this user?"
+    }
   },
   "MENU": {
     "USERS": "Users",
@@ -389,7 +389,11 @@
     "saveError": "Error saving data",
     "loadError": "Error loading data",
     "deleteError": "Error deleting data",
-    "sessionExpired": "Your session has expired. Please login again"
+    "sessionExpired": "Your session has expired. Please login again",
+    "session_expired": "Your session has expired. Please log in again.",
+    "network_error": "Network error! Please check your internet connection.",
+    "server_error": "An internal server error occurred. Please try again later.",
+    "generic": "An unexpected error occurred."
   },
   "buttons": {
     "save": "Save",

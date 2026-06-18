@@ -20,7 +20,7 @@ export class BaseInfoApiService extends BaseApiService<BaseInfoDto, number> {
   loadOptionsByHeaderCode(headerCode: string): Observable<SelectOption[]> {
     return this.headerApi.load().pipe(
       switchMap((headers) => {
-        const header = headers.find((h) => h.code === headerCode);
+        const header = headers.find((h) => h.title === headerCode);
         if (!header?.id) {
           return of<SelectOption[]>([]);
         }

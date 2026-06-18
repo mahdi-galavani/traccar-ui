@@ -17,7 +17,7 @@ export class UserListComponent extends BaseCrudPage<AppUserDto, string> {
   protected api = inject(AppUserApiService);
   columns = USER_COLUMNS;
   fields = USER_FIELDS;
-  formTitle = 'USER.FORM_TITLE';
+  formTitle = 'user.form_title'; // اصلاح به حروف کوچک
 
   override onSave(dto: AppUserDto): void {
     if (this.selected() && !dto.password) {

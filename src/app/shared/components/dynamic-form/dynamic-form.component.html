@@ -39,7 +39,7 @@
               <input [id]="field.key" type="number" [formControlName]="field.key" />
             }
             @default {
-              <input [id]="field.key" type="text" [formControlName]="field.key" [placeholder]="field.placeholder ?? ''" />
+              <input [id]="field.key" type="text" [formControlName]="field.key" [placeholder]="field.placeholder ?? '' | translate" />
             }
           }
 
