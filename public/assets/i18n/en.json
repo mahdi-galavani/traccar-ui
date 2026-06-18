@@ -45,12 +45,15 @@
   },
   "auth": {
     "login": {
-      "title": "Sign In"
+      "title": "Fleet & Flight Control Center",
+      "welcome_back": "Sign in to access your operational dashboard",
+      "visual_title": "Integrated Airport & Fleet Operations Management",
+      "visual_subtitle": "Advanced real-time tracking for aircraft statuses, infrastructure utilities, and crew authority management."
     },
-    "username": "Username",
-    "password": "Password",
-    "loginButton": "Login",
-    "logout": "Logout"
+    "username": "System Username",
+    "password": "Security Password",
+    "loginButton": "Establish Secure Connection",
+    "invalid_credentials": "The username or password provided is incorrect"
   },
   "validation": {
     "required": "This field is required",
@@ -223,8 +226,6 @@
     "locations": "Locations",
     "base_info": "Base Info"
   },
-
-
   "person": {
     "title": "Person Management",
     "list": "Persons List",
