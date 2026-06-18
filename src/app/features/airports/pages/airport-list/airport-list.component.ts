@@ -4,8 +4,9 @@ import { DataTableComponent } from '../../../../shared/components/data-table/dat
 import { DynamicFormComponent } from '../../../../shared/components/dynamic-form/dynamic-form.component';
 import { BaseCrudPage } from '../../../../shared/components/crud-page/base-crud-page';
 import { AirportApiService } from '../../../../core/services/api/airport-api.service';
+import { LocationApiService } from '../../../../core/services/api/location-api.service'; // 👈 اضافه شد
 import { AirportDto } from '../../../../core/models/airport.model';
-import { AIRPORT_COLUMNS, AIRPORT_FIELDS } from '../../airports.config';
+import { AIRPORT_COLUMNS, getAirportFields } from '../../airports.config'; // 👈 تغییر نام متد فیلدها
 
 @Component({
   selector: 'app-airport-list',
@@ -15,7 +16,12 @@ import { AIRPORT_COLUMNS, AIRPORT_FIELDS } from '../../airports.config';
 })
 export class AirportListComponent extends BaseCrudPage<AirportDto, string> {
   protected api = inject(AirportApiService);
+  private locationApi = inject(LocationApiService); // 👈 تزریق سرویس مکان‌ها در Injection Context معتبر
+
   columns = AIRPORT_COLUMNS;
-  fields = AIRPORT_FIELDS;
-  formTitle = 'AIRPORT.FORM_TITLE';
+
+  // 👈 مقداردهی فیلدها با پاس دادن سرویس تزریق شده
+  fields = getAirportFields(this.locationApi);
+
+  formTitle = 'airport.form_title';
 }

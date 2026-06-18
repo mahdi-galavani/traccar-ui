@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -13,7 +13,7 @@ import { take } from 'rxjs';
   styleUrl: './dynamic-form.component.css',
 })
 export class DynamicFormComponent<T extends Record<string, any> = Record<string, any>>
-  implements OnInit, OnChanges
+  implements OnChanges
 {
   @Input() fields: FieldConfig[] = [];
   @Input() model: Partial<T> | null = null;
@@ -24,12 +24,15 @@ export class DynamicFormComponent<T extends Record<string, any> = Record<string,
   form = new FormGroup<Record<string, FormControl>>({});
   readonly optionsByKey = signal<Record<string, SelectOption[]>>({});
 
-  ngOnInit(): void {
-    this.loadDynamicOptions();
-  }
+  // 👈 نگهداری متن سرچ برای هر فیلد به صورت جداگانه
+  readonly searchQueryByKey = signal<Record<string, string>>({});
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.buildForm();
+
+    if (changes['fields'] && this.fields?.length > 0) {
+      this.loadDynamicOptions();
+    }
   }
 
   private buildForm(): void {
@@ -54,9 +57,14 @@ export class DynamicFormComponent<T extends Record<string, any> = Record<string,
     for (const field of this.fields) {
       if (field.type === 'select' && field.loadOptions) {
         field.loadOptions()
-          .pipe(take(1)) // <--- اضافه کنید تا پس از یک‌بار دریافت دیتا، درخواست فوراً بسته شود
-          .subscribe((options) => {
-            this.optionsByKey.update((map) => ({ ...map, [field.key]: options }));
+          .pipe(take(1))
+          .subscribe({
+            next: (options) => {
+              this.optionsByKey.update((map) => ({ ...map, [field.key]: options }));
+            },
+            error: (err) => {
+              console.error(`Error loading options for field ${field.key}:`, err);
+            }
           });
       }
     }
@@ -64,6 +72,27 @@ export class DynamicFormComponent<T extends Record<string, any> = Record<string,
 
   optionsFor(field: FieldConfig): SelectOption[] {
     return field.options ?? this.optionsByKey()[field.key] ?? [];
+  }
+
+  // 👈 تابع فیلترکننده داینامیک بر اساس متن تایپ شده کاربر
+  filteredOptionsFor(field: FieldConfig): SelectOption[] {
+    const allOptions = this.optionsFor(field);
+    const query = (this.searchQueryByKey()[field.key] || '').toLowerCase().trim();
+
+    if (!query) {
+      return allOptions;
+    }
+
+    return allOptions.filter(option =>
+      option.label.toLowerCase().includes(query) ||
+      (option.value && String(option.value).toLowerCase().includes(query))
+    );
+  }
+
+  // 👈 رویداد تغییر متن سرچ باکس
+  onSearchOptions(fieldKey: string, event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.searchQueryByKey.update(map => ({ ...map, [fieldKey]: inputElement.value }));
   }
 
   isInvalid(key: string): boolean {

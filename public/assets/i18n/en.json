@@ -96,32 +96,32 @@
       "DELETE_CONFIRM": "Are you sure you want to delete this airplane?"
     }
   },
-  "AIRPORT": {
-    "PAGE_TITLE": "Airport Management",
-    "LIST": "Airports List",
-    "ADD": "Add New Airport",
-    "EDIT": "Edit Airport",
-    "DELETE": "Delete Airport",
-    "DETAILS": "Airport Details",
-    "CODE": "Airport Code",
-    "LOCATION": "Location",
-    "NAME": "Airport Name",
-    "CITY": "City",
-    "COUNTRY": "Country",
-    "TERMINAL": "Number of Terminals",
-    "RUNWAY": "Number of Runways",
-    "TIMEZONE": "Timezone",
-    "SELECT_AIRPORT": "Select Airport",
-    "FORM_TITLE": "Airport Form",
-    "VALIDATION": {
-      "CODE_REQUIRED": "Airport code is required",
-      "LOCATION_REQUIRED": "Location is required"
+  "airport": {
+    "page_title": "Airport Management",
+    "list": "Airports List",
+    "add": "Add New Airport",
+    "edit": "Edit Airport",
+    "delete": "Delete Airport",
+    "details": "Airport Details",
+    "code": "Airport Code",
+    "location": "Location",
+    "name": "Airport Name",
+    "city": "City",
+    "country": "Country",
+    "terminal": "Number of Terminals",
+    "runway": "Number of Runways",
+    "timezone": "Timezone",
+    "select_airport": "Select Airport",
+    "form_title": "Airport Form",
+    "validation": {
+      "code_required": "Airport code is required",
+      "location_required": "Location is required"
     },
-    "MESSAGES": {
-      "SAVE_SUCCESS": "Airport saved successfully",
-      "UPDATE_SUCCESS": "Airport updated successfully",
-      "DELETE_SUCCESS": "Airport deleted successfully",
-      "DELETE_CONFIRM": "Are you sure you want to delete this airport?"
+    "messages": {
+      "save_success": "Airport saved successfully",
+      "update_success": "Airport updated successfully",
+      "delete_success": "Airport deleted successfully",
+      "delete_confirm": "Are you sure you want to delete this airport?"
     }
   },
   "baseInfoHeader": {
