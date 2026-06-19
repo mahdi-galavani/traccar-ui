@@ -1,0 +1,68 @@
+<div class="page-header">
+  <h1 class="page-title">{{ 'FLEET_SCHEDULE.PAGE_TITLE' | translate }}</h1>
+  <button type="button" class="btn-primary" (click)="onAdd()">
+    {{ 'COMMON.ADD' | translate }}
+  </button>
+</div>
+
+@if (loading()) {
+  <app-loading-spinner />
+} @else if (!items().length) {
+  <app-empty-state message="FLEET_SCHEDULE.NO_DATA" />
+} @else {
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+      <tr>
+        <th>{{ 'FLEET_SCHEDULE.TYPE' | translate }}</th>
+        <th>{{ 'FLEET_SCHEDULE.AIRPLANE' | translate }}</th>
+        <th>{{ 'FLEET_SCHEDULE.START_TIME' | translate }}</th>
+        <th>{{ 'FLEET_SCHEDULE.END_TIME' | translate }}</th>
+        <th>{{ 'FLEET_SCHEDULE.FLIGHT_NUMBER' | translate }}</th>
+        <th>{{ 'FLEET_SCHEDULE.STATUS' | translate }}</th>
+        <th class="actions-col">{{ 'COMMON.ACTIONS' | translate }}</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (item of items(); track item.id) {
+          <tr>
+            <td>
+              <span class="type-badge">
+                {{ TYPE_ICONS[item.type] }} {{ ('FLEET_SCHEDULE.TYPES.' + item.type) | translate }}
+              </span>
+            </td>
+            <td>{{ item.airplane?.id }}</td>
+            <td>{{ item.actualStartTime | date: 'yyyy/MM/dd HH:mm' }}</td>
+            <td>{{ item.actualEndTime | date: 'yyyy/MM/dd HH:mm' }}</td>
+            <td>{{ item.flight?.number ?? '-' }}</td>
+            <td>
+              <span class="status-badge" [class]="STATUS_COLORS[item.status]">
+                {{ ('FLEET_SCHEDULE.STATUSES.' + item.status) | translate }}
+              </span>
+            </td>
+            <td class="actions-col">
+              <button type="button" class="btn-icon" (click)="onEdit(item)">
+                {{ 'COMMON.EDIT' | translate }}
+              </button>
+              <button type="button" class="btn-icon btn-danger" (click)="onDelete(item)">
+                {{ 'COMMON.DELETE' | translate }}
+              </button>
+              <select
+                class="status-select"
+                [value]="item.status"
+                (change)="onStatusChange(item, $any($event.target).value)"
+              >
+                <option [value]="item.status" disabled>
+                  {{ ('FLEET_SCHEDULE.STATUSES.' + item.status) | translate }}
+                </option>
+                @for (s of statusOptions(item.status); track s) {
+                  <option [value]="s">{{ ('FLEET_SCHEDULE.STATUSES.' + s) | translate }}</option>
+                }
+              </select>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

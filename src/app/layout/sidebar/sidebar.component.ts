@@ -35,6 +35,7 @@ export class SidebarComponent {
     { titleKey: 'nav.airports', route: '/airports', icon: 'map-pin' },
     { titleKey: 'nav.locations', route: '/locations', icon: 'globe' },
     { titleKey: 'nav.baseInfo', route: '/base-info', icon: 'database' },
+    { titleKey: 'nav.fleetSchedule', route: '/fleet-schedule', icon: 'calendar' },
   ];
 
   toggleSidebar(): void {

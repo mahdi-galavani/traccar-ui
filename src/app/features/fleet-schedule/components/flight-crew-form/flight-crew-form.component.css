@@ -1,0 +1,75 @@
+.crew-section {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-top: 0.5rem;
+}
+
+.crew-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.crew-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.crew-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 0.75rem;
+  align-items: end;
+  margin-bottom: 0.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.field label {
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.field select {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.4rem;
+  font-size: 0.88rem;
+}
+
+.error {
+  font-size: 0.75rem;
+  color: #dc2626;
+}
+
+.btn-add-row {
+  border: 1px dashed #2563eb;
+  background: transparent;
+  color: #2563eb;
+  border-radius: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.btn-remove-row {
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: #fee2e2;
+  color: #dc2626;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.btn-remove-row:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
