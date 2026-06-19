@@ -1,13 +1,15 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FleetScheduleApiService } from '../../../../core/services/api/fleet-schedule-api.service';
 import { AirplaneApiService } from '../../../../core/services/api/airplane-api.service';
+import { AirportApiService } from '../../../../core/services/api/airport-api.service'; // 👈 استفاده از سرویس اصلی فرودگاه
 import { NotificationService } from '../../../../core/services/notification.service';
 import { FlightCrewFormComponent } from '../../components/flight-crew-form/flight-crew-form.component';
 import { SelectOption } from '../../../../core/models/base/crud-field.model';
+import { AirplaneDto } from '../../../../core/models/airplane.model';
 import {
   FleetScheduleDto,
   FleetScheduleStatus,
@@ -26,14 +28,20 @@ export class ScheduleFormComponent implements OnInit {
   private router = inject(Router);
   private api = inject(FleetScheduleApiService);
   private airplaneApi = inject(AirplaneApiService);
+  private airportApi = inject(AirportApiService); // 👈 تصحیح تزریق سرویس فرودگاه
   private notification = inject(NotificationService);
 
   readonly isEdit = signal(false);
   readonly loading = signal(false);
+
   readonly airplaneOptions = signal<SelectOption[]>([]);
+  readonly airportOptions = signal<SelectOption[]>([]); // گزینه‌های انتخاب فرودگاه
+
+  readonly allAirplanes = signal<AirplaneDto[]>([]);
+  readonly selectedAirplaneDetails = signal<AirplaneDto | null>(null);
 
   readonly TYPES: FleetScheduleType[] = ['FLIGHT', 'CHECK', 'DFDR'];
-  readonly STATUSES: FleetScheduleStatus[] = ['DRAFT', 'SCHEDULED', 'CANCELLED'];
+  private currentStatus: FleetScheduleStatus = 'DRAFT';
 
   form = new FormGroup({
     id: new FormControl<string | null>(null),
@@ -42,18 +50,13 @@ export class ScheduleFormComponent implements OnInit {
     actualStartTime: new FormControl<string | null>(null, Validators.required),
     actualEndTime: new FormControl<string | null>(null, Validators.required),
     type: new FormControl<FleetScheduleType | null>(null, Validators.required),
-    status: new FormControl<FleetScheduleStatus>('DRAFT', Validators.required),
 
     // فیلدهای اختصاصی پرواز
     flightNumber: new FormControl<string | null>(null),
     fromAirport: new FormControl<string | null>(null),
     toAirport: new FormControl<string | null>(null),
-    firstClassSeat: new FormControl<number | null>(null),
-    businessClassSeat: new FormControl<number | null>(null),
-    economicClassSeat: new FormControl<number | null>(null),
-    payload: new FormControl<number | null>(null),
     crew: new FormArray<FormGroup>([]),
-  });
+  }, { validators: this.airportRouteValidator }); // اعمال ولیدیتور سفارشی برای مبدا و مقصد
 
   get crewArray(): FormArray {
     return this.form.get('crew') as FormArray;
@@ -64,9 +67,22 @@ export class ScheduleFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // بارگذاری لیست هواپیماها
+    // 👈 بارگذاری فرودگاه‌ها بر اساس مدل و سرویس دقیق فرودگاه شما
+    this.airportApi.load().subscribe((airports) => {
+      this.airportOptions.set(
+        airports.map((a) => ({
+          // نمایش به صورت: (THR) تهران یا اگر لوکیشن نداشت فقط کد فرودگاه
+          label: a.location?.title ? `${a.location.title} (${a.code})` : (a.code ?? ''),
+          value: a.id
+        }))
+      );
+    });
+
+    // بارگذاری هواپیماها
     this.airplaneApi.load().subscribe((planes) => {
+      this.allAirplanes.set(planes);
       this.airplaneOptions.set(planes.map((p) => ({ label: p.register ?? p.id!, value: p.id })));
+      this.syncSelectedAirplaneDetails(this.form.get('airplane')?.value);
     });
 
     const id = this.route.snapshot.paramMap.get('id');
@@ -84,13 +100,38 @@ export class ScheduleFormComponent implements OnInit {
       this.addCrewIfEmpty();
     }
 
-    // لایو کنترل وضعیت ولیدیشن‌ها بر اساس نوع برنامه
+    this.form.get('airplane')?.valueChanges.subscribe((airplaneId) => {
+      this.syncSelectedAirplaneDetails(airplaneId);
+    });
+
     this.form.get('type')?.valueChanges.subscribe((type) => {
       this.updateFlightValidators(type);
     });
   }
 
+  // ولیدیتور سفارشی برای عدم یکسان بودن مبدا و مقصد
+  private airportRouteValidator(control: AbstractControl): ValidationErrors | null {
+    const from = control.get('fromAirport')?.value;
+    const to = control.get('toAirport')?.value;
+
+    if (from && to && from === to) {
+      return { sameAirports: true };
+    }
+    return null;
+  }
+
+  private syncSelectedAirplaneDetails(airplaneId: string | null | undefined): void {
+    if (!airplaneId) {
+      this.selectedAirplaneDetails.set(null);
+      return;
+    }
+    const match = this.allAirplanes().find(p => p.id === airplaneId);
+    this.selectedAirplaneDetails.set(match ?? null);
+  }
+
   private patchForm(dto: FleetScheduleDto): void {
+    this.currentStatus = dto.status!;
+
     this.form.patchValue({
       id: dto.id ?? null,
       version: dto.version ?? null,
@@ -98,15 +139,12 @@ export class ScheduleFormComponent implements OnInit {
       actualStartTime: dto.actualStartTime ? dto.actualStartTime.substring(0, 16) : null,
       actualEndTime: dto.actualEndTime ? dto.actualEndTime.substring(0, 16) : null,
       type: dto.type,
-      status: dto.status,
       flightNumber: dto.flight?.number ?? null,
       fromAirport: dto.flight?.from?.id ?? null,
       toAirport: dto.flight?.to?.id ?? null,
-      firstClassSeat: dto.flight?.firstClassSeat ?? null,
-      businessClassSeat: dto.flight?.businessClassSeat ?? null,
-      economicClassSeat: dto.flight?.economicClassSeat ?? null,
-      payload: dto.flight?.payload ?? null,
     });
+
+    this.syncSelectedAirplaneDetails(dto.airplane?.id);
 
     this.crewArray.clear();
     const existingCrew = dto.flight?.crew ?? [];
@@ -160,7 +198,6 @@ export class ScheduleFormComponent implements OnInit {
 
     const v = this.form.getRawValue();
 
-    // ساخت مدل کاملاً مطابق با ساختار FleetScheduleDto پروازی
     const dto: FleetScheduleDto = {
       id: v.id ?? undefined,
       version: v.version ?? undefined,
@@ -168,7 +205,7 @@ export class ScheduleFormComponent implements OnInit {
       actualStartTime: v.actualStartTime! + ':00',
       actualEndTime: v.actualEndTime! + ':00',
       type: v.type!,
-      status: v.status!,
+      status: this.currentStatus,
     };
 
     if (v.type === 'FLIGHT') {
@@ -176,13 +213,12 @@ export class ScheduleFormComponent implements OnInit {
         number: v.flightNumber!,
         from: { id: v.fromAirport! },
         to: { id: v.toAirport! },
-        firstClassSeat: v.firstClassSeat ?? undefined,
-        businessClassSeat: v.businessClassSeat ?? undefined,
-        economicClassSeat: v.economicClassSeat ?? undefined,
-        payload: v.payload ?? undefined,
-        // 💡 استفاده از explicit casting برای هماهنگی با تایپ‌های سخت‌گیرانه مدل پرواز
+        firstClassSeat: this.selectedAirplaneDetails()?.firstClassSeat ?? undefined,
+        businessClassSeat: this.selectedAirplaneDetails()?.businessClassSeat ?? undefined,
+        economicClassSeat: this.selectedAirplaneDetails()?.economicClassSeat ?? undefined,
+        payload: this.selectedAirplaneDetails()?.payload ?? undefined,
         crew: (v.crew as any[]).map((c) => ({
-          person: { id: c.personId } as any, // یا ساختار مدل شخص شما
+          person: { id: c.personId } as any,
           crewJob: { id: c.crewJobId } as any
         })),
       };

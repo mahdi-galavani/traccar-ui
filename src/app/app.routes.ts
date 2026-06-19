@@ -45,6 +45,13 @@ export const routes: Routes = [
             (m) => m.FLEET_SCHEDULE_ROUTES,
           ),
       },
+      {
+        path: 'fleet-timeline',
+        loadComponent: () =>
+          import('./features/fleet-timeline/fleet-timeline.component').then(
+            (m) => m.FleetTimelineComponent
+          ),
+      },
       { path: '**', redirectTo: 'users' },
     ],
   },

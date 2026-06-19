@@ -13,4 +13,9 @@ export interface AirplaneDto {
   seatStyle?: BaseInfoCodeDto;
   ownership?: BaseInfoCodeDto;
   type?: BaseInfoCodeDto;
+
+  firstClassSeat?: number;
+  businessClassSeat?: number;
+  economicClassSeat?: number;
+  payload?: number;
 }

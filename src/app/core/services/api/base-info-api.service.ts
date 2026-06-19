@@ -28,7 +28,17 @@ export class BaseInfoApiService extends BaseApiService<BaseInfoDto, number> {
           map((items) =>
             items
               .filter((item) => item.header?.id === header.id)
-              .map((item) => ({ label: item.title, value: item.id })),
+              .map((item) => {
+                // 💡 فرمت‌دهی زیبا برای لِیبل: اگر توضیحات بود داخل پرانتز می‌آید، در غیر این صورت فقط عنوان
+                const labelText = item.description
+                  ? `${item.title} (${item.description})`
+                  : (item.title ?? '');
+
+                return {
+                  label: labelText,
+                  value: item.id
+                };
+              }),
           ),
         );
       }),

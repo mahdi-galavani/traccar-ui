@@ -44,15 +44,6 @@
           </div>
 
           <div class="field">
-            <label>{{ 'fleet_schedule.status' | translate }}</label>
-            <select formControlName="status">
-              @for (s of STATUSES; track s) {
-                <option [value]="s">{{ ('fleet_schedule.statuses.' + s.toLowerCase()) | translate }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="field">
             <label>{{ 'fleet_schedule.start_time' | translate }}</label>
             <input type="datetime-local" formControlName="actualStartTime" />
             @if (isInvalid('actualStartTime')) {
@@ -69,11 +60,59 @@
           </div>
 
         </div>
+
+        @if (selectedAirplaneDetails()) {
+          <div class="airplane-details-panel">
+            <h3 class="panel-subtitle">{{ 'fleet_schedule.airplane_details' | translate }}</h3>
+            <div class="details-grid">
+              <div class="detail-item">
+                <span class="detail-label">{{ 'fleet_schedule.register' | translate }}:</span>
+                <span class="detail-value">{{ selectedAirplaneDetails()?.register ?? '-' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">{{ 'fleet_schedule.airplane_model' | translate }}:</span>
+                <span class="detail-value">{{ selectedAirplaneDetails()?.type?.title ?? '-' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">{{ 'fleet_schedule.seat_style' | translate }}:</span>
+                <span class="detail-value">{{ selectedAirplaneDetails()?.seatStyle?.title ?? '-' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">{{ 'fleet_schedule.ownership' | translate }}:</span>
+                <span class="detail-value">{{ selectedAirplaneDetails()?.ownership?.title ?? '-' }}</span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">{{ 'fleet_schedule.first_class' | translate }}:</span>
+                <span class="detail-value">{{ selectedAirplaneDetails()?.firstClassSeat ?? '0' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">{{ 'fleet_schedule.business_class' | translate }}:</span>
+                <span class="detail-value">{{ selectedAirplaneDetails()?.businessClassSeat ?? '0' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">{{ 'fleet_schedule.economic_class' | translate }}:</span>
+                <span class="detail-value">{{ selectedAirplaneDetails()?.economicClassSeat ?? '0' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">{{ 'fleet_schedule.payload' | translate }}:</span>
+                <span class="detail-value">{{ selectedAirplaneDetails()?.payload ?? '0' }} kg</span>
+              </div>
+            </div>
+          </div>
+        }
       </section>
 
       @if (isFlight) {
         <section class="form-section">
           <h2 class="section-title">{{ 'fleet_schedule.flight_info' | translate }}</h2>
+
+          @if (form.errors?.['sameAirports'] && (form.get('fromAirport')?.touched || form.get('toAirport')?.touched)) {
+            <div class="alert alert-danger" style="color: #d32f2f; background-color: #ffebee; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+              {{ 'validation.same_airports' | translate }}
+            </div>
+          }
+
           <div class="form-grid">
 
             <div class="field field-span-2">
@@ -86,8 +125,12 @@
 
             <div class="field">
               <label>{{ 'fleet_schedule.from' | translate }}</label>
-              <input type="text" formControlName="fromAirport"
-                     [placeholder]="'fleet_schedule.airport_code_placeholder' | translate" />
+              <select formControlName="fromAirport">
+                <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
+                @for (opt of airportOptions(); track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
               @if (isInvalid('fromAirport')) {
                 <span class="error">{{ 'validation.required' | translate }}</span>
               }
@@ -95,31 +138,15 @@
 
             <div class="field">
               <label>{{ 'fleet_schedule.to' | translate }}</label>
-              <input type="text" formControlName="toAirport"
-                     [placeholder]="'fleet_schedule.airport_code_placeholder' | translate" />
+              <select formControlName="toAirport">
+                <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
+                @for (opt of airportOptions(); track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
               @if (isInvalid('toAirport')) {
                 <span class="error">{{ 'validation.required' | translate }}</span>
               }
-            </div>
-
-            <div class="field">
-              <label>{{ 'fleet_schedule.first_class' | translate }}</label>
-              <input type="number" formControlName="firstClassSeat" min="0" />
-            </div>
-
-            <div class="field">
-              <label>{{ 'fleet_schedule.business_class' | translate }}</label>
-              <input type="number" formControlName="businessClassSeat" min="0" />
-            </div>
-
-            <div class="field">
-              <label>{{ 'fleet_schedule.economic_class' | translate }}</label>
-              <input type="number" formControlName="economicClassSeat" min="0" />
-            </div>
-
-            <div class="field">
-              <label>{{ 'fleet_schedule.payload' | translate }}</label>
-              <input type="number" formControlName="payload" min="0" />
             </div>
 
           </div>

@@ -66,7 +66,8 @@
     "pattern": "Please enter a valid value",
     "number": "Please enter a valid number",
     "date": "Please enter a valid date",
-    "time": "Please enter a valid time"
+    "time": "Please enter a valid time",
+    "same_airports": "origin and destination airports cannot be the same."
   },
   "airplane": {
     "page_title": "Airplane Management",
@@ -344,7 +345,12 @@
       "boarding": "boarding",
       "departed": "departed",
       "arrived": "arrived"
-    }
+    },
+    "airplane_details": "airplane specifications",
+    "register": "registration sign",
+    "airplane_model": "aircraft model",
+    "seat_style": "seating configuration",
+    "ownership": "ownership status"
   },
   "search": {
     "title": "Advanced Search",
@@ -440,7 +446,8 @@
     "menu": "Menu Management",
     "persons": "Persons",
     "reports": "Reports & Analytics",
-    "fleetSchedule": "Fleet Schedule"
+    "fleetSchedule": "Fleet Schedule",
+    "fleetTimeline": "Fleet Timeline Canvas"
   },
   "dashboard": {
     "title": "Fleet Management Dashboard",
