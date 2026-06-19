@@ -1,26 +1,26 @@
 <div class="page-header">
-  <h1 class="page-title">{{ 'FLEET_SCHEDULE.PAGE_TITLE' | translate }}</h1>
+  <h1 class="page-title">{{ 'fleet_schedule.page_title' | translate }}</h1>
   <button type="button" class="btn-primary" (click)="onAdd()">
-    {{ 'COMMON.ADD' | translate }}
+    {{ 'common.add' | translate }}
   </button>
 </div>
 
 @if (loading()) {
   <app-loading-spinner />
 } @else if (!items().length) {
-  <app-empty-state message="FLEET_SCHEDULE.NO_DATA" />
+  <app-empty-state message="fleet_schedule.no_data" />
 } @else {
   <div class="table-wrapper">
     <table class="data-table">
       <thead>
       <tr>
-        <th>{{ 'FLEET_SCHEDULE.TYPE' | translate }}</th>
-        <th>{{ 'FLEET_SCHEDULE.AIRPLANE' | translate }}</th>
-        <th>{{ 'FLEET_SCHEDULE.START_TIME' | translate }}</th>
-        <th>{{ 'FLEET_SCHEDULE.END_TIME' | translate }}</th>
-        <th>{{ 'FLEET_SCHEDULE.FLIGHT_NUMBER' | translate }}</th>
-        <th>{{ 'FLEET_SCHEDULE.STATUS' | translate }}</th>
-        <th class="actions-col">{{ 'COMMON.ACTIONS' | translate }}</th>
+        <th>{{ 'fleet_schedule.type' | translate }}</th>
+        <th>{{ 'fleet_schedule.airplane' | translate }}</th>
+        <th>{{ 'fleet_schedule.start_time' | translate }}</th>
+        <th>{{ 'fleet_schedule.end_time' | translate }}</th>
+        <th>{{ 'fleet_schedule.flight_number' | translate }}</th>
+        <th>{{ 'fleet_schedule.status' | translate }}</th>
+        <th class="actions-col">{{ 'common.actions' | translate }}</th>
       </tr>
       </thead>
       <tbody>
@@ -28,7 +28,7 @@
           <tr>
             <td>
               <span class="type-badge">
-                {{ TYPE_ICONS[item.type] }} {{ ('FLEET_SCHEDULE.TYPES.' + item.type) | translate }}
+                {{ TYPE_ICONS[item.type] }} {{ ('fleet_schedule.types.' + item.type.toLowerCase()) | translate }}
               </span>
             </td>
             <td>{{ item.airplane?.id }}</td>
@@ -37,15 +37,15 @@
             <td>{{ item.flight?.number ?? '-' }}</td>
             <td>
               <span class="status-badge" [class]="STATUS_COLORS[item.status]">
-                {{ ('FLEET_SCHEDULE.STATUSES.' + item.status) | translate }}
+                {{ ('fleet_schedule.statuses.' + item.status.toLowerCase()) | translate }}
               </span>
             </td>
             <td class="actions-col">
               <button type="button" class="btn-icon" (click)="onEdit(item)">
-                {{ 'COMMON.EDIT' | translate }}
+                {{ 'common.edit' | translate }}
               </button>
               <button type="button" class="btn-icon btn-danger" (click)="onDelete(item)">
-                {{ 'COMMON.DELETE' | translate }}
+                {{ 'common.delete' | translate }}
               </button>
               <select
                 class="status-select"
@@ -53,10 +53,10 @@
                 (change)="onStatusChange(item, $any($event.target).value)"
               >
                 <option [value]="item.status" disabled>
-                  {{ ('FLEET_SCHEDULE.STATUSES.' + item.status) | translate }}
+                  {{ ('fleet_schedule.statuses.' + item.status.toLowerCase()) | translate }}
                 </option>
                 @for (s of statusOptions(item.status); track s) {
-                  <option [value]="s">{{ ('FLEET_SCHEDULE.STATUSES.' + s) | translate }}</option>
+                  <option [value]="s">{{ ('fleet_schedule.statuses.' + s.toLowerCase()) | translate }}</option>
                 }
               </select>
             </td>

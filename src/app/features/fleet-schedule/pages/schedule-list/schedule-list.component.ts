@@ -66,10 +66,10 @@ export class ScheduleListComponent implements OnInit {
 
   onDelete(item: FleetScheduleDto): void {
     if (!item.id) return;
-    this.confirmDialog.confirm({ message: 'COMMON.CONFIRM_DELETE' }).subscribe((confirmed) => {
+    this.confirmDialog.confirm({ message: 'common.confirm_delete' }).subscribe((confirmed) => {
       if (!confirmed) return;
       this.api.delete(item.id!).subscribe(() => {
-        this.notification.success('COMMON.DELETED');
+        this.notification.success('common.deleted');
         this.load();
       });
     });
@@ -78,7 +78,7 @@ export class ScheduleListComponent implements OnInit {
   onStatusChange(item: FleetScheduleDto, status: FleetScheduleStatus): void {
     if (!item.id) return;
     this.api.updateStatus({ id: item.id, status }).subscribe(() => {
-      this.notification.success('COMMON.SAVED');
+      this.notification.success('common.saved');
       this.load();
     });
   }

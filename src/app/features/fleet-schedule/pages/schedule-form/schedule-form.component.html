@@ -1,143 +1,139 @@
 <div class="form-page">
   <div class="form-page-header">
     <button type="button" class="back-btn" (click)="cancel()">
-      ← {{ 'COMMON.BACK' | translate }}
+      ← {{ 'common.back' | translate }}
     </button>
     <h1 class="page-title">
-      {{ (isEdit() ? 'FLEET_SCHEDULE.EDIT_TITLE' : 'FLEET_SCHEDULE.NEW_TITLE') | translate }}
+      {{ (isEdit() ? 'fleet_schedule.edit_title' : 'fleet_schedule.new_title') | translate }}
     </h1>
   </div>
 
   @if (loading()) {
-    <div class="form-loading">{{ 'COMMON.LOADING' | translate }}</div>
+    <div class="form-loading">{{ 'common.loading' | translate }}</div>
   } @else {
     <form class="schedule-form" [formGroup]="form" (ngSubmit)="submit()">
 
-      <!-- بخش اول: اطلاعات اصلی -->
       <section class="form-section">
-        <h2 class="section-title">{{ 'FLEET_SCHEDULE.BASIC_INFO' | translate }}</h2>
+        <h2 class="section-title">{{ 'fleet_schedule.basic_info' | translate }}</h2>
         <div class="form-grid">
 
           <div class="field">
-            <label>{{ 'FLEET_SCHEDULE.AIRPLANE' | translate }}</label>
+            <label>{{ 'fleet_schedule.airplane' | translate }}</label>
             <select formControlName="airplane">
-              <option [ngValue]="null">{{ 'COMMON.SELECT_PLACEHOLDER' | translate }}</option>
+              <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
               @for (opt of airplaneOptions(); track opt.value) {
                 <option [value]="opt.value">{{ opt.label }}</option>
               }
             </select>
             @if (isInvalid('airplane')) {
-              <span class="error">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+              <span class="error">{{ 'validation.required' | translate }}</span>
             }
           </div>
 
           <div class="field">
-            <label>{{ 'FLEET_SCHEDULE.TYPE' | translate }}</label>
+            <label>{{ 'fleet_schedule.type' | translate }}</label>
             <select formControlName="type">
-              <option [ngValue]="null">{{ 'COMMON.SELECT_PLACEHOLDER' | translate }}</option>
+              <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
               @for (t of TYPES; track t) {
-                <option [value]="t">{{ ('FLEET_SCHEDULE.TYPES.' + t) | translate }}</option>
+                <option [value]="t">{{ ('fleet_schedule.types.' + t.toLowerCase()) | translate }}</option>
               }
             </select>
             @if (isInvalid('type')) {
-              <span class="error">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+              <span class="error">{{ 'validation.required' | translate }}</span>
             }
           </div>
 
           <div class="field">
-            <label>{{ 'FLEET_SCHEDULE.STATUS' | translate }}</label>
+            <label>{{ 'fleet_schedule.status' | translate }}</label>
             <select formControlName="status">
               @for (s of STATUSES; track s) {
-                <option [value]="s">{{ ('FLEET_SCHEDULE.STATUSES.' + s) | translate }}</option>
+                <option [value]="s">{{ ('fleet_schedule.statuses.' + s.toLowerCase()) | translate }}</option>
               }
             </select>
           </div>
 
           <div class="field">
-            <label>{{ 'FLEET_SCHEDULE.START_TIME' | translate }}</label>
+            <label>{{ 'fleet_schedule.start_time' | translate }}</label>
             <input type="datetime-local" formControlName="actualStartTime" />
             @if (isInvalid('actualStartTime')) {
-              <span class="error">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+              <span class="error">{{ 'validation.required' | translate }}</span>
             }
           </div>
 
           <div class="field">
-            <label>{{ 'FLEET_SCHEDULE.END_TIME' | translate }}</label>
+            <label>{{ 'fleet_schedule.end_time' | translate }}</label>
             <input type="datetime-local" formControlName="actualEndTime" />
             @if (isInvalid('actualEndTime')) {
-              <span class="error">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+              <span class="error">{{ 'validation.required' | translate }}</span>
             }
           </div>
 
         </div>
       </section>
 
-      <!-- بخش دوم: اطلاعات پرواز (فقط وقتی type === FLIGHT) -->
       @if (isFlight) {
         <section class="form-section">
-          <h2 class="section-title">{{ 'FLEET_SCHEDULE.FLIGHT_INFO' | translate }}</h2>
+          <h2 class="section-title">{{ 'fleet_schedule.flight_info' | translate }}</h2>
           <div class="form-grid">
 
             <div class="field field-span-2">
-              <label>{{ 'FLEET_SCHEDULE.FLIGHT_NUMBER' | translate }}</label>
+              <label>{{ 'fleet_schedule.flight_number' | translate }}</label>
               <input type="text" formControlName="flightNumber" />
               @if (isInvalid('flightNumber')) {
-                <span class="error">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+                <span class="error">{{ 'validation.required' | translate }}</span>
               }
             </div>
 
             <div class="field">
-              <label>{{ 'FLEET_SCHEDULE.FROM' | translate }}</label>
+              <label>{{ 'fleet_schedule.from' | translate }}</label>
               <input type="text" formControlName="fromAirport"
-                     [placeholder]="'FLEET_SCHEDULE.AIRPORT_CODE_PLACEHOLDER' | translate" />
+                     [placeholder]="'fleet_schedule.airport_code_placeholder' | translate" />
               @if (isInvalid('fromAirport')) {
-                <span class="error">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+                <span class="error">{{ 'validation.required' | translate }}</span>
               }
             </div>
 
             <div class="field">
-              <label>{{ 'FLEET_SCHEDULE.TO' | translate }}</label>
+              <label>{{ 'fleet_schedule.to' | translate }}</label>
               <input type="text" formControlName="toAirport"
-                     [placeholder]="'FLEET_SCHEDULE.AIRPORT_CODE_PLACEHOLDER' | translate" />
+                     [placeholder]="'fleet_schedule.airport_code_placeholder' | translate" />
               @if (isInvalid('toAirport')) {
-                <span class="error">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+                <span class="error">{{ 'validation.required' | translate }}</span>
               }
             </div>
 
             <div class="field">
-              <label>{{ 'FLEET_SCHEDULE.FIRST_CLASS' | translate }}</label>
+              <label>{{ 'fleet_schedule.first_class' | translate }}</label>
               <input type="number" formControlName="firstClassSeat" min="0" />
             </div>
 
             <div class="field">
-              <label>{{ 'FLEET_SCHEDULE.BUSINESS_CLASS' | translate }}</label>
+              <label>{{ 'fleet_schedule.business_class' | translate }}</label>
               <input type="number" formControlName="businessClassSeat" min="0" />
             </div>
 
             <div class="field">
-              <label>{{ 'FLEET_SCHEDULE.ECONOMIC_CLASS' | translate }}</label>
+              <label>{{ 'fleet_schedule.economic_class' | translate }}</label>
               <input type="number" formControlName="economicClassSeat" min="0" />
             </div>
 
             <div class="field">
-              <label>{{ 'FLEET_SCHEDULE.PAYLOAD' | translate }}</label>
+              <label>{{ 'fleet_schedule.payload' | translate }}</label>
               <input type="number" formControlName="payload" min="0" />
             </div>
 
           </div>
 
-          <!-- خدمه -->
           <app-flight-crew-form [crewArray]="crewArray" />
         </section>
       }
 
-      <!-- دکمه‌های عمل -->
       <div class="form-actions">
         <button type="button" class="btn-secondary" (click)="cancel()">
-          {{ 'COMMON.CANCEL' | translate }}
+          {{ 'common.cancel' | translate }}
         </button>
         <button type="submit" class="btn-primary">
-          {{ 'COMMON.SAVE' | translate }}
+          {{ 'common.save' | translate }}
         </button>
       </div>
 

@@ -189,7 +189,7 @@ export class ScheduleFormComponent implements OnInit {
     }
 
     this.api.save(dto).subscribe(() => {
-      this.notification.success('COMMON.SAVED');
+      this.notification.success('common.saved');
       this.router.navigate(['/fleet-schedule']);
     });
   }

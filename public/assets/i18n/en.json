@@ -41,7 +41,8 @@
     "login": "Login",
     "dashboard": "Dashboard",
     "description": "description",
-    "reports": "Reports"
+    "reports": "Reports",
+    "select_placeholder": "Select..."
   },
   "auth": {
     "login": {
@@ -305,45 +306,44 @@
       "deleteConfirm": "Are you sure you want to delete this flight?"
     }
   },
-  "fleetSchedule": {
-    "title": "Fleet Schedule",
-    "list": "Schedules List",
-    "add": "Add New Schedule",
-    "edit": "Edit Schedule",
-    "delete": "Delete Schedule",
-    "details": "Schedule Details",
-    "airplane": "Airplane",
-    "actualStartTime": "Actual Start Time",
-    "actualEndTime": "Actual End Time",
-    "event": "Event",
-    "type": "Schedule Type",
-    "flight": "Flight",
-    "status": "Schedule Status",
-    "updateStatus": "Update Status",
-    "selectAirplane": "Select Airplane",
-    "selectEvent": "Select Event",
+  "fleet_schedule": {
+    "page_title": "fleet schedule management",
+    "new_title": "new fleet schedule",
+    "edit_title": "edit fleet schedule",
+    "basic_info": "basic information",
+    "airplane": "airplane",
+    "type": "schedule type",
+    "status": "status",
+    "start_time": "start time",
+    "end_time": "end time",
+    "flight_info": "flight information",
+    "flight_number": "flight number",
+    "from": "origin airport",
+    "to": "destination airport",
+    "airport_code_placeholder": "e.g. thr",
+    "first_class": "first class seats",
+    "business_class": "business class seats",
+    "economic_class": "economy class seats",
+    "payload": "payload (kg)",
+    "crew": "crew members",
+    "add_crew": "add crew member",
+    "person": "person",
+    "crew_job": "crew job / position",
+    "no_data": "no schedule data available",
     "types": {
-      "FLIGHT": "Flight",
-      "CHECK": "Maintenance Check",
-      "DFDR": "Digital Flight Data Recorder"
+      "flight": "flight",
+      "check": "maintenance check",
+      "dfdr": "flight data recording"
     },
     "statuses": {
-      "DRAFT": "Draft",
-      "SCHEDULED": "Scheduled",
-      "CANCELLED": "Cancelled"
-    },
-    "validation": {
-      "airplaneRequired": "Airplane is required",
-      "startTimeRequired": "Start time is required",
-      "endTimeRequired": "End time is required",
-      "typeRequired": "Schedule type is required"
-    },
-    "messages": {
-      "saveSuccess": "Schedule saved successfully",
-      "updateSuccess": "Schedule updated successfully",
-      "statusUpdated": "Schedule status updated successfully",
-      "deleteSuccess": "Schedule deleted successfully",
-      "deleteConfirm": "Are you sure you want to delete this schedule?"
+      "draft": "draft",
+      "scheduled": "scheduled",
+      "cancelled": "cancelled",
+      "on_time": "on time",
+      "delayed": "delayed",
+      "boarding": "boarding",
+      "departed": "departed",
+      "arrived": "arrived"
     }
   },
   "search": {
@@ -439,7 +439,8 @@
     "roles": "Roles & Permissions",
     "menu": "Menu Management",
     "persons": "Persons",
-    "reports": "Reports & Analytics"
+    "reports": "Reports & Analytics",
+    "fleetSchedule": "Fleet Schedule"
   },
   "dashboard": {
     "title": "Fleet Management Dashboard",

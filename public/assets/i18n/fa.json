@@ -43,7 +43,8 @@
     "description": "توضیحات",
     "reports": "گزارشات",
     "confirm_delete": "آیا مطمئن از حذف هستید؟",
-    "confirm_title": "آیا از انجام عملیات مطمئن هستید؟"
+    "confirm_title": "آیا از انجام عملیات مطمئن هستید؟",
+    "select_placeholder": "لطفاً انتخاب کنید..."
   },
   "auth": {
     "login": {
@@ -307,45 +308,44 @@
       "deleteConfirm": "آیا از حذف این پرواز اطمینان دارید؟"
     }
   },
-  "fleetSchedule": {
-    "title": "برنامه ناوگان",
-    "list": "لیست برنامه‌ها",
-    "add": "افزودن برنامه جدید",
-    "edit": "ویرایش برنامه",
-    "delete": "حذف برنامه",
-    "details": "جزئیات برنامه",
+  "fleet_schedule": {
+    "page_title": "مدیریت برنامه ناوگان",
+    "new_title": "برنامه ناوگان جدید",
+    "edit_title": "ویرایش برنامه ناوگان",
+    "basic_info": "اطلاعات اصلی",
     "airplane": "هواپیما",
-    "actualStartTime": "زمان شروع واقعی",
-    "actualEndTime": "زمان پایان واقعی",
-    "event": "رویداد",
     "type": "نوع برنامه",
-    "flight": "پرواز",
-    "status": "وضعیت برنامه",
-    "updateStatus": "به‌روزرسانی وضعیت",
-    "selectAirplane": "انتخاب هواپیما",
-    "selectEvent": "انتخاب رویداد",
+    "status": "وضعیت",
+    "start_time": "زمان شروع",
+    "end_time": "زمان پایان",
+    "flight_info": "اطلاعات پرواز",
+    "flight_number": "شماره پرواز",
+    "from": "فرودگاه مبدا",
+    "to": "فرودگاه مقصد",
+    "airport_code_placeholder": "مثال: thr",
+    "first_class": "صندلی درجه یک",
+    "business_class": "صندلی بیزینس",
+    "economic_class": "صندلی اقتصادی",
+    "payload": "میزان بار (کیلوگرم)",
+    "crew": "خدمه پرواز",
+    "add_crew": "افزودن خدمه جدید",
+    "person": "شخص",
+    "crew_job": "سمت خدمه",
+    "no_data": "اطلاعاتی برای برنامه ناوگان یافت نشد",
     "types": {
-      "FLIGHT": "پرواز",
-      "CHECK": "بازرسی فنی",
-      "DFDR": "ثبت‌کننده داده‌های پرواز"
+      "flight": "پرواز",
+      "check": "بازرسی فنی",
+      "dfdr": "ثبت داده‌های پروازی"
     },
     "statuses": {
-      "DRAFT": "پیش‌نویس",
-      "SCHEDULED": "برنامه‌ریزی شده",
-      "CANCELLED": "لغو شده"
-    },
-    "validation": {
-      "airplaneRequired": "هواپیما الزامی است",
-      "startTimeRequired": "زمان شروع الزامی است",
-      "endTimeRequired": "زمان پایان الزامی است",
-      "typeRequired": "نوع برنامه الزامی است"
-    },
-    "messages": {
-      "saveSuccess": "برنامه با موفقیت ذخیره شد",
-      "updateSuccess": "برنامه با موفقیت به‌روزرسانی شد",
-      "statusUpdated": "وضعیت برنامه با موفقیت به‌روزرسانی شد",
-      "deleteSuccess": "برنامه با موفقیت حذف شد",
-      "deleteConfirm": "آیا از حذف این برنامه اطمینان دارید؟"
+      "draft": "پیش‌نویس",
+      "scheduled": "برنامه‌ریزی شده",
+      "cancelled": "لغو شده",
+      "on_time": "به موقع",
+      "delayed": "تاخیر دارد",
+      "boarding": "سوار شدن به هواپیما",
+      "departed": "پرواز کرد",
+      "arrived": "بنشست"
     }
   },
   "search": {
@@ -440,7 +440,8 @@
     "roles": "نقش‌ها و دسترسی‌ها",
     "menu": "مدیریت منو",
     "persons": "اشخاص",
-    "reports": "گزارشات و تحلیل"
+    "reports": "گزارشات و تحلیل",
+    "fleetSchedule": "برنامه پروازی"
   },
   "dashboard": {
     "title": "داشبورد مدیریت ناوگان",

@@ -1,36 +1,36 @@
 <div class="crew-section">
   <div class="crew-header">
-    <span class="crew-title">{{ 'FLEET_SCHEDULE.CREW' | translate }}</span>
+    <span class="crew-title">{{ 'fleet_schedule.crew' | translate }}</span>
     <button type="button" class="btn-add-row" (click)="addRow()">
-      + {{ 'FLEET_SCHEDULE.ADD_CREW' | translate }}
+      + {{ 'fleet_schedule.add_crew' | translate }}
     </button>
   </div>
 
   @for (row of rows; track $index) {
     <div class="crew-row">
       <div class="field">
-        <label>{{ 'FLEET_SCHEDULE.PERSON' | translate }}</label>
+        <label>{{ 'fleet_schedule.person' | translate }}</label>
         <select [formControl]="$any(row.get('personId'))">
-          <option [ngValue]="null">{{ 'COMMON.SELECT_PLACEHOLDER' | translate }}</option>
+          <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
           @for (opt of personOptions(); track opt.value) {
             <option [value]="opt.value">{{ opt.label }}</option>
           }
         </select>
         @if (row.get('personId')?.invalid && row.get('personId')?.touched) {
-          <span class="error">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+          <span class="error">{{ 'validation.required' | translate }}</span>
         }
       </div>
 
       <div class="field">
-        <label>{{ 'FLEET_SCHEDULE.CREW_JOB' | translate }}</label>
+        <label>{{ 'fleet_schedule.crew_job' | translate }}</label>
         <select [formControl]="$any(row.get('crewJobId'))">
-          <option [ngValue]="null">{{ 'COMMON.SELECT_PLACEHOLDER' | translate }}</option>
+          <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
           @for (opt of crewJobOptions(); track opt.value) {
             <option [value]="opt.value">{{ opt.label }}</option>
           }
         </select>
         @if (row.get('crewJobId')?.invalid && row.get('crewJobId')?.touched) {
-          <span class="error">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+          <span class="error">{{ 'validation.required' | translate }}</span>
         }
       </div>
 
