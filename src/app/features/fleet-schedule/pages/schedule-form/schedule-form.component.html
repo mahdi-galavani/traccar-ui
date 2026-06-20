@@ -9,17 +9,25 @@
   </div>
 
   @if (loading()) {
-    <div class="form-loading">{{ 'common.loading' | translate }}</div>
+    <div class="form-loading">
+      <div class="spinner"></div>
+      {{ 'common.loading' | translate }}
+    </div>
   } @else {
     <form class="schedule-form" [formGroup]="form" (ngSubmit)="submit()">
 
+      <!-- Basic Information -->
       <section class="form-section">
-        <h2 class="section-title">{{ 'fleet_schedule.basic_info' | translate }}</h2>
-        <div class="form-grid">
+        <h2 class="section-title">
+          <span class="icon">✈️</span>
+          {{ 'fleet_schedule.basic_info' | translate }}
+        </h2>
 
+        <div class="form-grid">
+          <!-- Airplane -->
           <div class="field">
             <label>{{ 'fleet_schedule.airplane' | translate }}</label>
-            <select formControlName="airplane">
+            <select formControlName="airplane" class="modern-select">
               <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
               @for (opt of airplaneOptions(); track opt.value) {
                 <option [value]="opt.value">{{ opt.label }}</option>
@@ -30,9 +38,10 @@
             }
           </div>
 
+          <!-- Type -->
           <div class="field">
             <label>{{ 'fleet_schedule.type' | translate }}</label>
-            <select formControlName="type">
+            <select formControlName="type" class="modern-select">
               <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
               @for (t of TYPES; track t) {
                 <option [value]="t">{{ ('fleet_schedule.types.' + t.toLowerCase()) | translate }}</option>
@@ -43,81 +52,97 @@
             }
           </div>
 
+          <!-- Start Time -->
           <div class="field">
             <label>{{ 'fleet_schedule.start_time' | translate }}</label>
-            <input type="datetime-local" formControlName="actualStartTime" />
+            <input type="datetime-local" formControlName="actualStartTime" class="modern-input" />
             @if (isInvalid('actualStartTime')) {
               <span class="error">{{ 'validation.required' | translate }}</span>
             }
           </div>
 
+          <!-- End Time -->
           <div class="field">
             <label>{{ 'fleet_schedule.end_time' | translate }}</label>
-            <input type="datetime-local" formControlName="actualEndTime" />
+            <input type="datetime-local" formControlName="actualEndTime" class="modern-input" />
             @if (isInvalid('actualEndTime')) {
               <span class="error">{{ 'validation.required' | translate }}</span>
             }
           </div>
-
         </div>
 
+        <!-- Airplane Details - Professional Card -->
         @if (selectedAirplaneDetails()) {
-          <div class="airplane-details-panel">
-            <h3 class="panel-subtitle">{{ 'fleet_schedule.airplane_details' | translate }}</h3>
+          <div class="airplane-details-card">
+            <h3 class="panel-subtitle">
+              <span class="icon">🛫</span>
+              {{ 'fleet_schedule.airplane_details' | translate }}
+            </h3>
+
             <div class="details-grid">
               <div class="detail-item">
-                <span class="detail-label">{{ 'fleet_schedule.register' | translate }}:</span>
-                <span class="detail-value">{{ selectedAirplaneDetails()?.register ?? '-' }}</span>
+                <div class="detail-label">ثبت</div>
+                <div class="detail-value highlight">{{ selectedAirplaneDetails()?.register }}</div>
               </div>
               <div class="detail-item">
-                <span class="detail-label">{{ 'fleet_schedule.airplane_model' | translate }}:</span>
-                <span class="detail-value">{{ selectedAirplaneDetails()?.type?.title ?? '-' }}</span>
+                <div class="detail-label">مدل</div>
+                <div class="detail-value">{{ selectedAirplaneDetails()?.type?.title }}</div>
               </div>
               <div class="detail-item">
-                <span class="detail-label">{{ 'fleet_schedule.seat_style' | translate }}:</span>
-                <span class="detail-value">{{ selectedAirplaneDetails()?.seatStyle?.title ?? '-' }}</span>
+                <div class="detail-label">سبک صندلی</div>
+                <div class="detail-value">{{ selectedAirplaneDetails()?.seatStyle?.title }}</div>
               </div>
               <div class="detail-item">
-                <span class="detail-label">{{ 'fleet_schedule.ownership' | translate }}:</span>
-                <span class="detail-value">{{ selectedAirplaneDetails()?.ownership?.title ?? '-' }}</span>
+                <div class="detail-label">مالکیت</div>
+                <div class="detail-value">{{ selectedAirplaneDetails()?.ownership?.title }}</div>
               </div>
 
-              <div class="detail-item">
-                <span class="detail-label">{{ 'fleet_schedule.first_class' | translate }}:</span>
-                <span class="detail-value">{{ selectedAirplaneDetails()?.firstClassSeat ?? '0' }}</span>
+              <!-- Seats -->
+              <div class="seats-row">
+                <div class="seat-type">
+                  <span class="seat-icon">👑</span>
+                  <span class="seat-count">{{ selectedAirplaneDetails()?.firstClassSeat }}</span>
+                  <small>First Class</small>
+                </div>
+                <div class="seat-type">
+                  <span class="seat-icon">💼</span>
+                  <span class="seat-count">{{ selectedAirplaneDetails()?.businessClassSeat }}</span>
+                  <small>Business</small>
+                </div>
+                <div class="seat-type">
+                  <span class="seat-icon">🪑</span>
+                  <span class="seat-count">{{ selectedAirplaneDetails()?.economicClassSeat }}</span>
+                  <small>Economy</small>
+                </div>
               </div>
-              <div class="detail-item">
-                <span class="detail-label">{{ 'fleet_schedule.business_class' | translate }}:</span>
-                <span class="detail-value">{{ selectedAirplaneDetails()?.businessClassSeat ?? '0' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">{{ 'fleet_schedule.economic_class' | translate }}:</span>
-                <span class="detail-value">{{ selectedAirplaneDetails()?.economicClassSeat ?? '0' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">{{ 'fleet_schedule.payload' | translate }}:</span>
-                <span class="detail-value">{{ selectedAirplaneDetails()?.payload ?? '0' }} kg</span>
+
+              <div class="payload-item">
+                <span class="payload-label">ظرفیت بار</span>
+                <span class="payload-value">{{ selectedAirplaneDetails()?.payload }} <small>kg</small></span>
               </div>
             </div>
           </div>
         }
       </section>
 
+      <!-- Flight Section -->
       @if (isFlight) {
-        <section class="form-section">
-          <h2 class="section-title">{{ 'fleet_schedule.flight_info' | translate }}</h2>
+        <section class="form-section flight-section">
+          <h2 class="section-title">
+            <span class="icon">🛤️</span>
+            {{ 'fleet_schedule.flight_info' | translate }}
+          </h2>
 
           @if (form.errors?.['sameAirports'] && (form.get('fromAirport')?.touched || form.get('toAirport')?.touched)) {
-            <div class="alert alert-danger" style="color: #d32f2f; background-color: #ffebee; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+            <div class="alert alert-danger">
               {{ 'validation.same_airports' | translate }}
             </div>
           }
 
           <div class="form-grid">
-
             <div class="field field-span-2">
               <label>{{ 'fleet_schedule.flight_number' | translate }}</label>
-              <input type="text" formControlName="flightNumber" />
+              <input type="text" formControlName="flightNumber" class="modern-input" placeholder="e.g. IR456" />
               @if (isInvalid('flightNumber')) {
                 <span class="error">{{ 'validation.required' | translate }}</span>
               }
@@ -125,7 +150,7 @@
 
             <div class="field">
               <label>{{ 'fleet_schedule.from' | translate }}</label>
-              <select formControlName="fromAirport">
+              <select formControlName="fromAirport" class="modern-select">
                 <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
                 @for (opt of airportOptions(); track opt.value) {
                   <option [value]="opt.value">{{ opt.label }}</option>
@@ -138,7 +163,7 @@
 
             <div class="field">
               <label>{{ 'fleet_schedule.to' | translate }}</label>
-              <select formControlName="toAirport">
+              <select formControlName="toAirport" class="modern-select">
                 <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
                 @for (opt of airportOptions(); track opt.value) {
                   <option [value]="opt.value">{{ opt.label }}</option>
@@ -148,7 +173,6 @@
                 <span class="error">{{ 'validation.required' | translate }}</span>
               }
             </div>
-
           </div>
 
           <app-flight-crew-form [crewArray]="crewArray" />
@@ -160,6 +184,7 @@
           {{ 'common.cancel' | translate }}
         </button>
         <button type="submit" class="btn-primary">
+          <span class="icon">💾</span>
           {{ 'common.save' | translate }}
         </button>
       </div>
