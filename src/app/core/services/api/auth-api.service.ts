@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { LoginRequest, UserTokenDto } from '../../models/auth.model';
+import { Observable, map } from 'rxjs';
+import { LoginRequest, LoginResponse, UserTokenDto } from '../../models/auth.model';
 import { API_BASE_PATH } from '../../../shared/constants/api-endpoints.constants';
 
 @Injectable({ providedIn: 'root' })
@@ -10,7 +10,15 @@ export class AuthApiService {
   private readonly resourcePath = API_BASE_PATH.AUTH;
 
   login(credentials: LoginRequest): Observable<UserTokenDto> {
-    return this.http.post<UserTokenDto>(`${this.resourcePath}/login`, credentials);
+    // ارسال درخواست بر اساس ساختار بک‌آند و نگاشت آن به آبجکت فرانت‌آند
+    return this.http.post<LoginResponse>(`${this.resourcePath}/login`, credentials).pipe(
+      map((response) => {
+        return {
+          token: response.access_token, // تبدیل access_token به token برای هماهنگی فرانت
+          username: credentials.username // ذخیره یوزرنیم وارد شده در سشن جهت استفاده در کامپوننت‌ها
+        };
+      })
+    );
   }
 
   /** Authorization header is attached automatically by authInterceptor. */

@@ -6,10 +6,16 @@ export interface LoginRequest {
   password: string;
 }
 
-/** Response of POST /api/auth/login */
+/** Actual Response from backend OpenAPI spec (api.json) */
+export interface LoginResponse {
+  access_token: string;
+  expires_in: number;
+}
+
+/** Front-end Application Session State Model */
 export interface UserTokenDto {
   token: string;
-  userId?: string;
   username?: string;
-  authorities?: AppMenu[];
+  userId?: string;
+  authorities?: AppMenu[]; // این فیلد را در صورت دریافت از ریکوئست‌های جانبی پر می‌کنید
 }

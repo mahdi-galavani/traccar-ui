@@ -21,6 +21,7 @@ export class AuthService {
   readonly menu = computed(() => this._currentUser()?.authorities ?? []);
 
   login(credentials: LoginRequest) {
+    // متد مپ شده در ApiService را صدا زده و سشن را ست می‌کند
     return this.api.login(credentials).pipe(tap((result) => this.setSession(result)));
   }
 
