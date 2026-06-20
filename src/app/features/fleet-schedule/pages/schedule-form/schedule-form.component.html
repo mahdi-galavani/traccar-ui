@@ -1,235 +1,267 @@
-<div class="form-page">
-  <div class="form-page-header">
-    <button type="button" class="back-btn" (click)="cancel()">
-      ← {{ 'common.back' | translate }}
-    </button>
-    <h1 class="page-title">
-      {{ (isEdit() ? 'fleet_schedule.edit_title' : 'fleet_schedule.new_title') | translate }}
-    </h1>
+<div class="max-w-4xl mx-auto p-4 md:p-8 min-h-screen bg-slate-50/50">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-200/80">
+    <div class="flex items-center gap-4">
+      <button type="button"
+              class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-600 hover:text-indigo-600 bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-100 rounded-xl transition-all duration-200 shadow-sm"
+              (click)="cancel()">
+        <span class="text-xs">←</span> {{ 'common.back' | translate }}
+      </button>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800 tracking-tight">
+        {{ (isEdit() ? 'fleet_schedule.edit_title' : 'fleet_schedule.new_title') | translate }}
+      </h1>
+    </div>
   </div>
 
   @if (loading()) {
-    <div class="form-loading">
-      <div class="spinner"></div>
-      {{ 'common.loading' | translate }}
+    <div class="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-slate-100 shadow-sm gap-4">
+      <div class="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+      <span class="text-sm font-medium text-slate-500">{{ 'common.loading' | translate }}</span>
     </div>
   } @else {
-    <form class="schedule-form" [formGroup]="form" (ngSubmit)="submit()">
+    <form class="space-y-6" [formGroup]="form" (ngSubmit)="submit()">
 
-      <!-- Basic Information -->
-      <section class="form-section">
-        <h2 class="section-title">
-          <span class="icon">✈️</span>
+      <!-- Basic Information Section -->
+      <section class="bg-white/80 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-slate-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <h2 class="text-lg font-semibold text-slate-800 mb-6 flex items-center gap-2.5">
+          <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 text-base">✈️</span>
           {{ 'fleet_schedule.basic_info' | translate }}
         </h2>
 
-        <div class="form-grid">
-          <div class="field">
-            <label>{{ 'fleet_schedule.airplane' | translate }}</label>
-            <select formControlName="airplane" class="modern-select">
-              <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
-              @for (opt of airplaneOptions(); track opt.value) {
-                <option [value]="opt.value">{{ opt.label }}</option>
-              }
-            </select>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Airplane Select -->
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-slate-700">{{ 'fleet_schedule.airplane' | translate }}</label>
+            <div class="relative">
+              <select formControlName="airplane"
+                      class="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-200 outline-none appearance-none">
+                <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
+                @for (opt of airplaneOptions(); track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+            </div>
             @if (isInvalid('airplane')) {
-              <span class="error">{{ 'validation.required' | translate }}</span>
+              <span class="text-xs font-medium text-rose-500 mt-1 flex items-center gap-1">⚠️ {{ 'validation.required' | translate }}</span>
             }
           </div>
 
-          <div class="field">
-            <label>{{ 'fleet_schedule.type' | translate }}</label>
-            <select formControlName="type" class="modern-select">
+          <!-- Type Select -->
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-slate-700">{{ 'fleet_schedule.type' | translate }}</label>
+            <select formControlName="type"
+                    class="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-200 outline-none">
               <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
               @for (t of TYPES; track t) {
                 <option [value]="t">{{ ('fleet_schedule.types.' + t.toLowerCase()) | translate }}</option>
               }
             </select>
             @if (isInvalid('type')) {
-              <span class="error">{{ 'validation.required' | translate }}</span>
+              <span class="text-xs font-medium text-rose-500 mt-1 flex items-center gap-1">⚠️ {{ 'validation.required' | translate }}</span>
             }
           </div>
 
-          <!-- Start Time - Dual Calendar -->
-          <div class="field">
-            <label class="flex-label">
-              {{ 'fleet_schedule.start_time' | translate }}
-              <button type="button" class="calendar-toggle-btn" (click)="toggleCalendarMode()">
+          <!-- Start Time -->
+          <div class="flex flex-col gap-2">
+            <label class="flex justify-between items-center text-sm font-medium text-slate-700">
+              <span>{{ 'fleet_schedule.start_time' | translate }}</span>
+              <button type="button"
+                      class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-100 transition-colors"
+                      (click)="toggleCalendarMode()">
                 {{ isJalaliMode ? 'میلادی' : 'شمسی' }}
               </button>
             </label>
 
-            <div class="datetime-input-wrapper">
+            <div class="relative">
               @if (!isJalaliMode) {
                 <input type="datetime-local"
                        formControlName="actualStartTime"
-                       class="modern-input"
+                       class="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-200 outline-none"
                        (change)="onGregorianChange('start', $event)" />
               } @else {
-                <!-- اینجا jalali-date-picker یا کتابخانه خودتان را قرار دهید -->
                 <input type="text"
                        [value]="jalaliStartDisplay"
-                       class="modern-input jalali-input"
+                       class="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-200 outline-none font-mono"
                        placeholder="تاریخ و ساعت شمسی"
                        (focus)="openJalaliPicker('start')" />
               }
             </div>
 
-            <div class="utc-preview">
-              <small>UTC: {{ getUtcPreview('start') }}</small>
-              <small>میلادی: {{ getGregorianPreview('start') }}</small>
+            <div class="flex flex-wrap gap-2 mt-1">
+              <span class="text-[11px] font-medium bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">UTC: {{ getUtcPreview('start') }}</span>
+              <span class="text-[11px] font-medium bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">میلادی: {{ getGregorianPreview('start') }}</span>
             </div>
             @if (isInvalid('actualStartTime')) {
-              <span class="error">{{ 'validation.required' | translate }}</span>
+              <span class="text-xs font-medium text-rose-500 mt-1 flex items-center gap-1">⚠️ {{ 'validation.required' | translate }}</span>
             }
           </div>
 
-          <!-- End Time - Dual Calendar -->
-          <div class="field">
-            <label class="flex-label">
-              {{ 'fleet_schedule.end_time' | translate }}
-              <button type="button" class="calendar-toggle-btn" (click)="toggleCalendarMode()">
+          <!-- End Time -->
+          <div class="flex flex-col gap-2">
+            <label class="flex justify-between items-center text-sm font-medium text-slate-700">
+              <span>{{ 'fleet_schedule.end_time' | translate }}</span>
+              <button type="button"
+                      class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-100 transition-colors"
+                      (click)="toggleCalendarMode()">
                 {{ isJalaliMode ? 'میلادی' : 'شمسی' }}
               </button>
             </label>
 
-            <div class="datetime-input-wrapper">
+            <div class="relative">
               @if (!isJalaliMode) {
                 <input type="datetime-local"
                        formControlName="actualEndTime"
-                       class="modern-input"
+                       class="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-200 outline-none"
                        (change)="onGregorianChange('end', $event)" />
               } @else {
                 <input type="text"
                        [value]="jalaliEndDisplay"
-                       class="modern-input jalali-input"
+                       class="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-200 outline-none font-mono"
                        placeholder="تاریخ و ساعت شمسی"
                        (focus)="openJalaliPicker('end')" />
               }
             </div>
 
-            <div class="utc-preview">
-              <small>UTC: {{ getUtcPreview('end') }}</small>
-              <small>میلادی: {{ getGregorianPreview('end') }}</small>
+            <div class="flex flex-wrap gap-2 mt-1">
+              <span class="text-[11px] font-medium bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">UTC: {{ getUtcPreview('end') }}</span>
+              <span class="text-[11px] font-medium bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">میلادی: {{ getGregorianPreview('end') }}</span>
             </div>
             @if (isInvalid('actualEndTime')) {
-              <span class="error">{{ 'validation.required' | translate }}</span>
+              <span class="text-xs font-medium text-rose-500 mt-1 flex items-center gap-1">⚠️ {{ 'validation.required' | translate }}</span>
             }
           </div>
         </div>
 
-        <!-- Airplane Details -->
+        <!-- Airplane Details Card -->
         @if (selectedAirplaneDetails()) {
-          <div class="airplane-details-card">
-            <h3 class="panel-subtitle">
-              <span class="icon">🛫</span>
-              {{ 'fleet_schedule.airplane_details' | translate }}
+          <div class="mt-8 p-6 bg-gradient-to-br from-slate-50 to-indigo-50/30 rounded-2xl border border-slate-200/60 shadow-inner">
+            <h3 class="text-sm font-semibold text-indigo-950 mb-4 flex items-center gap-2">
+              <span>🛫</span> {{ 'fleet_schedule.airplane_details' | translate }}
             </h3>
 
-            <div class="details-grid">
-              <div class="detail-item">
-                <div class="detail-label">ثبت</div>
-                <div class="detail-value highlight">{{ selectedAirplaneDetails()?.register }}</div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
+              <div class="bg-white p-3.5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-1">
+                <span class="text-xs text-slate-400 font-medium">ثبت</span>
+                <span class="text-base font-bold text-indigo-600">{{ selectedAirplaneDetails()?.register }}</span>
               </div>
-              <div class="detail-item">
-                <div class="detail-label">مدل</div>
-                <div class="detail-value">{{ selectedAirplaneDetails()?.type?.title }}</div>
+              <div class="bg-white p-3.5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-1">
+                <span class="text-xs text-slate-400 font-medium">مدل</span>
+                <span class="text-sm font-semibold text-slate-700">{{ selectedAirplaneDetails()?.type?.title }}</span>
               </div>
-              <div class="detail-item">
-                <div class="detail-label">سبک صندلی</div>
-                <div class="detail-value">{{ selectedAirplaneDetails()?.seatStyle?.title }}</div>
+              <div class="bg-white p-3.5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-1">
+                <span class="text-xs text-slate-400 font-medium">سبک صندلی</span>
+                <span class="text-sm font-semibold text-slate-700">{{ selectedAirplaneDetails()?.seatStyle?.title }}</span>
               </div>
-              <div class="detail-item">
-                <div class="detail-label">مالکیت</div>
-                <div class="detail-value">{{ selectedAirplaneDetails()?.ownership?.title }}</div>
+              <div class="bg-white p-3.5 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-1">
+                <span class="text-xs text-slate-400 font-medium">مالکیت</span>
+                <span class="text-sm font-semibold text-slate-700">{{ selectedAirplaneDetails()?.ownership?.title }}</span>
+              </div>
+            </div>
+
+            <!-- Seats and Payload -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+              <div class="md:col-span-2 bg-white px-6 py-4 rounded-xl border border-slate-100 shadow-sm flex justify-around items-center gap-4">
+                <div class="text-center">
+                  <span class="text-xl block mb-1">👑</span>
+                  <span class="text-base font-bold text-slate-800 block">{{ selectedAirplaneDetails()?.firstClassSeat }}</span>
+                  <span class="text-[10px] uppercase font-semibold text-slate-400 tracking-wider">First</span>
+                </div>
+                <div class="w-px h-8 bg-slate-100"></div>
+                <div class="text-center">
+                  <span class="text-xl block mb-1">💼</span>
+                  <span class="text-base font-bold text-slate-800 block">{{ selectedAirplaneDetails()?.businessClassSeat }}</span>
+                  <span class="text-[10px] uppercase font-semibold text-slate-400 tracking-wider">Business</span>
+                </div>
+                <div class="w-px h-8 bg-slate-100"></div>
+                <div class="text-center">
+                  <span class="text-xl block mb-1">🪑</span>
+                  <span class="text-base font-bold text-slate-800 block">{{ selectedAirplaneDetails()?.economicClassSeat }}</span>
+                  <span class="text-[10px] uppercase font-semibold text-slate-400 tracking-wider">Economy</span>
+                </div>
               </div>
 
-              <div class="seats-row">
-                <div class="seat-type">
-                  <span class="seat-icon">👑</span>
-                  <span class="seat-count">{{ selectedAirplaneDetails()?.firstClassSeat }}</span>
-                  <small>First</small>
+              <div class="bg-indigo-900 text-white p-4 rounded-xl flex justify-between items-center px-6 shadow-md shadow-indigo-950/10">
+                <span class="text-sm font-medium opacity-90">ظرفیت بار</span>
+                <div class="text-left">
+                  <span class="text-lg font-bold">{{ selectedAirplaneDetails()?.payload }}</span>
+                  <span class="text-xs opacity-75 ml-1">kg</span>
                 </div>
-                <div class="seat-type">
-                  <span class="seat-icon">💼</span>
-                  <span class="seat-count">{{ selectedAirplaneDetails()?.businessClassSeat }}</span>
-                  <small>Business</small>
-                </div>
-                <div class="seat-type">
-                  <span class="seat-icon">🪑</span>
-                  <span class="seat-count">{{ selectedAirplaneDetails()?.economicClassSeat }}</span>
-                  <small>Economy</small>
-                </div>
-              </div>
-
-              <div class="payload-item">
-                <span class="payload-label">ظرفیت بار</span>
-                <span class="payload-value">{{ selectedAirplaneDetails()?.payload }} <small>kg</small></span>
               </div>
             </div>
           </div>
         }
       </section>
 
+      <!-- Flight Information Section -->
       @if (isFlight) {
-        <section class="form-section flight-section">
-          <h2 class="section-title">
-            <span class="icon">🛤️</span>
+        <section class="bg-white/80 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-slate-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+          <h2 class="text-lg font-semibold text-slate-800 mb-6 flex items-center gap-2.5">
+            <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 text-base">🛤️</span>
             {{ 'fleet_schedule.flight_info' | translate }}
           </h2>
 
           @if (form.errors?.['sameAirports']) {
-            <div class="alert alert-danger">
-              {{ 'validation.same_airports' | translate }}
+            <div class="mb-6 p-4 bg-rose-50 border-r-4 border-rose-500 rounded-xl text-sm font-medium text-rose-700 flex items-center gap-2">
+              <span>⚠️</span> {{ 'validation.same_airports' | translate }}
             </div>
           }
 
-          <div class="form-grid">
-            <div class="field field-span-2">
-              <label>{{ 'fleet_schedule.flight_number' | translate }}</label>
-              <input type="text" formControlName="flightNumber" class="modern-input" placeholder="IR456" />
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="flex flex-col gap-2 md:col-span-1">
+              <label class="text-sm font-medium text-slate-700">{{ 'fleet_schedule.flight_number' | translate }}</label>
+              <input type="text" formControlName="flightNumber"
+                     class="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-200 outline-none placeholder:text-slate-300"
+                     placeholder="IR456" />
               @if (isInvalid('flightNumber')) {
-                <span class="error">{{ 'validation.required' | translate }}</span>
+                <span class="text-xs font-medium text-rose-500 mt-1 flex items-center gap-1">⚠️ {{ 'validation.required' | translate }}</span>
               }
             </div>
 
-            <div class="field">
-              <label>{{ 'fleet_schedule.from' | translate }}</label>
-              <select formControlName="fromAirport" class="modern-select">
+            <div class="flex flex-col gap-2">
+              <label class="text-sm font-medium text-slate-700">{{ 'fleet_schedule.from' | translate }}</label>
+              <select formControlName="fromAirport"
+                      class="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-200 outline-none">
                 <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
                 @for (opt of airportOptions(); track opt.value) {
                   <option [value]="opt.value">{{ opt.label }}</option>
                 }
               </select>
               @if (isInvalid('fromAirport')) {
-                <span class="error">{{ 'validation.required' | translate }}</span>
+                <span class="text-xs font-medium text-rose-500 mt-1 flex items-center gap-1">⚠️ {{ 'validation.required' | translate }}</span>
               }
             </div>
 
-            <div class="field">
-              <label>{{ 'fleet_schedule.to' | translate }}</label>
-              <select formControlName="toAirport" class="modern-select">
+            <div class="flex flex-col gap-2">
+              <label class="text-sm font-medium text-slate-700">{{ 'fleet_schedule.to' | translate }}</label>
+              <select formControlName="toAirport"
+                      class="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-200 outline-none">
                 <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
                 @for (opt of airportOptions(); track opt.value) {
                   <option [value]="opt.value">{{ opt.label }}</option>
                 }
               </select>
               @if (isInvalid('toAirport')) {
-                <span class="error">{{ 'validation.required' | translate }}</span>
+                <span class="text-xs font-medium text-rose-500 mt-1 flex items-center gap-1">⚠️ {{ 'validation.required' | translate }}</span>
               }
             </div>
           </div>
 
-          <app-flight-crew-form [crewArray]="crewArray" />
+          <div class="border-t border-slate-100 pt-6">
+            <app-flight-crew-form [crewArray]="crewArray" />
+          </div>
         </section>
       }
 
-      <div class="form-actions">
-        <button type="button" class="btn-secondary" (click)="cancel()">
+      <!-- Form Actions -->
+      <div class="flex items-center justify-end gap-3 pt-4">
+        <button type="button"
+                class="px-6 py-3 text-sm font-semibold text-slate-600 bg-white hover:bg-slate-50 active:bg-slate-100 border border-slate-200 rounded-xl transition-all duration-200 shadow-sm"
+                (click)="cancel()">
           {{ 'common.cancel' | translate }}
         </button>
-        <button type="submit" class="btn-primary">
-          💾 {{ 'common.save' | translate }}
+        <button type="submit"
+                class="px-8 py-3 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-xl shadow-md shadow-indigo-600/10 hover:shadow-lg hover:shadow-indigo-600/20 active:scale-[0.98] transition-all duration-200 flex items-center gap-2">
+          <span>💾</span> {{ 'common.save' | translate }}
         </button>
       </div>
 
