@@ -24,7 +24,6 @@
         </h2>
 
         <div class="form-grid">
-          <!-- Airplane -->
           <div class="field">
             <label>{{ 'fleet_schedule.airplane' | translate }}</label>
             <select formControlName="airplane" class="modern-select">
@@ -38,7 +37,6 @@
             }
           </div>
 
-          <!-- Type -->
           <div class="field">
             <label>{{ 'fleet_schedule.type' | translate }}</label>
             <select formControlName="type" class="modern-select">
@@ -52,26 +50,75 @@
             }
           </div>
 
-          <!-- Start Time -->
+          <!-- Start Time - Dual Calendar -->
           <div class="field">
-            <label>{{ 'fleet_schedule.start_time' | translate }}</label>
-            <input type="datetime-local" formControlName="actualStartTime" class="modern-input" />
+            <label class="flex-label">
+              {{ 'fleet_schedule.start_time' | translate }}
+              <button type="button" class="calendar-toggle-btn" (click)="toggleCalendarMode()">
+                {{ isJalaliMode ? 'میلادی' : 'شمسی' }}
+              </button>
+            </label>
+
+            <div class="datetime-input-wrapper">
+              @if (!isJalaliMode) {
+                <input type="datetime-local"
+                       formControlName="actualStartTime"
+                       class="modern-input"
+                       (change)="onGregorianChange('start', $event)" />
+              } @else {
+                <!-- اینجا jalali-date-picker یا کتابخانه خودتان را قرار دهید -->
+                <input type="text"
+                       [value]="jalaliStartDisplay"
+                       class="modern-input jalali-input"
+                       placeholder="تاریخ و ساعت شمسی"
+                       (focus)="openJalaliPicker('start')" />
+              }
+            </div>
+
+            <div class="utc-preview">
+              <small>UTC: {{ getUtcPreview('start') }}</small>
+              <small>میلادی: {{ getGregorianPreview('start') }}</small>
+            </div>
             @if (isInvalid('actualStartTime')) {
               <span class="error">{{ 'validation.required' | translate }}</span>
             }
           </div>
 
-          <!-- End Time -->
+          <!-- End Time - Dual Calendar -->
           <div class="field">
-            <label>{{ 'fleet_schedule.end_time' | translate }}</label>
-            <input type="datetime-local" formControlName="actualEndTime" class="modern-input" />
+            <label class="flex-label">
+              {{ 'fleet_schedule.end_time' | translate }}
+              <button type="button" class="calendar-toggle-btn" (click)="toggleCalendarMode()">
+                {{ isJalaliMode ? 'میلادی' : 'شمسی' }}
+              </button>
+            </label>
+
+            <div class="datetime-input-wrapper">
+              @if (!isJalaliMode) {
+                <input type="datetime-local"
+                       formControlName="actualEndTime"
+                       class="modern-input"
+                       (change)="onGregorianChange('end', $event)" />
+              } @else {
+                <input type="text"
+                       [value]="jalaliEndDisplay"
+                       class="modern-input jalali-input"
+                       placeholder="تاریخ و ساعت شمسی"
+                       (focus)="openJalaliPicker('end')" />
+              }
+            </div>
+
+            <div class="utc-preview">
+              <small>UTC: {{ getUtcPreview('end') }}</small>
+              <small>میلادی: {{ getGregorianPreview('end') }}</small>
+            </div>
             @if (isInvalid('actualEndTime')) {
               <span class="error">{{ 'validation.required' | translate }}</span>
             }
           </div>
         </div>
 
-        <!-- Airplane Details - Professional Card -->
+        <!-- Airplane Details -->
         @if (selectedAirplaneDetails()) {
           <div class="airplane-details-card">
             <h3 class="panel-subtitle">
@@ -97,12 +144,11 @@
                 <div class="detail-value">{{ selectedAirplaneDetails()?.ownership?.title }}</div>
               </div>
 
-              <!-- Seats -->
               <div class="seats-row">
                 <div class="seat-type">
                   <span class="seat-icon">👑</span>
                   <span class="seat-count">{{ selectedAirplaneDetails()?.firstClassSeat }}</span>
-                  <small>First Class</small>
+                  <small>First</small>
                 </div>
                 <div class="seat-type">
                   <span class="seat-icon">💼</span>
@@ -125,7 +171,6 @@
         }
       </section>
 
-      <!-- Flight Section -->
       @if (isFlight) {
         <section class="form-section flight-section">
           <h2 class="section-title">
@@ -133,7 +178,7 @@
             {{ 'fleet_schedule.flight_info' | translate }}
           </h2>
 
-          @if (form.errors?.['sameAirports'] && (form.get('fromAirport')?.touched || form.get('toAirport')?.touched)) {
+          @if (form.errors?.['sameAirports']) {
             <div class="alert alert-danger">
               {{ 'validation.same_airports' | translate }}
             </div>
@@ -142,7 +187,7 @@
           <div class="form-grid">
             <div class="field field-span-2">
               <label>{{ 'fleet_schedule.flight_number' | translate }}</label>
-              <input type="text" formControlName="flightNumber" class="modern-input" placeholder="e.g. IR456" />
+              <input type="text" formControlName="flightNumber" class="modern-input" placeholder="IR456" />
               @if (isInvalid('flightNumber')) {
                 <span class="error">{{ 'validation.required' | translate }}</span>
               }
@@ -184,8 +229,7 @@
           {{ 'common.cancel' | translate }}
         </button>
         <button type="submit" class="btn-primary">
-          <span class="icon">💾</span>
-          {{ 'common.save' | translate }}
+          💾 {{ 'common.save' | translate }}
         </button>
       </div>
 
