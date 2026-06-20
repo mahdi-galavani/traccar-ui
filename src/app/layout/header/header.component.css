@@ -2,35 +2,60 @@
   display: block;
   position: sticky;
   top: 0;
-  z-index: 100; /* اطمینان از قرارگیری روی نقشه‌ها و جداول زیری */
-  --header-height: 68px;
-  --bg-premium-glass: rgba(255, 255, 255, 0.82);
-  --border-subtle: rgba(226, 232, 240, 0.7);
+  z-index: 999; /* افزایش اولویت برای قرارگیری قطعی روی نقشه‌های سنگین و کامپوننت‌های سه‌بعدی */
+  --header-height: 70px;
+  --bg-premium-glass: rgba(255, 255, 255, 0.75);
+  --border-subtle: rgba(226, 232, 240, 0.8);
   --text-main-dark: #0f172a;
   --text-muted-slate: #475569;
   --aviation-blue: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
   --danger-glow: #f43f5e;
 }
 
+/* 🚀 نوار بالایی مینیاتوری برای جداسازی ساختار کلی هدر از لبه بالایی */
+.app-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #38bdf8, #0284c7, #0369a1);
+  z-index: 10;
+}
+
 .app-header {
+  position: relative;
   height: var(--header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
+  padding: 3px 2rem 0 2rem; /* هماهنگی پدینگ با نوار بالایی */
 
-  /* 🎨 افکت مات شیشه‌ای فوق‌العاده نرم با اشباع رنگی طبیعی محتوای زیرین */
+  /* 🎨 تقویت افکت مات شیشه‌ای برای بلاک کردن کامل محتوای متحرک زیرین */
   background: var(--bg-premium-glass);
-  backdrop-filter: blur(16px) saturate(130%);
-  -webkit-backdrop-filter: blur(16px) saturate(130%);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
 
+  /* حاشیه پایینی با درخشش سفید ملایم برای تفکیک لایه‌ای */
   border-bottom: 1px solid var(--border-subtle);
-  /* سایه مهندسی‌شده چندلایه و بسیار محو */
-  box-shadow:
-    0 1px 2px 0 rgba(15, 23, 42, 0.02),
-    0 4px 16px -4px rgba(15, 23, 42, 0.04);
 
-  transition: background-color 0.3s ease;
+  /* 🎴 سایه مهندسی‌شده عمیق، چند لایه و شناور (Floating Effect) */
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.03),
+    0 1px 3px rgba(0, 0, 0, 0.02),
+    0 20px 40px -15px rgba(15, 23, 42, 0.06);
+
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* افکت داینامیک در صورت اسکرول شدن یا تغییرات پس‌زمینه */
+.app-header:hover {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.02),
+    0 30px 60px -15px rgba(15, 23, 42, 0.08);
 }
 
 /* ─── بخش چپ: برندینگ هوانوردی ─── */
@@ -46,16 +71,20 @@
 }
 
 .brand-logo-mock {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   background: var(--aviation-blue);
   color: #ffffff;
-  border-radius: 9px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* ایجاد یک افکت نئونی بسیار ملایم پروازی زیر لوگو */
-  filter: drop-shadow(0 4px 6px rgba(2, 132, 199, 0.25));
+  filter: drop-shadow(0 4px 8px rgba(2, 132, 199, 0.3));
+  transition: transform 0.2s ease;
+}
+
+.brand-wrapper:hover .brand-logo-mock {
+  transform: translateY(-1px) scale(1.02);
 }
 
 .brand-text {
@@ -65,23 +94,22 @@
 }
 
 .main-title {
-  font-size: 0.98rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-main-dark);
   letter-spacing: -0.01em;
 }
 
 .sub-title {
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: #94a3b8;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #64748b;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
 }
 
 /* ─── بخش مرکز: دیسپچ ساعت ─── */
 .header-center-zone {
-  padding-top: 30px !important;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -103,31 +131,33 @@
   height: 32px;
 }
 
-/* کپسول یکپارچه پروفایل کاربر (بسیار جمع‌وجور و تمیز) */
+/* کپسول یکپارچه پروفایل کاربر مدرن */
 .profile-capsule {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  background: #ffffff;
+  gap: 0.85rem;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
   padding: 0.35rem 0.4rem 0.35rem 1rem;
-  border-radius: 30px; /* تبدیل به کپسول کامل برای حس داینامیک‌تر */
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 99px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .profile-capsule:hover {
+  background: #ffffff;
   border-color: #cbd5e1;
-  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  transform: translateY(-1px);
 }
 
 .user-info {
   display: flex;
   flex-direction: column;
-  align-items: flex-end; /* بهینه‌سازی پیش‌فرض راست‌چین برای وب فارسی */
+  align-items: flex-end;
 }
 
-/* مدیریت ترازبندی متون در لایوت‌های انگلیسی */
 :host-context([dir="ltr"]) .user-info {
   align-items: flex-start;
 }
@@ -145,10 +175,9 @@
   color: #64748b;
 }
 
-/* آواتار با گرادینت عمیق هوانوردی */
 .avatar-gradient {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
   color: #ffffff;
@@ -157,10 +186,9 @@
   justify-content: center;
   font-weight: 700;
   font-size: 0.9rem;
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.2);
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.25);
 }
 
-/* دکمه خروج مینیاتوری جاسازی شده در پایان کپسول */
 .logout-action-btn {
   background: transparent;
   border: none;
@@ -169,7 +197,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.45rem;
+  padding: 0.5rem;
   border-radius: 50%;
   transition: all 0.2s ease;
 }
@@ -177,13 +205,13 @@
 .logout-action-btn:hover {
   background-color: #fff1f2;
   color: var(--danger-glow);
-  transform: rotate(-15deg); /* افکت حرکتی ظریف خروج روی آیکون در زمان هاور */
+  transform: scale(1.05);
 }
 
 /* ─── ریسپانسیو کاملاً نرم و استاندارد ─── */
 @media (max-width: 900px) {
   .header-center-zone {
-    display: none; /* مخفی‌سازی ساعت در تبلت‌های کوچک برای جلوگیری از تو در تویی المان‌ها */
+    display: none;
   }
 }
 
@@ -192,7 +220,7 @@
     display: none;
   }
   .app-header {
-    padding: 0 1rem;
+    padding: 3px 1rem 0 1rem;
   }
   .profile-capsule {
     padding: 0.25rem;
