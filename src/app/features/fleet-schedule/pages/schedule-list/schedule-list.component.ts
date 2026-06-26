@@ -87,4 +87,34 @@ export class ScheduleListComponent implements OnInit {
     const all: FleetScheduleStatus[] = ['SCHEDULED', 'COMPLETED', 'CANCELLED'];
     return all.filter(s => s !== current);
   }
+
+  /**
+   * استخراج امن کد فرودگاه
+   */
+  getAirportCode(airport: any): string {
+    if (airport && typeof airport === 'object' && 'code' in airport) {
+      return airport.code || '???';
+    }
+    return '???';
+  }
+
+  /**
+   * استخراج امن علامت ثبت (Register) هواپیما
+   */
+  getAirplaneRegister(airplane: any): string {
+    if (airplane && typeof airplane === 'object' && 'register' in airplane) {
+      return airplane.register || '—';
+    }
+    return '—';
+  }
+
+  /**
+   * استخراج امن مدل هواپیما
+   */
+  getAirplaneModelName(airplane: any): string {
+    if (airplane && typeof airplane === 'object' && 'airplaneModel' in airplane) {
+      return airplane.airplaneModel?.name || '';
+    }
+    return '';
+  }
 }

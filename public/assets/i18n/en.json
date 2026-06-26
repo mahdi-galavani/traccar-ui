@@ -321,6 +321,8 @@
     }
   },
   "fleet_schedule": {
+    "route": "route",
+    "flight_time": "Flight Time",
     "page_title": "Fleet Schedule Management",
     "new_title": "New Fleet Schedule",
     "edit_title": "Edit Fleet Schedule",
@@ -352,6 +354,7 @@
       "dfdr": "Flight Data Recording (DFDR)"
     },
     "statuses": {
+      "completed": "completed",
       "draft": "Draft",
       "scheduled": "Scheduled",
       "cancelled": "Cancelled",
