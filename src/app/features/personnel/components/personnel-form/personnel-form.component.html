@@ -1,0 +1,79 @@
+<div class="dialog-overlay" (click)="cancel()">
+  <form
+    class="dialog-card"
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    (click)="$event.stopPropagation()"
+  >
+    <h2 class="dialog-title">{{ 'PERSONNEL.FORM_TITLE' | translate }}</h2>
+
+    <div class="form-grid">
+
+      <div class="field">
+        <label>{{ 'PERSONNEL.NAME' | translate }}</label>
+        <input type="text" formControlName="name" />
+        @if (isInvalid('name')) {
+          <span class="error">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <label>{{ 'PERSONNEL.FAMILY' | translate }}</label>
+        <input type="text" formControlName="family" />
+        @if (isInvalid('family')) {
+          <span class="error">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <label>{{ 'PERSONNEL.NATIONAL_CODE' | translate }}</label>
+        <input type="text" formControlName="nationalCode" />
+        @if (isInvalid('nationalCode')) {
+          <span class="error">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <label>{{ 'PERSONNEL.PHONE' | translate }}</label>
+        <input type="text" formControlName="phoneNumber" />
+      </div>
+
+      <div class="field field-span-2">
+        <label>{{ 'PERSONNEL.JOB' | translate }}</label>
+        <select formControlName="jobId">
+          <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
+          @for (opt of jobOptions(); track opt.value) {
+            <option [value]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Aircraft Types: multi-select با checkbox -->
+      <div class="field field-span-2">
+        <label>{{ 'PERSONNEL.AIRCRAFT_TYPES' | translate }}</label>
+        <div class="checkbox-group">
+          @for (opt of aircraftTypeOptions(); track opt.value) {
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [checked]="isTypeSelected(+opt.value!)"
+                (change)="toggleAircraftType(+opt.value!)"
+              />
+              {{ opt.label }}
+            </label>
+          }
+        </div>
+      </div>
+
+    </div>
+
+    <div class="dialog-actions">
+      <button type="button" class="btn-secondary" (click)="cancel()">
+        {{ 'common.cancel' | translate }}
+      </button>
+      <button type="submit" class="btn-primary">
+        {{ 'common.save' | translate }}
+      </button>
+    </div>
+  </form>
+</div>

@@ -4,8 +4,10 @@
   },
   "common": {
     "save": "ذخیره",
+    "saved": "با موفقیت ذخیره شد.",
     "update": "به‌روزرسانی",
     "delete": "حذف",
+    "deleted": "با موفقیت حذف شد",
     "cancel": "انصراف",
     "search": "جستجو",
     "filter": "فیلتر",
@@ -82,6 +84,10 @@
     "seat_style": "چیدمان صندلی‌ها",
     "ownership": "نوع مالکیت",
     "type": "نوع هواپیما",
+    "first_class_seat": "تعداد صندلی درجه یک",
+    "business_class_seat": "تعداد صندلی بیزینس",
+    "economic_class_seat": "تعداد صندلی اقتصادی",
+    "payload": "بار مفید (Payload)",
     "model": "مدل",
     "manufacturer": "سازنده",
     "capacity": "ظرفیت",
@@ -94,7 +100,8 @@
     "validation": {
       "register_required": "شماره ثبت الزامی است",
       "type_required": "نوع هواپیما الزامی است",
-      "seat_style_required": "چیدمان صندلی‌ها الزامی است"
+      "seat_style_required": "چیدمان صندلی‌ها الزامی است",
+      "ownership_required": "نوع مالکیت الزامی است"
     },
     "messages": {
       "save_success": "هواپیما با موفقیت ذخیره شد",
@@ -119,6 +126,7 @@
     "runway": "تعداد باندهای پرواز",
     "timezone": "منطقه زمانی",
     "select_airport": "انتخاب فرودگاه",
+    "internal": "داخلی",
     "form_title": "فرم اطلاعات فرودگاه",
     "validation": {
       "code_required": "کد فرودگاه الزامی است",
@@ -448,7 +456,18 @@
     "persons": "اشخاص",
     "reports": "گزارشات و تحلیل",
     "fleetSchedule": "برنامه پروازی",
-    "fleetTimeline": "خط زمان و مانیتورینگ ناوگان"
+    "fleetTimeline": "خط زمان و مانیتورینگ ناوگان",
+    "personnel": "پرسنل"
+  },
+  "PERSONNEL": {
+    "PAGE_TITLE": "پرسنل",
+    "FORM_TITLE": "پرسنل",
+    "NAME": "نام",
+    "FAMILY": "نام خانوادگی",
+    "NATIONAL_CODE": "کد ملی",
+    "PHONE": "شماره تلفن",
+    "JOB": "شغل",
+    "AIRCRAFT_TYPES": "انواع هواپیمای مجاز"
   },
   "dashboard": {
     "title": "داشبورد مدیریت ناوگان",

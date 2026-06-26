@@ -23,6 +23,7 @@ export class SidebarComponent {
 
   readonly menu: MenuItem[] = [
     // 👈 ایجاد آیتم والد برای مدیریت دسترسی (بدون روت مستقیم، همراه با فرزند)
+    { titleKey: 'nav.baseInfo', route: '/base-info', icon: 'database' },
     {
       titleKey: 'nav.accessManagement',
       icon: 'lock',
@@ -31,10 +32,10 @@ export class SidebarComponent {
         { titleKey: 'nav.roles', route: '/users/roles' },
       ]
     },
+    { titleKey: 'nav.personnel', route: '/personnel' },
     { titleKey: 'nav.airplanes', route: '/airplanes', icon: 'plane' },
     { titleKey: 'nav.airports', route: '/airports', icon: 'map-pin' },
     { titleKey: 'nav.locations', route: '/locations', icon: 'globe' },
-    { titleKey: 'nav.baseInfo', route: '/base-info', icon: 'database' },
     { titleKey: 'nav.fleetSchedule', route: '/fleet-schedule', icon: 'calendar' },
     { titleKey: 'nav.fleetTimeline', route: '/fleet-timeline', icon: 'clock' },
   ];

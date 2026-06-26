@@ -4,10 +4,11 @@ import { map, Observable } from 'rxjs';
 
 export const AIRPORT_COLUMNS: CrudColumn[] = [
   { key: 'code', label: 'airport.code' },
+  { key: 'name', label: 'airport.name' },
   { key: 'location.title', label: 'airport.location' },
+  { key: 'internal', label: 'airport.internal' },
 ];
 
-// تغییر متد به طوری که سرویس را به عنوان ورودی دریافت کند
 function loadLocationOptions(locationApi: LocationApiService): Observable<SelectOption[]> {
   return locationApi.load().pipe(
     map((locations) => locations.map((l) => ({
@@ -17,15 +18,24 @@ function loadLocationOptions(locationApi: LocationApiService): Observable<Select
   );
 }
 
-// تبدیل فیلدها به یک تابع که سرویس لوکیشن را می‌گیرد
 export const getAirportFields = (locationApi: LocationApiService): FieldConfig[] => [
-  { key: 'code', label: 'airport.code', type: 'text', required: true },
+  {
+    key: 'code',
+    label: 'airport.code',
+    type: 'text',
+    required: true
+  },
+  {
+    key: 'name',
+    label: 'airport.name',
+    type: 'text',
+    required: true
+  },
   {
     key: 'location',
     label: 'airport.location',
     type: 'select',
     required: true,
-    // ایجاد یک کلclosure برای صدا زدن متد با سرویس تزریق شده
     loadOptions: () => loadLocationOptions(locationApi),
 
     fromDto: (dto) => {
@@ -40,5 +50,11 @@ export const getAirportFields = (locationApi: LocationApiService): FieldConfig[]
       }
       return { id: Number(value), title: '', code: '' };
     },
+  },
+  {
+    key: 'internal',
+    label: 'airport.internal',
+    type: 'checkbox',
+    required: false
   },
 ];

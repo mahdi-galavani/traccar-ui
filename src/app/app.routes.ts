@@ -52,6 +52,11 @@ export const routes: Routes = [
             (m) => m.FleetTimelineComponent
           ),
       },
+      {
+        path: 'personnel',
+        loadChildren: () =>
+          import('./features/personnel/personnel.routes').then((m) => m.PERSONNEL_ROUTES),
+      },
       { path: '**', redirectTo: 'users' },
     ],
   },

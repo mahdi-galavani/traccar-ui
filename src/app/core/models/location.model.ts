@@ -1,8 +1,7 @@
 import { IdDtoLong } from './base/id.model';
 
-export type LocationType = 'CONTINENT' | 'COUNTRY' | 'PROVINCE';
+export type LocationType = 'CONTINENT' | 'COUNTRY' | 'PROVINCE' | 'CITY';
 
-/** Full DTO used by /api/location/* */
 export interface LocationDto {
   id?: number;
   version?: number;
@@ -13,7 +12,6 @@ export interface LocationDto {
   type: LocationType;
 }
 
-/** lightweight reference embedded inside AirportDto */
 export interface LocationCodeDto {
   id?: number;
   title?: string;

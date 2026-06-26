@@ -4,8 +4,10 @@
   },
   "common": {
     "save": "Save",
+    "saved": "Save successfully ...",
     "update": "Update",
     "delete": "Delete",
+    "deleted": "Delete successfully ...",
     "cancel": "Cancel",
     "search": "Search",
     "filter": "Filter",
@@ -80,6 +82,10 @@
     "seat_style": "Seat Configuration",
     "ownership": "Ownership Type",
     "type": "Airplane Type",
+    "first_class_seat": "First Class Seats",
+    "business_class_seat": "Business Class Seats",
+    "economic_class_seat": "Economic Class Seats",
+    "payload": "Payload (kg)",
     "model": "Model",
     "manufacturer": "Manufacturer",
     "capacity": "Capacity",
@@ -92,7 +98,8 @@
     "validation": {
       "register_required": "Registration number is required",
       "type_required": "Airplane type is required",
-      "seat_style_required": "Seat configuration is required"
+      "seat_style_required": "Seat configuration is required",
+      "ownership_required": "Ownership type is required"
     },
     "messages": {
       "save_success": "Airplane saved successfully",
@@ -112,6 +119,7 @@
     "location": "Location",
     "name": "Airport Name",
     "city": "City",
+    "internal": "Internal",
     "country": "Country",
     "terminal": "Number of Terminals",
     "runway": "Number of Runways",
@@ -447,7 +455,18 @@
     "persons": "Persons",
     "reports": "Reports & Analytics",
     "fleetSchedule": "Fleet Schedule",
-    "fleetTimeline": "Fleet Timeline Canvas"
+    "fleetTimeline": "Fleet Timeline Canvas",
+    "personnel": "personnel"
+  },
+  "PERSONNEL": {
+    "PAGE_TITLE": "Personnel",
+    "FORM_TITLE": "Personnel",
+    "NAME": "First Name",
+    "FAMILY": "Last Name",
+    "NATIONAL_CODE": "National Code",
+    "PHONE": "Phone Number",
+    "JOB": "Job",
+    "AIRCRAFT_TYPES": "Aircraft Types"
   },
   "dashboard": {
     "title": "Fleet Management Dashboard",
