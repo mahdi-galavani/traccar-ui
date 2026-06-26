@@ -11,6 +11,7 @@ export const LOCATION_TYPE_OPTIONS: SelectOption[] = [
   { label: 'location.types.continent', value: 'CONTINENT' },
   { label: 'location.types.country', value: 'COUNTRY' },
   { label: 'location.types.province', value: 'PROVINCE' },
+  { label: 'location.types.city', value: 'CITY' },
 ];
 
 export const LOCATION_FIELDS: FieldConfig[] = [
@@ -20,7 +21,7 @@ export const LOCATION_FIELDS: FieldConfig[] = [
     type: 'text',
     required: true,
     minLength: 1,
-    placeholder: 'مثال: IR یا Asia'
+    placeholder: 'مثال: IR یا Asia یا THR'
   },
   {
     key: 'title',

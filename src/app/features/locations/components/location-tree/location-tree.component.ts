@@ -1,9 +1,8 @@
-// location-tree.component.ts
 import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LocationApiService } from '../../../../core/services/api/location-api.service';
-import { LocationDto } from '../../../../core/models/location.model';
+import { LocationDto, LocationType } from '../../../../core/models/location.model';
 
 @Component({
   selector: 'app-location-tree',
@@ -24,24 +23,23 @@ export class LocationTreeComponent implements OnInit {
 
   readonly children = signal<LocationDto[]>([]);
   readonly loadingChildren = signal(false);
-
-  // نگهداری آیدی‌های باز شده برای مدیریت دقیق درخت
   readonly expandedNodes = signal<Record<number, boolean>>({});
 
   ngOnInit(): void {
-    if (this.isRoot) {
-      this.loadChildren();
-    } else if (this.node?.id) {
-      // اگر نود روت نبود، فرزندان این نود خاص را لود می‌کنیم
+    if (this.isRoot || this.node?.id) {
       this.loadChildren();
     }
   }
 
-  toggle(child: LocationDto): void {
-    if (!child.id) return;
+  canHaveChildren(type: LocationType): boolean {
+    return type === 'CONTINENT' || type === 'COUNTRY' || type === 'PROVINCE';
+  }
 
-    const currentStatus = !!this.expandedNodes()[child.id];
-    this.expandedNodes.update(prev => ({ ...prev, [child.id!]: !currentStatus }));
+  toggle(child: LocationDto): void {
+    if (!child.id || !this.canHaveChildren(child.type)) return;
+
+    const current = !!this.expandedNodes()[child.id];
+    this.expandedNodes.update((prev) => ({ ...prev, [child.id!]: !current }));
   }
 
   isExpanded(id?: number): boolean {
@@ -50,9 +48,7 @@ export class LocationTreeComponent implements OnInit {
 
   loadChildren(): void {
     this.loadingChildren.set(true);
-    const request = this.isRoot
-      ? this.api.loadRoot()
-      : this.api.loadByParentId(this.node!.id!);
+    const request = this.isRoot ? this.api.loadRoot() : this.api.loadByParentId(this.node!.id!);
 
     request.subscribe({
       next: (data) => {

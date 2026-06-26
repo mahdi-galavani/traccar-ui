@@ -169,7 +169,8 @@
     "types": {
       "continent": "Continent",
       "country": "Country",
-      "province": "Province"
+      "province": "Province",
+      "city": "City"
     }
   },
   "role": {

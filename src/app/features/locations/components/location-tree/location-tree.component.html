@@ -27,19 +27,19 @@
         <button
           type="button"
           class="toggle-btn"
-          [class.has-children]="child.type !== 'PROVINCE'"
-          (click)="toggle(child)"
+          [class.has-children]="canHaveChildren(child.type)"
+        (click)="toggle(child)"
         >
-          @if (child.type !== 'PROVINCE') {
-            <i class="fas" [class.fa-chevron-down]="isExpanded(child.id)" [class.fa-chevron-left]="!isExpanded(child.id)"></i>
-          }
+        @if (canHaveChildren(child.type)) {
+          <i class="fas" [class.fa-chevron-down]="isExpanded(child.id)" [class.fa-chevron-left]="!isExpanded(child.id)"></i>
+        }
         </button>
 
         <span class="node-label" [class.disabled]="child.enabled === false">
           <i class="fas"
              [class.fa-globe]="child.type === 'CONTINENT'"
              [class.fa-flag]="child.type === 'COUNTRY'"
-             [class.fa-map-marker-alt]="child.type === 'PROVINCE'">
+             [class.fa-map-marker-alt]="child.type === 'PROVINCE' || child.type === 'CITY'">
           </i>
           <span class="font-medium mx-1">{{ child.title }}</span>
           <span class="node-code text-gray-400 text-xs">({{ child.code }})</span>
@@ -49,7 +49,7 @@
         </span>
 
         <div class="node-actions">
-          @if (child.type !== 'PROVINCE') {
+          @if (canHaveChildren(child.type)) {                    <!-- ← تغییر کرد -->
             <button type="button" class="btn-icon text-green-600" (click)="addChild.emit(child)" [title]="'common.add' | translate">
               <i class="fas fa-plus-circle"></i>
             </button>
