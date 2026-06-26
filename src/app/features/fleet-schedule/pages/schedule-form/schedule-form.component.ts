@@ -11,11 +11,7 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { FlightCrewFormComponent } from '../../components/flight-crew-form/flight-crew-form.component';
 import { SelectOption } from '../../../../core/models/base/crud-field.model';
 import { AirplaneDto } from '../../../../core/models/airplane.model';
-import {
-  FleetScheduleDto,
-  FleetScheduleType,
-  FleetScheduleStatus
-} from '../../../../core/models/fleet-schedule.model';
+import { FleetScheduleDto, FleetScheduleType } from '../../../../core/models/fleet-schedule.model';
 
 @Component({
   selector: 'app-schedule-form',
@@ -41,9 +37,7 @@ export class ScheduleFormComponent implements OnInit {
   readonly selectedAirplaneDetails = signal<AirplaneDto | null>(null);
 
   readonly TYPES: FleetScheduleType[] = ['FLIGHT', 'CHECK', 'DFDR'];
-  private currentStatus: FleetScheduleStatus = 'DRAFT';
 
-  // مدیریت تقویم
   isJalaliMode = true;
   jalaliStartDisplay = '';
   jalaliEndDisplay = '';
@@ -52,13 +46,13 @@ export class ScheduleFormComponent implements OnInit {
     id: new FormControl<string | null>(null),
     version: new FormControl<number | null>(null),
     airplane: new FormControl<string | null>(null, Validators.required),
-    actualStartTime: new FormControl<string | null>(null, Validators.required),
-    actualEndTime: new FormControl<string | null>(null, Validators.required),
+    departure: new FormControl<string | null>(null, Validators.required),
+    arrival: new FormControl<string | null>(null, Validators.required),
+    plannedStartTime: new FormControl<string | null>(null, Validators.required),
+    plannedEndTime: new FormControl<string | null>(null, Validators.required),
     type: new FormControl<FleetScheduleType | null>(null, Validators.required),
 
     flightNumber: new FormControl<string | null>(null),
-    fromAirport: new FormControl<string | null>(null),
-    toAirport: new FormControl<string | null>(null),
     crew: new FormArray<FormGroup>([]),
   }, { validators: this.airportRouteValidator });
 
@@ -115,12 +109,12 @@ export class ScheduleFormComponent implements OnInit {
   }
 
   private airportRouteValidator(control: AbstractControl): ValidationErrors | null {
-    const from = control.get('fromAirport')?.value;
-    const to = control.get('toAirport')?.value;
+    const from = control.get('departure')?.value;
+    const to = control.get('arrival')?.value;
     return from && to && from === to ? { sameAirports: true } : null;
   }
 
-  // ====================== تقویم شمسی / میلادی ======================
+  // ====================== تقویم ======================
   toggleCalendarMode() {
     this.isJalaliMode = !this.isJalaliMode;
   }
@@ -135,12 +129,12 @@ export class ScheduleFormComponent implements OnInit {
   }
 
   openJalaliPicker(type: 'start' | 'end') {
-    console.log(`Jalali picker for ${type}`);
-    // TODO: پیاده‌سازی picker شمسی
+    // TODO: پیاده‌سازی picker شمسی (مثل jalali-angular یا flatpickr)
+    console.log(`Jalali picker for ${type} - هنوز پیاده‌سازی نشده`);
   }
 
   getUtcPreview(type: 'start' | 'end'): string {
-    const key = type === 'start' ? 'actualStartTime' : 'actualEndTime';
+    const key = type === 'start' ? 'plannedStartTime' : 'plannedEndTime';
     const val = this.form.get(key)?.value;
     if (!val) return '—';
     try {
@@ -151,7 +145,7 @@ export class ScheduleFormComponent implements OnInit {
   }
 
   getGregorianPreview(type: 'start' | 'end'): string {
-    const key = type === 'start' ? 'actualStartTime' : 'actualEndTime';
+    const key = type === 'start' ? 'plannedStartTime' : 'plannedEndTime';
     const val = this.form.get(key)?.value;
     if (!val) return '—';
     return moment(val).format('YYYY-MM-DD HH:mm');
@@ -167,29 +161,25 @@ export class ScheduleFormComponent implements OnInit {
   }
 
   private patchForm(dto: FleetScheduleDto): void {
-    this.currentStatus = dto.status ?? 'DRAFT';
-
-    const startTime = dto.actualStartTime ? dto.actualStartTime.substring(0, 16) : null;
-    const endTime = dto.actualEndTime ? dto.actualEndTime.substring(0, 16) : null;
-
     this.form.patchValue({
       id: dto.id ?? null,
       version: dto.version ?? null,
       airplane: dto.airplane?.id ?? null,
-      actualStartTime: startTime,
-      actualEndTime: endTime,
+      departure: dto.departure?.id ?? null,
+      arrival: dto.arrival?.id ?? null,
+      plannedStartTime: dto.plannedStartTime?.substring(0, 16) ?? null,
+      plannedEndTime: dto.plannedEndTime?.substring(0, 16) ?? null,
       type: dto.type,
       flightNumber: dto.flight?.number ?? null,
-      fromAirport: dto.flight?.from?.id ?? null,
-      toAirport: dto.flight?.to?.id ?? null,
     });
-
-    if (startTime) this.jalaliStartDisplay = moment(startTime).format('jYYYY/jMM/jDD HH:mm');
-    if (endTime) this.jalaliEndDisplay = moment(endTime).format('jYYYY/jMM/jDD HH:mm');
 
     this.syncSelectedAirplaneDetails(dto.airplane?.id);
     this.patchCrew(dto);
     this.updateFlightValidators(dto.type);
+
+    // به‌روزرسانی نمایش شمسی
+    if (dto.plannedStartTime) this.jalaliStartDisplay = moment(dto.plannedStartTime).format('jYYYY/jMM/jDD HH:mm');
+    if (dto.plannedEndTime) this.jalaliEndDisplay = moment(dto.plannedEndTime).format('jYYYY/jMM/jDD HH:mm');
   }
 
   private patchCrew(dto: FleetScheduleDto) {
@@ -208,7 +198,7 @@ export class ScheduleFormComponent implements OnInit {
   }
 
   private updateFlightValidators(type: FleetScheduleType | null) {
-    const fields = ['flightNumber', 'fromAirport', 'toAirport'];
+    const fields = ['flightNumber', 'departure', 'arrival'];
     if (type === 'FLIGHT') {
       fields.forEach(key => this.form.get(key)?.setValidators(Validators.required));
     } else {
@@ -219,14 +209,17 @@ export class ScheduleFormComponent implements OnInit {
 
   private addCrewIfEmpty(): void {
     if (this.crewArray.length === 0) {
-      this.crewArray.push(new FormGroup({
-        personId: new FormControl(null, Validators.required),
-        crewJobId: new FormControl(null, Validators.required),
-      }));
+      this.crewArray.push(this.buildCrewRow());
     }
   }
 
-  // ====================== Submit (رفع خطای TS2322) ======================
+  private buildCrewRow(): FormGroup {
+    return new FormGroup({
+      personId: new FormControl(null, Validators.required),
+      crewJobId: new FormControl(null, Validators.required),
+    });
+  }
+
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -235,25 +228,24 @@ export class ScheduleFormComponent implements OnInit {
 
     const v = this.form.getRawValue();
 
-    // چون validation رد شده، این مقادیر حتماً وجود دارند
     const dto: FleetScheduleDto = {
       id: v.id ?? undefined,
       version: v.version ?? undefined,
       airplane: { id: v.airplane! },
-      actualStartTime: `${v.actualStartTime!}:00Z`,     // ! اضافه شد
-      actualEndTime: `${v.actualEndTime!}:00Z`,       // ! اضافه شد
+      departure: { id: v.departure! },
+      arrival: { id: v.arrival! },
+      plannedStartTime: `${v.plannedStartTime!}:00Z`,
+      plannedEndTime: `${v.plannedEndTime!}:00Z`,
       type: v.type!,
-      status: this.currentStatus,
+      status: 'SCHEDULED',
     };
 
     if (v.type === 'FLIGHT') {
       dto.flight = {
         number: v.flightNumber!,
-        from: { id: v.fromAirport! },
-        to: { id: v.toAirport! },
         crew: (v.crew as any[]).map((c: any) => ({
-          person: { id: c.personId } as any,
-          crewJob: { id: c.crewJobId } as any,
+          person: { id: c.personId },
+          crewJob: { id: c.crewJobId },
         })),
       };
     }

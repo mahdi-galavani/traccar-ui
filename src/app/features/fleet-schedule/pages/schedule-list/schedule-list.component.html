@@ -10,51 +10,64 @@
 } @else if (!items().length) {
   <app-empty-state message="fleet_schedule.no_data" />
 } @else {
-  <div class="table-wrapper">
-    <table class="data-table">
+  <div class="table-wrapper overflow-x-auto">
+    <table class="data-table min-w-full">
       <thead>
       <tr>
-        <th>{{ 'fleet_schedule.type' | translate }}</th>
-        <th>{{ 'fleet_schedule.airplane' | translate }}</th>
-        <th>{{ 'fleet_schedule.start_time' | translate }}</th>
-        <th>{{ 'fleet_schedule.end_time' | translate }}</th>
-        <th>{{ 'fleet_schedule.flight_number' | translate }}</th>
-        <th>{{ 'fleet_schedule.status' | translate }}</th>
-        <th class="actions-col">{{ 'common.actions' | translate }}</th>
+        <th>نوع</th>
+        <th>هواپیما</th>
+        <th>مسیر</th>
+        <th>زمان پرواز</th>
+        <th>شماره پرواز</th>
+        <th>crew</th>
+        <th>وضعیت</th>
+        <th class="actions-col">عملیات</th>
       </tr>
       </thead>
       <tbody>
         @for (item of items(); track item.id) {
-          <tr>
+          <tr class="hover:bg-slate-50 transition-colors">
             <td>
               <span class="type-badge">
                 {{ TYPE_ICONS[item.type] }} {{ ('fleet_schedule.types.' + item.type.toLowerCase()) | translate }}
               </span>
             </td>
-            <td>{{ item.airplane?.id }}</td>
-            <td>{{ item.actualStartTime | date: 'yyyy/MM/dd HH:mm' }}</td>
-            <td>{{ item.actualEndTime | date: 'yyyy/MM/dd HH:mm' }}</td>
-            <td>{{ item.flight?.number ?? '-' }}</td>
+            <td class="font-medium">
+
+
+            </td>
+            <td>
+              <span class="font-mono text-sm font-semibold text-indigo-600">
+
+              </span>
+            </td>
+            <td>
+              <div class="text-sm">
+                <span>{{ item.plannedStartTime | date: 'HH:mm' }}</span>
+                <span class="text-slate-400 mx-1">→</span>
+                <span>{{ item.plannedEndTime | date: 'HH:mm' }}</span>
+              </div>
+              <span class="text-xs text-slate-500">
+                {{ item.plannedStartTime | date: 'yyyy/MM/dd' }}
+              </span>
+            </td>
+            <td class="font-medium">{{ item.flight?.number ?? '—' }}</td>
+            <td>
+              <span class="crew-count">
+                👥 {{ item.flight?.crew?.length || 0 }}
+              </span>
+            </td>
             <td>
               <span class="status-badge" [class]="STATUS_COLORS[item.status]">
                 {{ ('fleet_schedule.statuses.' + item.status.toLowerCase()) | translate }}
               </span>
             </td>
             <td class="actions-col">
-              <button type="button" class="btn-icon" (click)="onEdit(item)">
-                {{ 'common.edit' | translate }}
-              </button>
-              <button type="button" class="btn-icon btn-danger" (click)="onDelete(item)">
-                {{ 'common.delete' | translate }}
-              </button>
-              <select
-                class="status-select"
-                [value]="item.status"
-                (change)="onStatusChange(item, $any($event.target).value)"
-              >
-                <option [value]="item.status" disabled>
-                  {{ ('fleet_schedule.statuses.' + item.status.toLowerCase()) | translate }}
-                </option>
+              <button type="button" class="btn-icon" (click)="onEdit(item)">ویرایش</button>
+              <button type="button" class="btn-icon btn-danger" (click)="onDelete(item)">حذف</button>
+              <select class="status-select text-xs"
+                      [value]="item.status"
+                      (change)="onStatusChange(item, $any($event.target).value)">
                 @for (s of statusOptions(item.status); track s) {
                   <option [value]="s">{{ ('fleet_schedule.statuses.' + s.toLowerCase()) | translate }}</option>
                 }

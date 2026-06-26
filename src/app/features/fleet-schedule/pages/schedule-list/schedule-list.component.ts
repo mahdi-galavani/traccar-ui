@@ -30,8 +30,8 @@ export class ScheduleListComponent implements OnInit {
   readonly loading = signal(false);
 
   readonly STATUS_COLORS: Record<FleetScheduleStatus, string> = {
-    DRAFT: 'badge-draft',
     SCHEDULED: 'badge-scheduled',
+    COMPLETED: 'badge-completed',
     CANCELLED: 'badge-cancelled',
   };
 
@@ -84,7 +84,7 @@ export class ScheduleListComponent implements OnInit {
   }
 
   statusOptions(current: FleetScheduleStatus): FleetScheduleStatus[] {
-    const all: FleetScheduleStatus[] = ['DRAFT', 'SCHEDULED', 'CANCELLED'];
-    return all.filter((s) => s !== current);
+    const all: FleetScheduleStatus[] = ['SCHEDULED', 'COMPLETED', 'CANCELLED'];
+    return all.filter(s => s !== current);
   }
 }

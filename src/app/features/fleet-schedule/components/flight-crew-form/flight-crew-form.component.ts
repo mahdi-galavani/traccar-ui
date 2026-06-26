@@ -15,7 +15,6 @@ import { BASE_INFO_HEADER_CODE } from '../../../../shared/constants/app.constant
   styleUrl: './flight-crew-form.component.css',
 })
 export class FlightCrewFormComponent implements OnInit {
-  /** the FormArray از فرم والد */
   @Input() crewArray!: FormArray;
 
   private personApi = inject(AppPersonApiService);
@@ -33,8 +32,8 @@ export class FlightCrewFormComponent implements OnInit {
       this.personOptions.set(
         persons.map((p) => ({
           label: `${p.name} ${p.family}`,
-          value: p.id,
-        })),
+          value: p.id!,
+        }))
       );
     });
 

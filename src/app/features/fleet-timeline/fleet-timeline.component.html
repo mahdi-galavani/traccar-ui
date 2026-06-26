@@ -43,7 +43,7 @@
     <div class="time-axis-row">
       <div class="axis-corner-cell">Days</div>
       <div class="hours-container">
-        @for (hour of [0,2,4,6,8,10,12,14,16,18,20,22]; track hour) {
+        @for (hour of [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]; track hour) {
           <div class="hour-tick">{{ hour | number:'2.0-0' }}:00</div>
         }
       </div>
@@ -56,31 +56,33 @@
 
           <div class="slots-lane-wrapper">
             <div class="grid-guidelines">
-              @for (tick of [1,2,3,4,5,6,7,8,9,10,11]; track tick) { <div class="line-tick"></div> }
+              @for (tick of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; track tick) {
+                <div class="line-tick"></div>
+              }
             </div>
 
             @for (flight of currentAirplaneSchedules(); track flight.id) {
               @if (isFlightOnDay(flight, dayIdx)) {
                 <div class="flight-block-card" [ngStyle]="getFlightStyle(flight)">
                   <div class="flight-block-content">
-                    <span class="flight-route-code">{{ flight.flight?.from?.code }} → {{ flight.flight?.to?.code }}</span>
+        <span class="flight-route-code">
+          {{ getAirportCode(flight.departure) }} → {{ getAirportCode(flight.arrival) }}
+        </span>
                     <span class="flight-id-badge">#{{ flight.flight?.number }}</span>
                   </div>
 
                   <div class="flight-tooltip-popup">
                     <strong>Flight: {{ flight.flight?.number }}</strong>
-                    <div>Route: {{ flight.flight?.from?.code }} to {{ flight.flight?.to?.code }}</div>
-                    <div>Dep: {{ flight.actualStartTime | date:'HH:mm' }}</div>
-                    <div>Arr: {{ flight.actualEndTime | date:'HH:mm' }}</div>
+                    <div>Route: {{ getAirportCode(flight.departure) }} to {{ getAirportCode(flight.arrival) }}</div>
+                    <div>Dep: {{ flight.plannedStartTime | date:'HH:mm' }}</div>
+                    <div>Arr: {{ flight.plannedEndTime | date:'HH:mm' }}</div>
                   </div>
                 </div>
               }
             }
           </div>
-
         </div>
       }
     </div>
-
   </div>
 </div>
