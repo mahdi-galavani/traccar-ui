@@ -46,7 +46,11 @@
     "reports": "گزارشات",
     "confirm_delete": "آیا مطمئن از حذف هستید؟",
     "confirm_title": "آیا از انجام عملیات مطمئن هستید؟",
-    "select_placeholder": "لطفاً انتخاب کنید..."
+    "select_placeholder": "لطفاً انتخاب کنید...",
+    "seat": "صندلی",
+    "seats": "صندلی",
+    "kg": "کیلوگرم",
+    "direction": "rtl"
   },
   "auth": {
     "login": {
@@ -328,18 +332,20 @@
     "status": "وضعیت",
     "start_time": "زمان شروع",
     "end_time": "زمان پایان",
+    "planned_start_time": "زمان شروع برنامه‌ریزی شده",
+    "planned_end_time": "زمان پایان برنامه‌ریزی شده",
     "flight_info": "اطلاعات پرواز",
     "flight_number": "شماره پرواز",
     "from": "فرودگاه مبدا",
     "to": "فرودگاه مقصد",
-    "airport_code_placeholder": "مثال: thr",
+    "airport_code_placeholder": "مثال: THR",
     "first_class": "صندلی درجه یک",
-    "business_class": "صندلی بیزینس",
-    "economic_class": "صندلی اقتصادی",
-    "payload": "میزان بار (کیلوگرم)",
+    "business_class": "صندلی تجاری (بیزینس)",
+    "economic_class": "صندلی اقتصادی (اکونومی)",
+    "payload": "ظرفیت مجاز بار (کیلوگرم)",
     "crew": "خدمه پرواز",
     "add_crew": "افزودن خدمه جدید",
-    "person": "شخص",
+    "person": "شخص / پرسنل",
     "crew_job": "سمت خدمه",
     "no_data": "اطلاعاتی برای برنامه ناوگان یافت نشد",
     "types": {
@@ -353,9 +359,9 @@
       "cancelled": "لغو شده",
       "on_time": "به موقع",
       "delayed": "تاخیر دارد",
-      "boarding": "سوار شدن به هواپیما",
+      "boarding": "در حال مسافرگیری",
       "departed": "پرواز کرد",
-      "arrived": "بنشست"
+      "arrived": "به زمین نشست"
     },
     "airplane_details": "مشخصات فنی هواپیما",
     "register": "علامت ثبت (Register)",

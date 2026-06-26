@@ -1,7 +1,8 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
 import moment from 'moment-jalaali';
 import { FleetScheduleApiService } from '../../../../core/services/api/fleet-schedule-api.service';
@@ -28,189 +29,154 @@ export class ScheduleFormComponent implements OnInit {
   private airportApi = inject(AirportApiService);
   private notification = inject(NotificationService);
 
-  readonly isEdit = signal(false);
-  readonly loading = signal(false);
-
+  readonly isEdit = signal<boolean>(false);
+  readonly loading = signal<boolean>(false);
+  readonly typeOptions = signal<SelectOption[]>([]);
   readonly airplaneOptions = signal<SelectOption[]>([]);
   readonly airportOptions = signal<SelectOption[]>([]);
-  readonly allAirplanes = signal<AirplaneDto[]>([]);
-  readonly selectedAirplaneDetails = signal<AirplaneDto | null>(null);
 
-  readonly TYPES: FleetScheduleType[] = ['FLIGHT', 'CHECK', 'DFDR'];
+  // آرایه اصلی دیتای کل هواپیماها دریافت شده از سرور
+  readonly airplanesList = signal<AirplaneDto[]>([]);
 
-  isJalaliMode = true;
-  jalaliStartDisplay = '';
-  jalaliEndDisplay = '';
-
-  form = new FormGroup({
+  readonly form = new FormGroup({
     id: new FormControl<string | null>(null),
     version: new FormControl<number | null>(null),
+    type: new FormControl<FleetScheduleType | null>(null, Validators.required),
     airplane: new FormControl<string | null>(null, Validators.required),
-    departure: new FormControl<string | null>(null, Validators.required),
-    arrival: new FormControl<string | null>(null, Validators.required),
     plannedStartTime: new FormControl<string | null>(null, Validators.required),
     plannedEndTime: new FormControl<string | null>(null, Validators.required),
-    type: new FormControl<FleetScheduleType | null>(null, Validators.required),
-
     flightNumber: new FormControl<string | null>(null),
-    crew: new FormArray<FormGroup>([]),
-  }, { validators: this.airportRouteValidator });
+    departure: new FormControl<string | null>(null),
+    arrival: new FormControl<string | null>(null),
+    crew: new FormArray([]),
+  });
+
+  // ۱. تبدیل واکنشی تغییرات فیلد هواپیما به سیگنال (استفاده از کست کردن برای تطابق کامل با استانداردهای کامپایلر)
+  readonly airplaneIdSignal = toSignal(
+    this.form.controls.airplane.valueChanges as import('rxjs').Observable<string | null>,
+    { initialValue: this.form.controls.airplane.value ?? null }
+  );
+
+  // ۲. پیدا کردن مشخصات دقیق هواپیما به صورت کاملاً واکنشی بر پایه‌ی سیگنال بالا
+  readonly selectedAirplaneDetails = computed(() => {
+    const selectedId = this.airplaneIdSignal();
+    const list = this.airplanesList();
+
+    // اگر فرم خالی است یا اطلاعات هنوز از سرور مپ/دریافت نشده است
+    if (!selectedId || list.length === 0) return null;
+
+    // مقایسه با تبدیل هر دو مقدار به رشته و حذف فضاها جهت جلوگیری از خطای همخوانی تایپ‌ها
+    return list.find(a => {
+      if (!a.id) return false;
+      return String(a.id).trim() === String(selectedId).trim();
+    }) || null;
+  });
 
   get crewArray(): FormArray {
     return this.form.get('crew') as FormArray;
   }
 
-  get isFlight(): boolean {
-    return this.form.get('type')?.value === 'FLIGHT';
-  }
-
   ngOnInit(): void {
-    this.loadAirports();
-    this.loadAirplanes();
+    this.loadInitialData();
 
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEdit.set(true);
-      this.loading.set(true);
-      this.api.loadById(id).subscribe({
-        next: (dto) => {
-          this.patchForm(dto);
-          this.loading.set(false);
-        },
-        error: () => this.loading.set(false),
-      });
+      this.loadSchedule(id);
     } else {
-      this.addCrewIfEmpty();
+      this.form.get('type')?.valueChanges.subscribe((t) => this.handleTypeChange(t));
     }
-
-    this.form.get('airplane')?.valueChanges.subscribe(id => this.syncSelectedAirplaneDetails(id));
-    this.form.get('type')?.valueChanges.subscribe(type => this.updateFlightValidators(type));
   }
 
-  private loadAirports() {
-    this.airportApi.load().subscribe(airports => {
+  private loadInitialData(): void {
+    this.airplaneApi.load().subscribe((airplanes) => {
+      this.airplanesList.set(airplanes);
+      this.airplaneOptions.set(
+        airplanes.map((a) => ({ label: a.register!, value: a.id! }))
+      );
+
+      // بروزرسانی دستی فرم برای شلیک دیتای اولیه ویرایش به سیگنال و حل مشکل مقدار بازگشتی undefined
+      const currentVal = this.form.controls.airplane.value;
+      if (currentVal) {
+        this.form.controls.airplane.setValue(currentVal ?? null, { emitEvent: true });
+      }
+    });
+
+    this.airportApi.load().subscribe((airports) => {
       this.airportOptions.set(
-        airports.map(a => ({
-          label: a.location?.title ? `${a.location.title} (${a.code})` : (a.code ?? ''),
-          value: a.id!
-        }))
+        airports.map((a) => ({ label: `${a.name} (${a.code})`, value: a.id! }))
       );
     });
+
+    this.typeOptions.set([
+      { label: 'fleet_schedule.types.flight', value: 'FLIGHT' },
+      { label: 'fleet_schedule.types.check', value: 'CHECK' },
+      { label: 'fleet_schedule.types.dfdr', value: 'DFDR' }
+    ]);
   }
 
-  private loadAirplanes() {
-    this.airplaneApi.load().subscribe(planes => {
-      this.allAirplanes.set(planes);
-      this.airplaneOptions.set(planes.map(p => ({
-        label: p.register ?? p.id!,
-        value: p.id!
-      })));
+  private loadSchedule(id: string): void {
+    this.loading.set(true);
+    this.api.loadById(id).subscribe({
+      next: (dto) => {
+        this.form.patchValue({
+          id: dto.id,
+          version: dto.version,
+          type: dto.type,
+          airplane: dto.airplane?.id ? String(dto.airplane.id) : null,
+          plannedStartTime: dto.plannedStartTime ? moment(dto.plannedStartTime).format('YYYY-MM-DDTHH:mm') : null,
+          plannedEndTime: dto.plannedEndTime ? moment(dto.plannedEndTime).format('YYYY-MM-DDTHH:mm') : null,
+          flightNumber: dto.flight?.number,
+          departure: dto.departure?.id ? String(dto.departure.id) : null,
+          arrival: dto.arrival?.id ? String(dto.arrival.id) : null,
+        });
+
+        this.handleTypeChange(dto.type);
+
+        if (dto.flight?.crew) {
+          this.crewArray.clear();
+          dto.flight.crew.forEach((c) => {
+            this.crewArray.push(
+              new FormGroup({
+                personId: new FormControl(c.person?.id, Validators.required),
+                crewJobId: new FormControl(c.crewJob?.id, Validators.required),
+              })
+            );
+          });
+        }
+
+        // دسترسی مستقیم صریح به فیلد آبجکت controls جهت رفع کامل خطای TS2345 و مقادیر تهی
+        const currentAirId = this.form.controls.airplane.value;
+        this.form.controls.airplane.setValue(currentAirId ?? null, { emitEvent: true });
+
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false),
     });
   }
 
-  private airportRouteValidator(control: AbstractControl): ValidationErrors | null {
-    const from = control.get('departure')?.value;
-    const to = control.get('arrival')?.value;
-    return from && to && from === to ? { sameAirports: true } : null;
-  }
+  private handleTypeChange(type: FleetScheduleType | null): void {
+    const fn = this.form.get('flightNumber');
+    const dep = this.form.get('departure');
+    const arr = this.form.get('arrival');
 
-  // ====================== تقویم ======================
-  toggleCalendarMode() {
-    this.isJalaliMode = !this.isJalaliMode;
-  }
-
-  onGregorianChange(type: 'start' | 'end', event: any) {
-    const value = event.target.value;
-    if (type === 'start') {
-      this.jalaliStartDisplay = value ? moment(value).format('jYYYY/jMM/jDD HH:mm') : '';
-    } else {
-      this.jalaliEndDisplay = value ? moment(value).format('jYYYY/jMM/jDD HH:mm') : '';
-    }
-  }
-
-  openJalaliPicker(type: 'start' | 'end') {
-    // TODO: پیاده‌سازی picker شمسی (مثل jalali-angular یا flatpickr)
-    console.log(`Jalali picker for ${type} - هنوز پیاده‌سازی نشده`);
-  }
-
-  getUtcPreview(type: 'start' | 'end'): string {
-    const key = type === 'start' ? 'plannedStartTime' : 'plannedEndTime';
-    const val = this.form.get(key)?.value;
-    if (!val) return '—';
-    try {
-      return new Date(val + 'Z').toISOString().slice(0, 16).replace('T', ' ');
-    } catch {
-      return '—';
-    }
-  }
-
-  getGregorianPreview(type: 'start' | 'end'): string {
-    const key = type === 'start' ? 'plannedStartTime' : 'plannedEndTime';
-    const val = this.form.get(key)?.value;
-    if (!val) return '—';
-    return moment(val).format('YYYY-MM-DD HH:mm');
-  }
-
-  private syncSelectedAirplaneDetails(airplaneId: string | null | undefined) {
-    if (!airplaneId) {
-      this.selectedAirplaneDetails.set(null);
-      return;
-    }
-    const match = this.allAirplanes().find(p => p.id === airplaneId);
-    this.selectedAirplaneDetails.set(match ?? null);
-  }
-
-  private patchForm(dto: FleetScheduleDto): void {
-    this.form.patchValue({
-      id: dto.id ?? null,
-      version: dto.version ?? null,
-      airplane: dto.airplane?.id ?? null,
-      departure: dto.departure?.id ?? null,
-      arrival: dto.arrival?.id ?? null,
-      plannedStartTime: dto.plannedStartTime?.substring(0, 16) ?? null,
-      plannedEndTime: dto.plannedEndTime?.substring(0, 16) ?? null,
-      type: dto.type,
-      flightNumber: dto.flight?.number ?? null,
-    });
-
-    this.syncSelectedAirplaneDetails(dto.airplane?.id);
-    this.patchCrew(dto);
-    this.updateFlightValidators(dto.type);
-
-    // به‌روزرسانی نمایش شمسی
-    if (dto.plannedStartTime) this.jalaliStartDisplay = moment(dto.plannedStartTime).format('jYYYY/jMM/jDD HH:mm');
-    if (dto.plannedEndTime) this.jalaliEndDisplay = moment(dto.plannedEndTime).format('jYYYY/jMM/jDD HH:mm');
-  }
-
-  private patchCrew(dto: FleetScheduleDto) {
-    this.crewArray.clear();
-    const existingCrew = dto.flight?.crew ?? [];
-    if (existingCrew.length > 0) {
-      existingCrew.forEach((c: any) => {
-        this.crewArray.push(new FormGroup({
-          personId: new FormControl(c.person?.id ?? null, Validators.required),
-          crewJobId: new FormControl(c.crewJob?.id ?? null, Validators.required),
-        }));
-      });
-    } else {
-      this.addCrewIfEmpty();
-    }
-  }
-
-  private updateFlightValidators(type: FleetScheduleType | null) {
-    const fields = ['flightNumber', 'departure', 'arrival'];
     if (type === 'FLIGHT') {
-      fields.forEach(key => this.form.get(key)?.setValidators(Validators.required));
+      fn?.setValidators(Validators.required);
+      dep?.setValidators(Validators.required);
+      arr?.setValidators(Validators.required);
+      if (this.crewArray.length === 0) {
+        this.crewArray.push(this.buildCrewRow());
+      }
     } else {
-      fields.forEach(key => this.form.get(key)?.clearValidators());
+      fn?.clearValidators();
+      dep?.clearValidators();
+      arr?.clearValidators();
+      this.crewArray.clear();
     }
-    fields.forEach(key => this.form.get(key)?.updateValueAndValidity());
-  }
 
-  private addCrewIfEmpty(): void {
-    if (this.crewArray.length === 0) {
-      this.crewArray.push(this.buildCrewRow());
-    }
+    fn?.updateValueAndValidity();
+    dep?.updateValueAndValidity();
+    arr?.updateValueAndValidity();
   }
 
   private buildCrewRow(): FormGroup {
@@ -218,6 +184,15 @@ export class ScheduleFormComponent implements OnInit {
       personId: new FormControl(null, Validators.required),
       crewJobId: new FormControl(null, Validators.required),
     });
+  }
+
+  isInvalid(controlName: string): boolean {
+    const c = this.form.get(controlName);
+    return !!(c && c.invalid && (c.dirty || c.touched));
+  }
+
+  cancel(): void {
+    this.router.navigate(['/fleet-schedule']);
   }
 
   submit(): void {
@@ -257,17 +232,8 @@ export class ScheduleFormComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        this.notification.error('خطا در ذخیره اطلاعات');
-      }
+        this.notification.error('common.error');
+      },
     });
-  }
-
-  cancel(): void {
-    this.router.navigate(['/fleet-schedule']);
-  }
-
-  isInvalid(key: string): boolean {
-    const control = this.form.get(key);
-    return !!control && control.invalid && control.touched;
   }
 }

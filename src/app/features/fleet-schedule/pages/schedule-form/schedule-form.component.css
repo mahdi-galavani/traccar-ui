@@ -18,3 +18,57 @@ select {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* استایل پایه برای ورودی‌های تاریخ و زمان */
+input[type="datetime-local"] {
+  position: relative;
+  appearance: none;
+  -webkit-appearance: none;
+  color: #334155; /* slate-700 */
+}
+
+/* مخفی کردن آیکون پیش‌فرض و زشت مرورگر در کروم، اج و سافاری */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  color: transparent;
+  background: transparent;
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* اضافه کردن آیکون تقویم شیک و سفارشی با استفاده از Pseudo-element */
+.datetime-container {
+  position: relative;
+}
+
+.datetime-container::after {
+  content: '📅';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+/* هماهنگ‌سازی موقعیت آیکون بر اساس جهت صفحه (راست‌چین / چپ‌چین) */
+[dir="rtl"] .datetime-container::after {
+  left: 1rem;
+}
+
+[dir="ltr"] .datetime-container::after {
+  right: 1rem;
+}
+
+/* افکت فوکوس روی آیکون */
+.datetime-container:focus-within::after {
+  opacity: 1;
+  filter: drop-shadow(0 0 4px rgba(79, 70, 229, 0.2)); /* indigo-600 shadow */
+}
