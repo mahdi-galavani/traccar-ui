@@ -1,0 +1,34 @@
+# ==========================================
+# Docker Compose برای اپلیکیشن Angular SSR
+# ==========================================
+services:
+  airport-management-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: airport-management-ui:latest
+    container_name: airport-management-ui
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      # 🟢 مهم: آدرس بک‌اند روی هاست لوکال
+      # host.docker.internal از داخل کانتینر به هاست اشاره می‌کند (نه به خود کانتینر)
+      - BACKEND_URL=http://host.docker.internal:8001
+    extra_hosts:
+      # تضمین می‌کند host.docker.internal روی همه پلتفرم‌ها (ویندوز/لینوکس/مک) کار کند
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    networks:
+      - airport-network
+
+networks:
+  airport-network:
+    driver: bridge

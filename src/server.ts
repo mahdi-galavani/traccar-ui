@@ -12,11 +12,12 @@ const browserDistFolder = join(import.meta.dirname, '../browser');
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 
-const backendUrl = process.env['BACKEND_URL'] || 'http://45.94.215.237:8001';
+const backendUrl = process.env['BACKEND_URL'] || 'http://127.0.0.1:8001';
+const port = process.env['PORT'] || 4000;
 
 console.log(`Proxying /api requests to: ${backendUrl}`);
 
-// پروکسی اصلاح‌شده برای v4
+// پروکسی /api — باید قبل از همه‌چیز باشد
 app.use(
   '/api',
   createProxyMiddleware({
@@ -24,50 +25,45 @@ app.use(
     changeOrigin: true,
     secure: false,
     ws: true,
-
     on: {
-      proxyReq: (proxyReq, req) => {
-        // حذف هدرهای مشکل‌ساز (دلیل اصلی 403)
-        proxyReq.removeHeader('origin');
-        proxyReq.removeHeader('referer');
+      proxyReq: (proxyReq) => {
+        const backendPort = backendUrl.match(/:(\d+)/)?.[1] || '8001';
+        proxyReq.setHeader('host', `localhost:${backendPort}`);
+        // پاک کردن forward headers که Spring را گیج می‌کنند
         proxyReq.removeHeader('x-forwarded-for');
         proxyReq.removeHeader('x-forwarded-host');
         proxyReq.removeHeader('x-forwarded-proto');
-
-        // تنظیم هاست دقیق
-        const targetHost = backendUrl.replace(/^https?:\/\//, '').split(':')[0];
-        proxyReq.setHeader('host', targetHost);
       },
-
-      proxyRes: (proxyRes) => {
-        // کمک به CORS
-        proxyRes.headers['access-control-allow-origin'] = '*';
-      }
-    }
-  })
+    },
+  }),
 );
 
-// Serve static files
+// Static files
 app.use(
   express.static(browserDistFolder, {
     maxAge: '1y',
     index: false,
     redirect: false,
-  })
+  }),
 );
 
 // Angular SSR Handler
+// برای صفحاتی که RenderMode.Server دارند (مثل auth/login)،
+// Angular باید بداند سرور روی کجا است تا HTTP call های داخلی درست resolve شوند
 app.use((req, res, next) => {
   angularApp
-    .handle(req)
+    .handle(req, {
+      // این به Angular می‌گوید که اگر در SSR نیاز به HTTP call داشت،
+      // از همین سرور express استفاده کند (از طریق پروکسی که بالا تعریف شده)
+      server: `http://localhost:${port}`,
+    })
     .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next()
+      response ? writeResponseToNodeResponse(response, res) : next(),
     )
     .catch(next);
 });
 
 if (isMainModule(import.meta.url) || process.env['pm_id']) {
-  const port = process.env['PORT'] || 4000;
   app.listen(port, () => {
     console.log(`🚀 Server is running on http://localhost:${port}`);
     console.log(`🔗 Backend URL: ${backendUrl}`);
