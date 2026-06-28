@@ -17,22 +17,18 @@ const port = process.env['PORT'] || 4000;
 
 console.log(`Proxying /api requests to: ${backendUrl}`);
 
-// پروکسی /api — باید قبل از همه‌چیز باشد
+// پروکسی /api — باید قبل از همه‌چیز تعریف شود
 app.use(
   '/api',
   createProxyMiddleware({
     target: backendUrl,
-    changeOrigin: true,
+    changeOrigin: true, // هدر Host را به طور خودکار به آدرس کانتینر مقصد (backendUrl) تغییر می‌دهد
     secure: false,
     ws: true,
     on: {
-      proxyReq: (proxyReq) => {
-        const backendPort = backendUrl.match(/:(\d+)/)?.[1] || '8001';
-        proxyReq.setHeader('host', `localhost:${backendPort}`);
-        // پاک کردن forward headers که Spring را گیج می‌کنند
-        proxyReq.removeHeader('x-forwarded-for');
-        proxyReq.removeHeader('x-forwarded-host');
-        proxyReq.removeHeader('x-forwarded-proto');
+      proxyReq: (proxyReq, req, res) => {
+        // 🟢 اصلاح کانتینر داکر: حذف دستکاری‌های دستی هدر host و پاک نکردن هدرهای x-forwarded
+        // این کار به Spring Security اجازه می‌دهد تا هویت و مبدأ درخواست را به درستی تشخیص دهد
       },
     },
   }),

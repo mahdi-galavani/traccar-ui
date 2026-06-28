@@ -4,11 +4,11 @@ export const serverRoutes: ServerRoute[] = [
   // صفحه‌ی لاگین: Server-side رندر می‌شود (عمومی است، نیاز به auth ندارد)
   {
     path: 'auth/login',
-    renderMode: RenderMode.Server,
+    renderMode: RenderMode.Client,
   },
   {
     path: 'auth/logout',
-    renderMode: RenderMode.Server,
+    renderMode: RenderMode.Client,
   },
   // تمام صفحات دیگر: Client-side رندر می‌شوند
   // دلیل: همه پشت authGuard هستند، داده‌شان کاملاً داینامیک است،

@@ -16,7 +16,7 @@ services:
       - PORT=4000
       # 🟢 مهم: آدرس بک‌اند روی هاست لوکال
       # host.docker.internal از داخل کانتینر به هاست اشاره می‌کند (نه به خود کانتینر)
-      - BACKEND_URL=http://host.docker.internal:8001
+      - BACKEND_URL=http://host.docker.internal:8001/api
     extra_hosts:
       # تضمین می‌کند host.docker.internal روی همه پلتفرم‌ها (ویندوز/لینوکس/مک) کار کند
       - "host.docker.internal:host-gateway"
