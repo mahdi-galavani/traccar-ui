@@ -53,10 +53,10 @@ export class PersonnelListComponent {
 
   onDelete(item: AppPersonDto): void {
     if (!item.id) return;
-    this.confirmDialog.confirm({ message: 'COMMON.CONFIRM_DELETE' }).subscribe((confirmed) => {
+    this.confirmDialog.confirm({ message: 'common.confirm_delete' }).subscribe((confirmed) => {
       if (!confirmed) return;
       this.api.delete(item.id!).subscribe(() => {
-        this.notification.success('COMMON.DELETED');
+        this.notification.success('common.deleted');
         this.refresh();
       });
     });

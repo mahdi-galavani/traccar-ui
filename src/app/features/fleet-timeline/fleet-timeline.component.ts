@@ -34,7 +34,9 @@ export class FleetTimelineComponent implements OnInit {
   }
 
   private startLiveClock(): void {
-    setInterval(() => this.viewMode.set(this.viewMode()), 60000);
+    setInterval(() => {
+      this.viewMode.set(this.viewMode()); // برای به‌روزرسانی computed
+    }, 60000); // هر دقیقه
   }
 
   loadAirplanes(): void {
@@ -60,12 +62,12 @@ export class FleetTimelineComponent implements OnInit {
   readonly currentAirplaneSchedules = computed(() => {
     const planeId = this.selectedAirplaneId();
     return this.schedules().filter(s =>
-      String(s.airplane?.id) === String(planeId)
+      s.airplane?.id === planeId || s.airplane?.id?.toString() === planeId
     );
   });
 
   readonly currentAirplaneDetails = computed(() => {
-    return this.airplanes().find(p => String(p.id) === String(this.selectedAirplaneId())) ?? null;
+    return this.airplanes().find(p => p.id === this.selectedAirplaneId()) ?? null;
   });
 
   readonly currentTimePosition = computed(() => {
@@ -74,7 +76,6 @@ export class FleetTimelineComponent implements OnInit {
     return `${(totalMinutes / 1440) * 100}%`;
   });
 
-  // ساده‌سازی شده برای نمایش درست
   getFlightStyle(schedule: FleetScheduleDto): { [key: string]: string } {
     if (!schedule.plannedStartTime || !schedule.plannedEndTime) return {};
 
@@ -82,16 +83,16 @@ export class FleetTimelineComponent implements OnInit {
     const end = new Date(schedule.plannedEndTime);
 
     const startMinutes = start.getHours() * 60 + start.getMinutes();
-    let durationMinutes = (end.getTime() - start.getTime()) / 60000;
-
-    if (durationMinutes <= 0) durationMinutes = 1440 - startMinutes; // safety
+    let endMinutes = end.getHours() * 60 + end.getMinutes();
+    let durationMinutes = endMinutes - startMinutes;
+    if (durationMinutes <= 0) durationMinutes += 1440;
 
     const leftPercent = (startMinutes / 1440) * 100;
     const widthPercent = (durationMinutes / 1440) * 100;
 
     return {
       left: `${leftPercent}%`,
-      width: `${Math.min(widthPercent, 100)}%`,
+      width: `${widthPercent}%`,
       position: 'absolute'
     };
   }
@@ -114,11 +115,14 @@ export class FleetTimelineComponent implements OnInit {
 
   getAirportCode(airport: any): string {
     if (!airport) return '---';
-    return airport.code || String(airport.id || '').substring(0, 4) || 'N/A';
+    return airport.code || airport.id?.substring(0, 4) || 'N/A';
   }
 
   formatTime(isoString: string | undefined): string {
     if (!isoString) return '';
-    return new Date(isoString).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    return new Date(isoString).toLocaleTimeString('fa-IR', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 }
