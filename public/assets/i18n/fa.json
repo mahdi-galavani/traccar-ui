@@ -50,7 +50,8 @@
     "seat": "صندلی",
     "seats": "صندلی",
     "kg": "کیلوگرم",
-    "direction": "rtl"
+    "direction": "rtl",
+    "error": "خطایی رخ داد"
   },
   "auth": {
     "login": {
@@ -324,6 +325,7 @@
   },
   "fleet_schedule": {
     "route": "مسیر",
+    "cancelled_successfully": "با موفقیت لغو شد",
     "flight_time": "زمان پرواز",
     "page_title": "مدیریت برنامه ناوگان",
     "new_title": "برنامه ناوگان جدید",

@@ -48,7 +48,8 @@
     "seat": "Seat",
     "seats": "Seats",
     "kg": "kg",
-    "direction": "ltr"
+    "direction": "ltr",
+    "error": "error"
   },
   "auth": {
     "login": {
@@ -322,6 +323,7 @@
   },
   "fleet_schedule": {
     "route": "route",
+    "cancelled_successfully": "Cancelled successfully",
     "flight_time": "Flight Time",
     "page_title": "Fleet Schedule Management",
     "new_title": "New Fleet Schedule",

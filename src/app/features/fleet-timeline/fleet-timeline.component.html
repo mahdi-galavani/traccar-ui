@@ -1,5 +1,4 @@
 <div class="timeline-container">
-
   <div class="timeline-header">
     <div class="airplane-selector">
       <label>{{ 'fleet_schedule.airplane' | translate }}:</label>
@@ -20,33 +19,35 @@
   @if (currentAirplaneDetails()) {
     <div class="airplane-meta-bar">
       <div class="meta-item">
-        <span class="meta-label">Aircraft:</span>
-        <span class="meta-value">{{ currentAirplaneDetails()?.type?.title }}</span>
+        <span class="meta-label">Aircraft</span>
+        <span class="meta-value">{{ currentAirplaneDetails()?.register }}</span>
       </div>
       <div class="meta-item">
-        <span class="meta-label">Configuration:</span>
+        <span class="meta-label">Config</span>
         <span class="meta-value">
-          F: {{ currentAirplaneDetails()?.firstClassSeat ?? 0 }} |
-          B: {{ currentAirplaneDetails()?.businessClassSeat ?? 0 }} |
-          E: {{ currentAirplaneDetails()?.economicClassSeat ?? 0 }}
+          F:{{ currentAirplaneDetails()?.firstClassSeat ?? 0 }} |
+          B:{{ currentAirplaneDetails()?.businessClassSeat ?? 0 }} |
+          E:{{ currentAirplaneDetails()?.economicClassSeat ?? 0 }}
         </span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Max Payload:</span>
-        <span class="meta-value">{{ currentAirplaneDetails()?.payload ?? 0 }} kg</span>
       </div>
     </div>
   }
 
   <div class="timeline-board">
-
+    <!-- Time Axis -->
     <div class="time-axis-row">
-      <div class="axis-corner-cell">Days</div>
+      <div class="axis-corner-cell">Day / Time</div>
       <div class="hours-container">
-        @for (hour of [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]; track hour) {
-          <div class="hour-tick">{{ hour | number:'2.0-0' }}:00</div>
+        @for (hour of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]; track hour) {
+          <div class="hour-tick">{{ hour }}:00</div>
         }
       </div>
+    </div>
+
+    <!-- خط قرمز ساعت فعلی -->
+    <div class="current-time-line" [style.left]="currentTimePosition()">
+      <div class="time-marker"></div>
+      <div class="time-label">الان</div>
     </div>
 
     <div class="timeline-rows-container">
@@ -56,7 +57,7 @@
 
           <div class="slots-lane-wrapper">
             <div class="grid-guidelines">
-              @for (tick of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; track tick) {
+              @for (tick of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]; track tick) {
                 <div class="line-tick"></div>
               }
             </div>
@@ -65,17 +66,21 @@
               @if (isFlightOnDay(flight, dayIdx)) {
                 <div class="flight-block-card" [ngStyle]="getFlightStyle(flight)">
                   <div class="flight-block-content">
-        <span class="flight-route-code">
-          {{ getAirportCode(flight.departure) }} → {{ getAirportCode(flight.arrival) }}
-        </span>
-                    <span class="flight-id-badge">#{{ flight.flight?.number }}</span>
+                    <div class="flight-time">
+                      {{ formatTime(flight.plannedStartTime) }} — {{ formatTime(flight.plannedEndTime) }}
+                    </div>
+                    <div class="flight-main-info">
+                      <span class="flight-number">#{{ flight.flight?.number }}</span>
+                      <span class="flight-route">
+                        {{ getAirportCode(flight.departure) }} → {{ getAirportCode(flight.arrival) }}
+                      </span>
+                    </div>
                   </div>
 
                   <div class="flight-tooltip-popup">
-                    <strong>Flight: {{ flight.flight?.number }}</strong>
-                    <div>Route: {{ getAirportCode(flight.departure) }} to {{ getAirportCode(flight.arrival) }}</div>
-                    <div>Dep: {{ flight.plannedStartTime | date:'HH:mm' }}</div>
-                    <div>Arr: {{ flight.plannedEndTime | date:'HH:mm' }}</div>
+                    <strong>{{ flight.flight?.number }}</strong><br>
+                    {{ getAirportCode(flight.departure) }} → {{ getAirportCode(flight.arrival) }}<br>
+                    <small>{{ formatTime(flight.plannedStartTime) }} — {{ formatTime(flight.plannedEndTime) }}</small>
                   </div>
                 </div>
               }

@@ -31,11 +31,11 @@ export class ScheduleFormComponent implements OnInit {
 
   readonly isEdit = signal<boolean>(false);
   readonly loading = signal<boolean>(false);
+
   readonly typeOptions = signal<SelectOption[]>([]);
   readonly airplaneOptions = signal<SelectOption[]>([]);
   readonly airportOptions = signal<SelectOption[]>([]);
 
-  // آرایه اصلی دیتای کل هواپیماها دریافت شده از سرور
   readonly airplanesList = signal<AirplaneDto[]>([]);
 
   readonly form = new FormGroup({
@@ -46,30 +46,22 @@ export class ScheduleFormComponent implements OnInit {
     plannedStartTime: new FormControl<string | null>(null, Validators.required),
     plannedEndTime: new FormControl<string | null>(null, Validators.required),
     flightNumber: new FormControl<string | null>(null),
-    departure: new FormControl<string | null>(null),
-    arrival: new FormControl<string | null>(null),
+    departure: new FormControl<string | null>(null, Validators.required),
+    arrival: new FormControl<string | null>(null, Validators.required),
     crew: new FormArray([]),
   });
 
-  // ۱. تبدیل واکنشی تغییرات فیلد هواپیما به سیگنال (استفاده از کست کردن برای تطابق کامل با استانداردهای کامپایلر)
   readonly airplaneIdSignal = toSignal(
     this.form.controls.airplane.valueChanges as import('rxjs').Observable<string | null>,
-    { initialValue: this.form.controls.airplane.value ?? null }
+    { initialValue: null }
   );
 
-  // ۲. پیدا کردن مشخصات دقیق هواپیما به صورت کاملاً واکنشی بر پایه‌ی سیگنال بالا
   readonly selectedAirplaneDetails = computed(() => {
     const selectedId = this.airplaneIdSignal();
     const list = this.airplanesList();
-
-    // اگر فرم خالی است یا اطلاعات هنوز از سرور مپ/دریافت نشده است
     if (!selectedId || list.length === 0) return null;
 
-    // مقایسه با تبدیل هر دو مقدار به رشته و حذف فضاها جهت جلوگیری از خطای همخوانی تایپ‌ها
-    return list.find(a => {
-      if (!a.id) return false;
-      return String(a.id).trim() === String(selectedId).trim();
-    }) || null;
+    return list.find(a => String(a.id).trim() === String(selectedId).trim()) || null;
   });
 
   get crewArray(): FormArray {
@@ -84,6 +76,7 @@ export class ScheduleFormComponent implements OnInit {
       this.isEdit.set(true);
       this.loadSchedule(id);
     } else {
+      // فقط در حالت ایجاد، listener بگذاریم
       this.form.get('type')?.valueChanges.subscribe((t) => this.handleTypeChange(t));
     }
   }
@@ -94,12 +87,6 @@ export class ScheduleFormComponent implements OnInit {
       this.airplaneOptions.set(
         airplanes.map((a) => ({ label: a.register!, value: a.id! }))
       );
-
-      // بروزرسانی دستی فرم برای شلیک دیتای اولیه ویرایش به سیگنال و حل مشکل مقدار بازگشتی undefined
-      const currentVal = this.form.controls.airplane.value;
-      if (currentVal) {
-        this.form.controls.airplane.setValue(currentVal ?? null, { emitEvent: true });
-      }
     });
 
     this.airportApi.load().subscribe((airports) => {
@@ -117,8 +104,10 @@ export class ScheduleFormComponent implements OnInit {
 
   private loadSchedule(id: string): void {
     this.loading.set(true);
+
     this.api.loadById(id).subscribe({
-      next: (dto) => {
+      next: (dto: FleetScheduleDto) => {
+        // Patch اصلی
         this.form.patchValue({
           id: dto.id,
           version: dto.version,
@@ -126,14 +115,16 @@ export class ScheduleFormComponent implements OnInit {
           airplane: dto.airplane?.id ? String(dto.airplane.id) : null,
           plannedStartTime: dto.plannedStartTime ? moment(dto.plannedStartTime).format('YYYY-MM-DDTHH:mm') : null,
           plannedEndTime: dto.plannedEndTime ? moment(dto.plannedEndTime).format('YYYY-MM-DDTHH:mm') : null,
-          flightNumber: dto.flight?.number,
+          flightNumber: dto.flight?.number || null,
           departure: dto.departure?.id ? String(dto.departure.id) : null,
           arrival: dto.arrival?.id ? String(dto.arrival.id) : null,
         });
 
+        // مهم: بعد از patch، handleTypeChange را صدا بزنیم
         this.handleTypeChange(dto.type);
 
-        if (dto.flight?.crew) {
+        // پر کردن crew فقط در حالت FLIGHT
+        if (dto.type === 'FLIGHT' && dto.flight?.crew?.length) {
           this.crewArray.clear();
           dto.flight.crew.forEach((c) => {
             this.crewArray.push(
@@ -145,38 +136,31 @@ export class ScheduleFormComponent implements OnInit {
           });
         }
 
-        // دسترسی مستقیم صریح به فیلد آبجکت controls جهت رفع کامل خطای TS2345 و مقادیر تهی
-        const currentAirId = this.form.controls.airplane.value;
-        this.form.controls.airplane.setValue(currentAirId ?? null, { emitEvent: true });
-
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.notification.error('common.error');
+        this.loading.set(false);
+      },
     });
   }
 
   private handleTypeChange(type: FleetScheduleType | null): void {
-    const fn = this.form.get('flightNumber');
-    const dep = this.form.get('departure');
-    const arr = this.form.get('arrival');
+    const fnControl = this.form.get('flightNumber');
 
     if (type === 'FLIGHT') {
-      fn?.setValidators(Validators.required);
-      dep?.setValidators(Validators.required);
-      arr?.setValidators(Validators.required);
+      fnControl?.setValidators([Validators.required]);
+      // اگر crew خالی بود، یک سطر پیش‌فرض اضافه کن
       if (this.crewArray.length === 0) {
         this.crewArray.push(this.buildCrewRow());
       }
     } else {
-      fn?.clearValidators();
-      dep?.clearValidators();
-      arr?.clearValidators();
+      fnControl?.clearValidators();
       this.crewArray.clear();
+      this.form.get('flightNumber')?.setValue(null);
     }
 
-    fn?.updateValueAndValidity();
-    dep?.updateValueAndValidity();
-    arr?.updateValueAndValidity();
+    fnControl?.updateValueAndValidity();
   }
 
   private buildCrewRow(): FormGroup {
@@ -187,8 +171,8 @@ export class ScheduleFormComponent implements OnInit {
   }
 
   isInvalid(controlName: string): boolean {
-    const c = this.form.get(controlName);
-    return !!(c && c.invalid && (c.dirty || c.touched));
+    const control = this.form.get(controlName);
+    return !!(control && control.invalid && (control.dirty || control.touched));
   }
 
   cancel(): void {
@@ -206,18 +190,19 @@ export class ScheduleFormComponent implements OnInit {
     const dto: FleetScheduleDto = {
       id: v.id ?? undefined,
       version: v.version ?? undefined,
+      type: v.type!,
       airplane: { id: v.airplane! },
       departure: { id: v.departure! },
       arrival: { id: v.arrival! },
       plannedStartTime: `${v.plannedStartTime!}:00Z`,
       plannedEndTime: `${v.plannedEndTime!}:00Z`,
-      type: v.type!,
       status: 'SCHEDULED',
     };
 
-    if (v.type === 'FLIGHT') {
+    // فقط در حالت FLIGHT اطلاعات پرواز را بفرست
+    if (v.type === 'FLIGHT' && v.flightNumber) {
       dto.flight = {
-        number: v.flightNumber!,
+        number: v.flightNumber,
         crew: (v.crew as any[]).map((c: any) => ({
           person: { id: c.personId },
           crewJob: { id: c.crewJobId },

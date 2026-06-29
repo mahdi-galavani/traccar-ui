@@ -8,9 +8,10 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import {
+  FleetEventDto,
   FleetScheduleDto,
   FleetScheduleStatus,
-  FleetScheduleType,
+  FleetScheduleType
 } from '../../../../core/models/fleet-schedule.model';
 
 @Component({
@@ -75,11 +76,78 @@ export class ScheduleListComponent implements OnInit {
     });
   }
 
-  onStatusChange(item: FleetScheduleDto, status: FleetScheduleStatus): void {
+  onStatusChange(item: FleetScheduleDto, newStatus: FleetScheduleStatus): void {
     if (!item.id) return;
-    this.api.updateStatus({ id: item.id, status }).subscribe(() => {
-      this.notification.success('common.saved');
-      this.load();
+
+    if (newStatus === 'CANCELLED') {
+      this.handleCancel(item.id);
+    } else if (newStatus === 'COMPLETED') {
+      this.handleComplete(item);
+    } else {
+      this.handleStatusUpdate(item.id, newStatus);
+    }
+  }
+
+  private handleComplete(item: FleetScheduleDto): void {
+    // اینجا می‌توانی از Modal/Dialog استفاده کنی
+    // فعلاً برای سادگی از prompt استفاده می‌کنیم (بعداً Modal حرفه‌ای بساز)
+
+    const actualStart = prompt(
+      'زمان شروع واقعی (مثال: 2026-06-29T10:30):',
+      item.plannedStartTime?.slice(0, 16) || ''
+    );
+
+    if (actualStart === null) return; // کاربر cancel کرد
+
+    const actualEnd = prompt(
+      'زمان پایان واقعی (مثال: 2026-06-29T12:45):',
+      item.plannedEndTime?.slice(0, 16) || ''
+    );
+
+    if (actualEnd === null) return;
+
+    const eventDto: FleetEventDto = {
+      actualStartTime: actualStart + ':00Z',   // تبدیل به ISO کامل
+      actualEndTime: actualEnd + ':00Z'
+    };
+
+    this.api.setEvent(item.id!, eventDto).subscribe({
+      next: () => {
+        this.notification.success('fleet_schedule.event_registered');
+        this.load();
+      },
+      error: (err) => {
+        console.error(err);
+        this.notification.error('خطا در ثبت زمان واقعی');
+      }
+    });
+  }
+
+  private handleCancel(id: string): void {
+    if (!confirm('آیا از لغو این برنامه اطمینان دارید؟')) return;
+
+    this.api.cancelStatus(id).subscribe({
+      next: () => {
+        this.notification.success('fleet_schedule.cancelled_successfully');
+        this.load();
+      },
+      error: (err) => {
+        console.error(err);
+        this.notification.error('common.error');
+      }
+    });
+  }
+
+  private handleStatusUpdate(id: string, status: FleetScheduleStatus): void {
+    this.api.updateStatus({ id, status }).subscribe({
+      next: () => {
+        this.notification.success('common.saved');
+        this.load();
+      },
+      error: (err) => {
+        console.error(err);
+        this.notification.error('common.error');
+      }
     });
   }
 

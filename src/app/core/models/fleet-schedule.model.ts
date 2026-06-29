@@ -6,15 +6,21 @@ import { FlightDto } from './flight.model';
 export type FleetScheduleType = 'FLIGHT' | 'CHECK' | 'DFDR';
 export type FleetScheduleStatus = 'SCHEDULED' | 'COMPLETED' | 'CANCELLED';
 
+
+export interface FleetEventDto {
+  actualStartTime: string;   // ISO format
+  actualEndTime: string;     // ISO format
+}
+
 export interface FleetScheduleDto {
   id?: string;
   version?: number;
   airplane: AirplaneDto | { id: string };
   departure: AirportCodeDto | { id: string };
   arrival: AirportCodeDto | { id: string };
-  plannedStartTime: string;     // ISO date-time
-  plannedEndTime: string;       // ISO date-time
-  event?: any;
+  plannedStartTime: string;
+  plannedEndTime: string;
+  event?: FleetEventDto;
   type: FleetScheduleType;
   flight?: FlightDto;
   status: FleetScheduleStatus;

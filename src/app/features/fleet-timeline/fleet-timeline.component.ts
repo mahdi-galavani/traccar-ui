@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FleetScheduleApiService } from '../../core/services/api/fleet-schedule-api.service';
 import { AirplaneApiService } from '../../core/services/api/airplane-api.service';
 import { AirplaneDto } from '../../core/models/airplane.model';
-import { FleetScheduleDto, FleetScheduleType } from '../../core/models/fleet-schedule.model';
+import { FleetScheduleDto } from '../../core/models/fleet-schedule.model';
 import { TranslatePipe } from '@ngx-translate/core';
 
 export type TimelineViewMode = '1_WEEK' | '2_WEEKS' | '1_MONTH';
@@ -30,6 +30,11 @@ export class FleetTimelineComponent implements OnInit {
   ngOnInit(): void {
     this.loadAirplanes();
     this.loadSchedules();
+    this.startLiveClock();
+  }
+
+  private startLiveClock(): void {
+    setInterval(() => this.viewMode.set(this.viewMode()), 60000);
   }
 
   loadAirplanes(): void {
@@ -45,7 +50,6 @@ export class FleetTimelineComponent implements OnInit {
     this.loading.set(true);
     this.scheduleApi.load().subscribe({
       next: (data) => {
-        // فقط پروازها (FLIGHT) نمایش داده شوند
         this.schedules.set(data.filter(s => s.type === 'FLIGHT'));
         this.loading.set(false);
       },
@@ -55,14 +59,22 @@ export class FleetTimelineComponent implements OnInit {
 
   readonly currentAirplaneSchedules = computed(() => {
     const planeId = this.selectedAirplaneId();
-    return this.schedules().filter(s => s.airplane?.id === planeId);
+    return this.schedules().filter(s =>
+      String(s.airplane?.id) === String(planeId)
+    );
   });
 
   readonly currentAirplaneDetails = computed(() => {
-    return this.airplanes().find(p => p.id === this.selectedAirplaneId()) ?? null;
+    return this.airplanes().find(p => String(p.id) === String(this.selectedAirplaneId())) ?? null;
   });
 
-  // محاسبه موقعیت و طول بلاک پرواز بر اساس plannedStartTime / plannedEndTime
+  readonly currentTimePosition = computed(() => {
+    const now = new Date();
+    const totalMinutes = now.getHours() * 60 + now.getMinutes();
+    return `${(totalMinutes / 1440) * 100}%`;
+  });
+
+  // ساده‌سازی شده برای نمایش درست
   getFlightStyle(schedule: FleetScheduleDto): { [key: string]: string } {
     if (!schedule.plannedStartTime || !schedule.plannedEndTime) return {};
 
@@ -70,36 +82,30 @@ export class FleetTimelineComponent implements OnInit {
     const end = new Date(schedule.plannedEndTime);
 
     const startMinutes = start.getHours() * 60 + start.getMinutes();
-    const endMinutes = end.getHours() * 60 + end.getMinutes();
-    let durationMinutes = endMinutes - startMinutes;
+    let durationMinutes = (end.getTime() - start.getTime()) / 60000;
 
-    // پروازهایی که به روز بعد می‌رسند
-    if (durationMinutes <= 0) {
-      durationMinutes = (1440 - startMinutes) + endMinutes;
-    }
+    if (durationMinutes <= 0) durationMinutes = 1440 - startMinutes; // safety
 
     const leftPercent = (startMinutes / 1440) * 100;
     const widthPercent = (durationMinutes / 1440) * 100;
 
     return {
-      'left': `${leftPercent}%`,
-      'width': `${widthPercent}%`,
-      'position': 'absolute'
+      left: `${leftPercent}%`,
+      width: `${Math.min(widthPercent, 100)}%`,
+      position: 'absolute'
     };
   }
 
-  // بررسی روز پرواز (بر اساس ISO weekday)
   isFlightOnDay(schedule: FleetScheduleDto, dayIndex: number): boolean {
     if (!schedule.plannedStartTime) return false;
     const date = new Date(schedule.plannedStartTime);
-    let day = date.getDay(); // 0 = Sunday
-    const isoDay = day === 0 ? 6 : day - 1; // Monday = 0
+    const day = date.getDay();
+    const isoDay = day === 0 ? 6 : day - 1;
     return isoDay === dayIndex;
   }
 
   switchView(mode: TimelineViewMode): void {
     this.viewMode.set(mode);
-    // TODO: در آینده فیلتر بر اساس تاریخ اعمال شود
   }
 
   selectAirplane(id: string): void {
@@ -108,6 +114,11 @@ export class FleetTimelineComponent implements OnInit {
 
   getAirportCode(airport: any): string {
     if (!airport) return '---';
-    return airport.code || airport.id?.substring(0, 4) || 'N/A';
+    return airport.code || String(airport.id || '').substring(0, 4) || 'N/A';
+  }
+
+  formatTime(isoString: string | undefined): string {
+    if (!isoString) return '';
+    return new Date(isoString).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
   }
 }

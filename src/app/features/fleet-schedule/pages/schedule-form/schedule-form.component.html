@@ -54,6 +54,7 @@
           </div>
         </div>
 
+        <!-- Airplane Details -->
         @if (selectedAirplaneDetails(); as airplane) {
           <div class="p-5 bg-slate-50 border border-slate-200/80 rounded-2xl transition-all animate-fadeIn">
             <h3 class="text-sm font-semibold text-slate-800 mb-4 flex items-center gap-2">
@@ -117,6 +118,7 @@
           </div>
         }
 
+        <!-- زمان‌های برنامه‌ریزی شده -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="flex flex-col">
             <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ 'fleet_schedule.planned_start_time' | translate }}</label>
@@ -146,41 +148,47 @@
             }
           </div>
         </div>
+
+        <!-- فیلدهای مبدا و مقصد — حالا در همه حالت‌ها نمایش داده می‌شود -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex flex-col">
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ 'fleet_schedule.from' | translate }}</label>
+            <select formControlName="departure" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all">
+              <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
+              @for (opt of airportOptions(); track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+            @if (isInvalid('departure')) {
+              <p class="mt-1 text-xs text-rose-500">⚠️ {{ 'validation.required' | translate }}</p>
+            }
+          </div>
+
+          <div class="flex flex-col">
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ 'fleet_schedule.to' | translate }}</label>
+            <select formControlName="arrival" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all">
+              <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
+              @for (opt of airportOptions(); track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+            @if (isInvalid('arrival')) {
+              <p class="mt-1 text-xs text-rose-500">⚠️ {{ 'validation.required' | translate }}</p>
+            }
+          </div>
+        </div>
       </section>
 
+      <!-- بخش مخصوص FLIGHT -->
       @if (form.get('type')?.value === 'FLIGHT') {
         <section class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="flex flex-col">
               <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ 'fleet_schedule.flight_number' | translate }}</label>
-              <input type="text" formControlName="flightNumber" dir="ltr" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-left font-mono transition-all" placeholder="e.g. IR-451" />
+              <input type="text" formControlName="flightNumber" dir="ltr"
+                     class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-left font-mono transition-all"
+                     placeholder="e.g. IR-451" />
               @if (isInvalid('flightNumber')) {
-                <p class="mt-1 text-xs text-rose-500">⚠️ {{ 'validation.required' | translate }}</p>
-              }
-            </div>
-
-            <div class="flex flex-col">
-              <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ 'fleet_schedule.from' | translate }}</label>
-              <select formControlName="departure" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all">
-                <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
-                @for (opt of airportOptions(); track opt.value) {
-                  <option [value]="opt.value">{{ opt.label }}</option>
-                }
-              </select>
-              @if (isInvalid('departure')) {
-                <p class="mt-1 text-xs text-rose-500">⚠️ {{ 'validation.required' | translate }}</p>
-              }
-            </div>
-
-            <div class="flex flex-col">
-              <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ 'fleet_schedule.to' | translate }}</label>
-              <select formControlName="arrival" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all">
-                <option [ngValue]="null">{{ 'common.select_placeholder' | translate }}</option>
-                @for (opt of airportOptions(); track opt.value) {
-                  <option [value]="opt.value">{{ opt.label }}</option>
-                }
-              </select>
-              @if (isInvalid('arrival')) {
                 <p class="mt-1 text-xs text-rose-500">⚠️ {{ 'validation.required' | translate }}</p>
               }
             </div>
