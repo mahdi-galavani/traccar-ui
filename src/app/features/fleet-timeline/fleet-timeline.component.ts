@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FleetScheduleApiService } from '../../core/services/api/fleet-schedule-api.service';
 import { AirplaneApiService } from '../../core/services/api/airplane-api.service';
@@ -15,7 +15,7 @@ export type TimelineViewMode = '1_WEEK' | '2_WEEKS' | '1_MONTH';
   templateUrl: './fleet-timeline.component.html',
   styleUrl: './fleet-timeline.component.css'
 })
-export class FleetTimelineComponent implements OnInit {
+export class FleetTimelineComponent implements OnInit, OnDestroy {
   private scheduleApi = inject(FleetScheduleApiService);
   private airplaneApi = inject(AirplaneApiService);
 
@@ -25,6 +25,9 @@ export class FleetTimelineComponent implements OnInit {
   readonly schedules = signal<FleetScheduleDto[]>([]);
   readonly loading = signal(false);
 
+  private currentTime = signal<Date>(new Date());
+  private clockInterval: any;
+
   readonly WEEK_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   ngOnInit(): void {
@@ -33,10 +36,16 @@ export class FleetTimelineComponent implements OnInit {
     this.startLiveClock();
   }
 
+  ngOnDestroy(): void {
+    if (this.clockInterval) {
+      clearInterval(this.clockInterval);
+    }
+  }
+
   private startLiveClock(): void {
-    setInterval(() => {
-      this.viewMode.set(this.viewMode()); // برای به‌روزرسانی computed
-    }, 60000); // هر دقیقه
+    this.clockInterval = setInterval(() => {
+      this.currentTime.set(new Date());
+    }, 10000);
   }
 
   loadAirplanes(): void {
@@ -52,7 +61,8 @@ export class FleetTimelineComponent implements OnInit {
     this.loading.set(true);
     this.scheduleApi.load().subscribe({
       next: (data) => {
-        this.schedules.set(data.filter(s => s.type === 'FLIGHT'));
+        // 🔹 حذف فیلتر پرواز برای بارگذاری CHECK و DFDR در کنار FLIGHT
+        this.schedules.set(data);
         this.loading.set(false);
       },
       error: () => this.loading.set(false)
@@ -71,9 +81,36 @@ export class FleetTimelineComponent implements OnInit {
   });
 
   readonly currentTimePosition = computed(() => {
-    const now = new Date();
-    const totalMinutes = now.getHours() * 60 + now.getMinutes();
-    return `${(totalMinutes / 1440) * 100}%`;
+    const now = this.currentTime();
+
+    // استخراج دقیق ساعت و دقیقه محلی مرورگر
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+
+    // تبدیل کل زمان سپری شده امروز به دقیقه
+    const totalMinutes = (hours * 60) + minutes;
+
+    // محاسبه درصد دقیق قرارگیری روی طول ۱۴۴۰ دقیقه‌ای روز
+    const positionPercent = (totalMinutes / 1440) * 100;
+
+    // کلمپ کردن مقدار بین ۰ تا ۱۰۰ برای جلوگیری از بیرون زدن خط از کادر
+    return `${Math.min(Math.max(positionPercent, 0), 100)}%`;
+  });
+
+  // 🔹 نمایش ساعت بروز با فرمت ۲۴ ساعته محلی بدون آفست
+  readonly currentTimeString = computed(() => {
+    const now = this.currentTime();
+    return now.toLocaleTimeString('fa-IR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  });
+
+  readonly showCurrentTimeLine = computed(() => {
+    const now = this.currentTime();
+    const hours = now.getHours();
+    return hours >= 0 && hours <= 23;
   });
 
   getFlightStyle(schedule: FleetScheduleDto): { [key: string]: string } {
@@ -124,5 +161,15 @@ export class FleetTimelineComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  /* 🔹 متد کمکی برای برگرداندن لِیبل خوانای تایپ برنامه‌ها */
+  getTypeLabel(type: string): string {
+    switch(type) {
+      case 'FLIGHT': return 'Flight';
+      case 'CHECK': return 'Maintenance Check';
+      case 'DFDR': return 'DFDR Readout';
+      default: return type;
+    }
   }
 }

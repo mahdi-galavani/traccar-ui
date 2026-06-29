@@ -1,10 +1,11 @@
+/* کانتینر اصلی مانیتورینگ - تم تاریک پیشرفته */
 .timeline-container {
-  background: #111827;
+  background: #0b0f19;
   color: #f3f4f6;
   padding: 24px;
   border-radius: 16px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-  font-family: system-ui, -apple-system, sans-serif;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   direction: ltr;
 }
 
@@ -12,117 +13,135 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #1f2937;
+  padding-bottom: 16px;
+}
+
+.airplane-selector label {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-right: 8px;
+  font-weight: 500;
 }
 
 .airplane-selector select {
-  background: #1f2937;
+  background: #111827;
   color: #fff;
   border: 1px solid #374151;
-  padding: 8px 16px;
-  border-radius: 8px;
+  padding: 10px 18px;
+  border-radius: 10px;
   font-weight: 600;
   outline: none;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .view-switcher {
-  background: #1f2937;
+  background: #111827;
   padding: 4px;
   border-radius: 10px;
   display: flex;
+  border: 1px solid #1f2937;
 }
 
 .view-switcher button {
   background: transparent;
   border: none;
   color: #9ca3af;
-  padding: 6px 16px;
+  padding: 8px 18px;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  font-weight: 600;
+  font-size: 13px;
 }
 
 .view-switcher button.active {
-  background: #3b82f6;
+  background: #2563eb;
   color: #fff;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
-/* متادیتا */
 .airplane-meta-bar {
   display: flex;
-  gap: 30px;
-  background: rgba(31, 41, 55, 0.6);
-  border: 1px solid rgba(55, 65, 81, 0.6);
-  padding: 12px 20px;
-  border-radius: 10px;
+  gap: 40px;
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid #1f2937;
+  padding: 14px 24px;
+  border-radius: 12px;
   margin-bottom: 24px;
 }
 
-.meta-item { display: flex; flex-direction: column; }
+.meta-item { display: flex; flex-direction: column; gap: 4px; }
 .meta-label { font-size: 11px; color: #6b7280; text-transform: uppercase; }
-.meta-value { font-size: 14px; font-weight: 600; color: #60a5fa; }
+.meta-value { font-size: 15px; font-weight: 700; color: #38bdf8; }
 
-/* برد اصلی */
 .timeline-board {
-  border: 1px solid #374151;
-  border-radius: 12px;
+  border: 1px solid #1f2937;
+  border-radius: 14px;
   overflow: hidden;
-  background: #1f2937;
+  background: #111827;
   position: relative;
 }
 
+/* اصلاح محور زمان بالایی */
 .time-axis-row {
   display: flex;
-  background: #111827;
-  border-bottom: 1px solid #374151;
-  height: 42px;
+  background: #0f172a;
+  border-bottom: 1px solid #1f2937;
+  height: 48px;
   align-items: center;
 }
 
 .axis-corner-cell {
-  width: 90px;
+  width: 100px;
+  min-width: 100px;
   text-align: center;
   font-size: 12px;
-  font-weight: bold;
-  color: #9ca3af;
-  border-right: 1px solid #374151;
+  font-weight: 700;
+  color: #6b7280;
+  border-right: 1px solid #1f2937;
 }
 
+/* استفاده از عرض قطعه‌بندی شده به جای space-between */
 .hours-container {
   flex: 1;
   display: flex;
-  justify-content: space-between;
-  padding: 0 12px;
+  height: 100%;
 }
 
 .hour-tick {
-  font-size: 11px;
-  color: #6b7280;
-  font-variant-numeric: tabular-nums;
+  width: calc(100% / 24);
+  position: relative;
+  height: 100%;
 }
 
-/* ردیف‌ها */
+.hour-tick span {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
 .timeline-row {
   display: flex;
-  border-bottom: 1px solid rgba(55, 65, 81, 0.5);
-  height: 64px;
+  border-bottom: 1px solid rgba(31, 41, 55, 0.7);
+  height: 80px;
   align-items: center;
   position: relative;
 }
 
-.timeline-row:last-child { border-bottom: none; }
-
 .day-cell-label {
-  width: 90px;
+  width: 100px;
+  min-width: 100px;
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 13px;
   color: #e5e7eb;
-  border-right: 1px solid #374151;
-  background: rgba(17, 24, 39, 0.3);
+  border-right: 1px solid #1f2937;
+  background: rgba(15, 23, 42, 0.4);
   height: 100%;
   display: flex;
   align-items: center;
@@ -133,177 +152,157 @@
   flex: 1;
   position: relative;
   height: 100%;
-  background: #1a202c;
+  background: #0d111c;
 }
 
+/* اصلاح تراز خطوط شبکه */
 .grid-guidelines {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   display: flex;
-  justify-content: space-between;
   pointer-events: none;
-  padding: 0 12px;
 }
 
 .line-tick {
-  width: 1px;
+  width: calc(100% / 24);
   height: 100%;
-  background: rgba(55, 65, 81, 0.3);
+  border-left: 1px solid rgba(31, 41, 55, 0.4);
+  box-sizing: border-box;
 }
 
-/* خط قرمز ساعت فعلی */
+/* تراز خط قرمز نئون محلی */
 .current-time-line {
   position: absolute;
   top: 0;
   bottom: 0;
   width: 2px;
-  background: linear-gradient(to bottom, #ef4444, #f87171);
+  background: #ef4444;
   z-index: 30;
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+  box-shadow: 0 0 12px 2px rgba(239, 68, 68, 0.6);
   pointer-events: none;
-  transition: left 0.4s linear;
 }
 
 .current-time-line .time-marker {
   position: absolute;
-  top: -9px;
+  top: 0;
   left: -5px;
   width: 12px;
   height: 12px;
   background: #ef4444;
   border-radius: 50%;
-  border: 2px solid #fff;
-  box-shadow: 0 0 8px rgba(0,0,0,0.4);
 }
 
 .current-time-line .time-label {
   position: absolute;
-  top: -30px;
+  top: -34px;
   left: 50%;
   transform: translateX(-50%);
   background: #ef4444;
-  color: white;
+  color: #ffffff;
   font-size: 11px;
-  font-weight: 700;
-  padding: 2px 9px;
-  border-radius: 4px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 6px;
   white-space: nowrap;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
 }
 
-/* بلاک پرواز */
+/* کارت پرواز عمومی */
 .flight-block-card {
   position: absolute;
-  top: 8px;
-  bottom: 8px;
-  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  top: 12px;
+  bottom: 12px;
   border-radius: 8px;
-  box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   padding: 0 12px;
   overflow: hidden;
-  border-left: 4px solid #34d399;
+  backdrop-filter: blur(4px);
   z-index: 10;
 }
 
 .flight-block-card:hover {
-  transform: scaleY(1.12);
+  transform: translateY(-2px);
   z-index: 25;
+}
+
+.flight-block-card.type-flight {
+  background: linear-gradient(135deg, rgba(4, 120, 87, 0.85) 0%, rgba(16, 185, 129, 0.9) 100%);
+  border-left: 4px solid #10b981;
+}
+
+.flight-block-card.type-check {
+  background: linear-gradient(135deg, rgba(180, 83, 9, 0.85) 0%, rgba(245, 158, 11, 0.9) 100%);
+  border-left: 4px solid #f59e0b;
+}
+
+.flight-block-card.type-dfdr {
+  background: linear-gradient(135deg, rgba(109, 40, 217, 0.85) 0%, rgba(139, 92, 246, 0.9) 100%);
+  border-left: 4px solid #8b5cf6;
+}
+
+.flight-block-card.is-cancelled {
+  background: linear-gradient(135deg, rgba(153, 27, 27, 0.9) 0%, rgba(220, 38, 38, 0.95) 100%) !important;
+  border-left: 4px solid #ef4444 !important;
 }
 
 .flight-block-content {
   width: 100%;
-  text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  height: 100%;
-  padding: 4px 8px;
   gap: 2px;
 }
 
-.flight-time {
-  font-size: 10.5px;
-  font-weight: 700;
-  color: #a7f3d0;
-  letter-spacing: 0.5px;
-}
+.flight-time { font-size: 11px; font-weight: 700; color: #a7f3d0; }
+.type-check .flight-time { color: #fde68a; }
+.type-dfdr .flight-time { color: #ddd6fe; }
+.is-cancelled .flight-time { color: #fca5a5 !important; }
 
 .flight-main-info {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 2px;
+  justify-content: space-between;
+  gap: 8px;
 }
 
-.flight-number {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: #ffffff;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-}
+.flight-number { font-size: 13px; font-weight: 800; color: #ffffff; }
+.flight-number-alt { font-size: 11px; font-weight: 700; color: #ffffff; text-transform: uppercase; }
+.flight-route { font-size: 12px; font-weight: 600; color: #e2e8f0; }
 
-.flight-route {
-  font-size: 12px;
-  font-weight: 500;
-  color: #d1fae5;
-  opacity: 0.95;
+.badge-status-container { display: flex; gap: 4px; align-items: center; }
+.type-badge, .cancel-badge {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+  text-transform: uppercase;
 }
+.type-check .type-badge { background: #78350f; color: #fef3c7; }
+.type-dfdr .type-badge { background: #4c1d95; color: #ede9fe; }
+.cancel-badge { background: #7f1d1d; color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
 
-/* Tooltip */
+/* پاپ‌آپ تولتیپ */
 .flight-tooltip-popup {
   position: absolute;
-  bottom: 120%;
+  bottom: 125%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(4px);
   background: #1f2937;
   color: #fff;
-  padding: 10px 14px;
-  border-radius: 8px;
+  padding: 12px 16px;
+  border-radius: 10px;
   font-size: 12px;
-  box-shadow: 0 10px 20px -5px rgba(0,0,0,0.6);
-  border: 1px solid #4b5563;
   visibility: hidden;
   opacity: 0;
-  transition: all 0.25s;
-  width: 170px;
+  transition: all 0.2s ease;
+  width: 190px;
   z-index: 40;
-  text-align: center;
 }
 
 .flight-block-card:hover .flight-tooltip-popup {
   visibility: visible;
   opacity: 1;
-}
-
-
-.flight-block-content {
-  width: 100%;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100%;
-  padding: 4px 8px;
-  gap: 3px;
-}
-
-.flight-time {
-  font-size: 11px;
-  font-weight: 700;
-  color: #a7f3d0;
-}
-
-.flight-number {
-  font-size: 14px;
-  font-weight: 700;
-  color: white;
-}
-
-.flight-route {
-  font-size: 12.5px;
-  color: #d1fae5;
+  transform: translateX(-50%) translateY(0);
 }
