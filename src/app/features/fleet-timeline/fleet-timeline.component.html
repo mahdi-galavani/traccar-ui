@@ -1,10 +1,16 @@
 <div class="timeline-container">
+
+  <!-- ================= HEADER ================= -->
   <div class="timeline-header">
+
     <div class="airplane-selector">
       <label>{{ 'fleet_schedule.airplane' | translate }}:</label>
+
       <select [value]="selectedAirplaneId()" (change)="selectAirplane($any($event.target).value)">
         @for (plane of airplanes(); track plane.id) {
-          <option [value]="plane.id">{{ plane.register }} ({{ plane.type?.title }})</option>
+          <option [value]="plane.id">
+            {{ plane.register }} ({{ plane.type?.title }})
+          </option>
         }
       </select>
     </div>
@@ -14,14 +20,20 @@
       <button [class.active]="viewMode() === '2_WEEKS'" (click)="switchView('2_WEEKS')">2 Weeks</button>
       <button [class.active]="viewMode() === '1_MONTH'" (click)="switchView('1_MONTH')">1 Month</button>
     </div>
+
   </div>
 
+  <!-- ================= AIRPLANE META ================= -->
   @if (currentAirplaneDetails()) {
     <div class="airplane-meta-bar">
+
       <div class="meta-item">
         <span class="meta-label">Aircraft</span>
-        <span class="meta-value">{{ currentAirplaneDetails()?.register }}</span>
+        <span class="meta-value">
+          {{ currentAirplaneDetails()?.register }}
+        </span>
       </div>
+
       <div class="meta-item">
         <span class="meta-label">Config</span>
         <span class="meta-value">
@@ -30,12 +42,18 @@
           E:{{ currentAirplaneDetails()?.economicClassSeat ?? 0 }}
         </span>
       </div>
+
     </div>
   }
 
+  <!-- ================= TIMELINE ================= -->
   <div class="timeline-board">
+
+    <!-- ===== TIME HEADER ===== -->
     <div class="time-axis-row">
+
       <div class="axis-corner-cell">Day / Time</div>
+
       <div class="hours-container">
         @for (hour of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]; track hour) {
           <div class="hour-tick">
@@ -43,28 +61,39 @@
           </div>
         }
       </div>
+
     </div>
 
+    <!-- ===== ROWS ===== -->
     <div class="timeline-rows-container">
+
       @for (day of WEEK_DAYS; track day; let dayIdx = $index) {
+
         <div class="timeline-row">
-          <div class="day-cell-label">{{ day }}</div>
+
+          <div class="day-cell-label">
+            {{ day }}
+          </div>
 
           <div class="slots-lane-wrapper">
 
+            <!-- CURRENT TIME LINE -->
             @if (showCurrentTimeLine()) {
-              <div class="current-time-line" [style.left]="currentTimePosition()">
-
+              <div class="current-time-line"
+                   [style.left]="currentTimePosition()">
               </div>
             }
 
+            <!-- GRID -->
             <div class="grid-guidelines">
               @for (tick of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]; track tick) {
                 <div class="line-tick"></div>
               }
             </div>
 
+            <!-- ================= FLIGHTS ================= -->
             @for (flight of currentAirplaneSchedules(); track flight.id || $index) {
+
               @if (isFlightOnDay(flight, dayIdx)) {
 
                 <div class="flight-block-card"
@@ -72,63 +101,253 @@
                      [class.type-check]="flight.type === 'CHECK'"
                      [class.type-dfdr]="flight.type === 'DFDR'"
                      [class.is-cancelled]="flight.status === 'CANCELLED'"
-                     [ngStyle]="getFlightStyle(flight)">
+                     [ngStyle]="getFlightStyle(flight)"
+                     (click)="openScheduleDetails(flight)">
 
                   <div class="flight-block-content">
-                    <div class="flight-time">
-                      {{ formatTime(flight?.plannedStartTime) }} — {{ formatTime(flight?.plannedEndTime) }}
-                    </div>
 
-                    <div class="flight-main-info">
-                      <div class="info-data-wrapper">
-                        @if (flight.type === 'FLIGHT') {
-                          <span class="flight-number">#{{ flight.flight?.number ?? 'N/A' }}</span>
-                          <span class="flight-route">
-                            {{ getAirportCode(flight?.departure) }} → {{ getAirportCode(flight?.arrival) }}
-                          </span>
-                        } @else {
-                          <span class="flight-number-alt">{{ flight.type }}</span>
-                        }
-                      </div>
+                    @switch (getBlockSize(flight)) {
 
-                      <div class="badge-status-container">
-                        @if (flight.type !== 'FLIGHT') {
-                          <span class="type-badge">{{ flight.type }}</span>
-                        }
-                        @if (flight.status === 'CANCELLED') {
-                          <span class="cancel-badge">Canceled</span>
-                        }
-                      </div>
-                    </div>
+                      <!-- XS -->
+                      @case ('xs') {
+                        <div class="block-xs">
+                          {{ getTypeIcon(flight.type) }}
+                        </div>
+                      }
+
+                      <!-- SM -->
+                      @case ('sm') {
+                        <div class="block-sm">
+                          @if (flight.type === 'FLIGHT') {
+                            {{ flight.flight?.number }}
+                          } @else {
+                            {{ getTypeIcon(flight.type) }}
+                          }
+                        </div>
+                      }
+
+                      <!-- MD -->
+                      @case ('md') {
+                        <div class="block-md">
+                          <div class="title">
+                            {{ getTypeIcon(flight.type) }}
+                            {{ flight.flight?.number }}
+                          </div>
+
+                          @if (flight.type === 'FLIGHT') {
+                            <div class="route">
+                              {{ getAirportCode(flight.departure) }}
+                              →
+                              {{ getAirportCode(flight.arrival) }}
+                            </div>
+                          }
+                        </div>
+                      }
+
+                      <!-- LG -->
+                      @default {
+                        <div class="block-lg">
+
+                          <div class="title">
+                            {{ getTypeIcon(flight.type) }}
+                            {{ flight.flight?.number }}
+                          </div>
+
+                          @if (flight.type === 'FLIGHT') {
+                            <div class="route">
+                              {{ getAirportCode(flight.departure) }}
+                              →
+                              {{ getAirportCode(flight.arrival) }}
+                            </div>
+                          }
+
+                          <div class="time">
+                            {{ formatTime(flight.plannedStartTime) }}
+                            —
+                            {{ formatTime(flight.plannedEndTime) }}
+                          </div>
+
+                        </div>
+                      }
+
+                    }
+
                   </div>
 
+                  <!-- TOOLTIP -->
                   <div class="flight-tooltip-popup">
+
                     <div class="tooltip-header">
-                      <strong [style.color]="(flight.status === 'CANCELLED') ? '#ef4444' : '#38bdf8'">
+                      <strong>
                         {{ getTypeLabel(flight.type) }}
                       </strong>
+
                       @if (flight.status === 'CANCELLED') {
-                        <span style="color: #ef4444; font-weight: 800;"> (CANCELED)</span>
+                        <span style="color:#ef4444;"> (CANCELED)</span>
                       }
                     </div>
 
                     <div class="tooltip-body">
+
                       @if (flight.type === 'FLIGHT') {
-                        <span style="color: #ffffff; font-weight: 700;">No: {{ flight.flight?.number ?? 'N/A' }}</span><br>
-                        <span style="color: #9ca3af">{{ getAirportCode(flight?.departure) }} → {{ getAirportCode(flight?.arrival) }}</span><br>
+                        <span>No: {{ flight.flight?.number }}</span><br>
+                        <span>
+                          {{ getAirportCode(flight.departure) }}
+                          →
+                          {{ getAirportCode(flight.arrival) }}
+                        </span>
                       } @else {
-                        <span style="color: #ffffff; font-weight: 600;">Activity: {{ flight.type }}</span><br>
+                        <span>{{ flight.type }}</span>
                       }
-                      <small class="tooltip-time-footer">{{ formatTime(flight?.plannedStartTime) }} — {{ formatTime(flight?.plannedEndTime) }}</small>
+
+                      <small>
+                        {{ formatTime(flight.plannedStartTime) }}
+                        —
+                        {{ formatTime(flight.plannedEndTime) }}
+                      </small>
+
                     </div>
+
                   </div>
 
                 </div>
               }
+
             }
+
           </div>
         </div>
       }
+
     </div>
   </div>
+
 </div>
+
+<!-- ================= MODAL ================= -->
+@if (showModal()) {
+
+  <div class="modal-backdrop" (click)="closeModal()"></div>
+
+  <div class="schedule-modal">
+
+    <div class="modal-header">
+
+      <div class="title">
+        {{ getTypeIcon(selectedSchedule()?.type!) }}
+        {{ selectedSchedule()?.type }}
+
+        @if (selectedSchedule()?.status === 'CANCELLED') {
+          <span class="cancel">CANCELLED</span>
+        }
+      </div>
+
+      <button class="close-btn" (click)="closeModal()">✕</button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <!-- FLIGHT -->
+      @if (selectedSchedule()?.type === 'FLIGHT') {
+
+        <div class="section">
+          <h3>Flight Info</h3>
+
+          <div class="row">
+            <span>Flight Number:</span>
+            <b>{{ selectedSchedule()?.flight?.number }}</b>
+          </div>
+
+          <div class="row">
+            <span>Route:</span>
+            <b>
+              {{ getAirportCode(selectedSchedule()?.departure) }}
+              →
+              {{ getAirportCode(selectedSchedule()?.arrival) }}
+            </b>
+          </div>
+
+          <div class="row">
+            <span>Time:</span>
+            <b>
+              {{ formatTime(selectedSchedule()?.plannedStartTime) }}
+              —
+              {{ formatTime(selectedSchedule()?.plannedEndTime) }}
+            </b>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Aircraft</h3>
+
+          <div class="row">
+            <span>Registration:</span>
+            <b>{{ selectedSchedule()?.airplane?.id }}</b>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Seats</h3>
+
+          @let airplane = getAirplane(selectedSchedule()!);
+          <div class="row">F: {{ airplane?.firstClassSeat ?? 0 }}</div>
+          <div class="row">B: {{ airplane?.businessClassSeat ?? 0 }}</div>
+          <div class="row">E: {{ airplane?.economicClassSeat ?? 0 }}</div>
+        </div>
+
+      }
+
+      <!-- CHECK -->
+      @if (selectedSchedule()?.type === 'CHECK') {
+
+        <div class="section">
+          <h3>Maintenance Check</h3>
+
+          <div class="row">
+            <span>Aircraft:</span>
+            <b>{{ selectedSchedule()?.airplane?.id }}</b>
+          </div>
+
+          <div class="row">
+            <span>Time:</span>
+            <b>
+              {{ formatTime(selectedSchedule()?.plannedStartTime) }}
+              —
+              {{ formatTime(selectedSchedule()?.plannedEndTime) }}
+            </b>
+          </div>
+        </div>
+
+      }
+
+      <!-- DFDR -->
+      @if (selectedSchedule()?.type === 'DFDR') {
+
+        <div class="section">
+          <h3>DFDR Readout</h3>
+
+          <div class="row">
+            <span>Aircraft:</span>
+            <b>{{ selectedSchedule()?.airplane?.id }}</b>
+          </div>
+        </div>
+
+      }
+
+      <!-- STATUS -->
+      <div class="section status">
+
+        <h3>Status</h3>
+
+        <span [class]="selectedSchedule()?.status">
+          {{ selectedSchedule()?.status }}
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
