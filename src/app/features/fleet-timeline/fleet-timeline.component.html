@@ -141,6 +141,12 @@
                               {{ getAirportCode(flight.arrival) }}
                             </div>
                           }
+
+                          <div class="time">
+                            {{ formatTime(flight.plannedStartTime) }}
+                            —
+                            {{ formatTime(flight.plannedEndTime) }}
+                          </div>
                         </div>
                       }
 
