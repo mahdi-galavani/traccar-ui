@@ -207,9 +207,10 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   formatTime(isoString: string | undefined): string {
     if (!isoString) return '';
 
-    return new Date(isoString).toLocaleTimeString('fa-IR', {
+    return new Date(isoString).toLocaleTimeString('en-US', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      hour12: false
     });
   }
 

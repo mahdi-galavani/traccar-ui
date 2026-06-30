@@ -1,11 +1,13 @@
-/* کانتینر اصلی مانیتورینگ - تم تاریک پیشرفته */
+/* ==========================================================================
+   ۱. کانتینر اصلی مانیتورینگ - تم تاریک پیشرفته
+   ========================================================================== */
 .timeline-container {
   background: #0b0f19;
   color: #f3f4f6;
   padding: 24px;
   border-radius: 16px;
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Vazirmatn', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   direction: ltr;
 }
 
@@ -75,6 +77,9 @@
 .meta-label { font-size: 11px; color: #6b7280; text-transform: uppercase; }
 .meta-value { font-size: 15px; font-weight: 700; color: #38bdf8; }
 
+/* ==========================================================================
+   ۲. بورد اصلی تایم‌لاین و خطوط شبکه (Grid)
+   ========================================================================== */
 .timeline-board {
   border: 1px solid #1f2937;
   border-radius: 14px;
@@ -83,7 +88,6 @@
   position: relative;
 }
 
-/* اصلاح محور زمان بالایی */
 .time-axis-row {
   display: flex;
   background: #0f172a;
@@ -102,7 +106,6 @@
   border-right: 1px solid #1f2937;
 }
 
-/* استفاده از عرض قطعه‌بندی شده به جای space-between */
 .hours-container {
   flex: 1;
   display: flex;
@@ -128,8 +131,9 @@
 .timeline-row {
   display: flex;
   border-bottom: 1px solid rgba(31, 41, 55, 0.7);
-  height: 80px;
-  align-items: center;
+  height: 110px;        /* فیکس ردیف روی ۱۱۰ پیکسل */
+  min-height: 110px;
+  align-items: stretch; /* برای پر شدن کامل ارتفاع توسط فرزندان */
   position: relative;
 }
 
@@ -153,9 +157,9 @@
   position: relative;
   height: 100%;
   background: #0d111c;
+  overflow: hidden;
 }
 
-/* اصلاح تراز خطوط شبکه */
 .grid-guidelines {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -170,7 +174,9 @@
   box-sizing: border-box;
 }
 
-/* تراز خط قرمز نئون محلی */
+/* ==========================================================================
+   ۳. خط زمان فعلی (Current Time Line)
+   ========================================================================== */
 .current-time-line {
   position: absolute;
   top: 0;
@@ -206,84 +212,114 @@
   white-space: nowrap;
 }
 
-/* کارت پرواز عمومی */
+/* ==========================================================================
+   ۴. کارت‌های پرواز مدرن (Flight & Block Cards)
+   ========================================================================== */
 .flight-block-card {
   position: absolute;
-  top: 12px;
-  bottom: 12px;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  height: 76px;
+  top: 17px; /* تراز دقیق عمودی وسط در ردیف ۱۱۰ پیکسلی */
+  border-radius: 12px;
+  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.7),
+  0 0 1px 1px rgba(255, 255, 255, 0.05) inset;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
-  padding: 0 12px;
+  padding: 0 16px;
   overflow: hidden;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
   z-index: 10;
+  box-sizing: border-box;
+  text-align: center;
 }
 
 .flight-block-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.01);
   z-index: 25;
+  box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.8),
+  0 0 0 1px rgba(255, 255, 255, 0.15) inset;
 }
 
+/* تم‌ها و گرادیان نئونی کارت‌ها */
 .flight-block-card.type-flight {
-  background: linear-gradient(135deg, rgba(4, 120, 87, 0.85) 0%, rgba(16, 185, 129, 0.9) 100%);
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.85) 0%, rgba(16, 185, 129, 0.8) 100%);
   border-left: 4px solid #10b981;
+  box-shadow: 0 8px 20px -6px rgba(16, 185, 129, 0.2), 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .flight-block-card.type-check {
-  background: linear-gradient(135deg, rgba(180, 83, 9, 0.85) 0%, rgba(245, 158, 11, 0.9) 100%);
+  background: linear-gradient(135deg, rgba(120, 53, 4, 0.85) 0%, rgba(245, 158, 11, 0.8) 100%);
   border-left: 4px solid #f59e0b;
+  box-shadow: 0 8px 20px -6px rgba(245, 158, 11, 0.2), 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .flight-block-card.type-dfdr {
-  background: linear-gradient(135deg, rgba(109, 40, 217, 0.85) 0%, rgba(139, 92, 246, 0.9) 100%);
+  background: linear-gradient(135deg, rgba(76, 29, 149, 0.85) 0%, rgba(139, 92, 246, 0.8) 100%);
   border-left: 4px solid #8b5cf6;
+  box-shadow: 0 8px 20px -6px rgba(139, 92, 246, 0.2), 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .flight-block-card.is-cancelled {
-  background: linear-gradient(135deg, rgba(153, 27, 27, 0.9) 0%, rgba(220, 38, 38, 0.95) 100%) !important;
+  background: linear-gradient(135deg, rgba(127, 29, 29, 0.9) 0%, rgba(220, 38, 38, 0.85) 100%) !important;
   border-left: 4px solid #ef4444 !important;
+  box-shadow: 0 8px 20px -6px rgba(239, 68, 68, 0.3), 0 4px 12px rgba(0, 0, 0, 0.5) !important;
 }
 
+/* ساختار محتوایی المان‌های داخل کارت */
 .flight-block-content {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
 }
 
+.flight-block-content .title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  letter-spacing: 0.5px;
+}
+
+.flight-block-content .route {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 1px;
+  margin: 1px 0;
+}
+
+.flight-block-content .time {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  direction: ltr;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 1px 8px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+/* استایل کپسول‌های وضعیت کمکی درون قالب قدیمی برای جلوگیری از خرابی احتمالی */
 .flight-time { font-size: 11px; font-weight: 700; color: #a7f3d0; }
 .type-check .flight-time { color: #fde68a; }
 .type-dfdr .flight-time { color: #ddd6fe; }
 .is-cancelled .flight-time { color: #fca5a5 !important; }
 
-.flight-main-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
+/* سایزبندی‌های فشرده سوییچ‌کیس قالب شما */
+.block-xs { font-size: 16px; color: #fff; }
+.block-sm { font-size: 12px; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+.block-md, .block-lg { width: 100%; }
 
-.flight-number { font-size: 13px; font-weight: 800; color: #ffffff; }
-.flight-number-alt { font-size: 11px; font-weight: 700; color: #ffffff; text-transform: uppercase; }
-.flight-route { font-size: 12px; font-weight: 600; color: #e2e8f0; }
-
-.badge-status-container { display: flex; gap: 4px; align-items: center; }
-.type-badge, .cancel-badge {
-  font-size: 9px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-.type-check .type-badge { background: #78350f; color: #fef3c7; }
-.type-dfdr .type-badge { background: #4c1d95; color: #ede9fe; }
-.cancel-badge { background: #7f1d1d; color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
-
-/* پاپ‌آپ تولتیپ */
+/* ==========================================================================
+   ۵. تولتیپ کارت‌ها (Tooltip Popup)
+   ========================================================================== */
 .flight-tooltip-popup {
   position: absolute;
   bottom: 125%;
@@ -307,15 +343,20 @@
   transform: translateX(-50%) translateY(0);
 }
 
+.tooltip-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.tooltip-body { font-size: 11px; color: #d1d5db; text-align: left; }
 
-.modal-backdrop{
+/* ==========================================================================
+   ۶. مودال و جزئیات پاپ‌آپ (Modal & Core Layout)
+   ========================================================================== */
+.modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   z-index: 1000;
 }
 
-.schedule-modal{
+.schedule-modal {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -323,104 +364,80 @@
   width: 520px;
   max-height: 80vh;
   overflow-y: auto;
-
   background: #0f172a;
   border: 1px solid #1f2937;
   border-radius: 14px;
   z-index: 1001;
-
   color: #fff;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
-.modal-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 14px 16px;
-  border-bottom:1px solid #1f2937;
+  border-bottom: 1px solid #1f2937;
 }
 
-.modal-header .title{
-  font-weight:800;
-  font-size:14px;
-  display:flex;
-  gap:8px;
-  align-items:center;
+.modal-header .title {
+  font-weight: 800;
+  font-size: 14px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
-.close-btn{
+.close-btn {
   background: transparent;
-  border:none;
-  color:#fff;
-  font-size:18px;
-  cursor:pointer;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
 }
 
-.modal-body{
+.modal-body {
   padding: 16px;
-  display:flex;
-  flex-direction:column;
-  gap:16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.section{
-  border:1px solid #1f2937;
-  border-radius:10px;
-  padding:12px;
-  background:#111827;
+.section {
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+  padding: 12px;
+  background: #111827;
 }
 
-.section h3{
-  margin:0 0 10px 0;
-  font-size:12px;
-  color:#9ca3af;
-  text-transform:uppercase;
+.section h3 {
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  color: #9ca3af;
+  text-transform: uppercase;
 }
 
-.row{
-  display:flex;
-  justify-content:space-between;
-  font-size:13px;
-  padding:4px 0;
-  color:#e5e7eb;
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 4px 0;
+  color: #e5e7eb;
 }
 
-.status span{
-  padding:4px 10px;
-  border-radius:6px;
-  font-weight:700;
+.status span {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 700;
 }
 
-.status .SCHEDULED{ color:#38bdf8; }
-.status .COMPLETED{ color:#22c55e; }
-.status .CANCELLED{ color:#ef4444; }
+.status .SCHEDULED { color: #38bdf8; }
+.status .COMPLETED { color: #22c55e; }
+.status .CANCELLED { color: #ef4444; }
 
-
-.slots-lane-wrapper {
-  position: relative;
-  overflow: hidden;
-  height: 100%; /* مطمئن می‌شویم ارتفاع کامل را می‌گیرد */
-}
-
-/* هر lane ارتفاع مشخص دارد */
-.flight-block-card {
-  position: absolute;
-  height: 75px;
-  text-align: center;
-  font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif;
-  transition: all 0.2s ease;
-}
-
-/* spacing بین lanes */
-.timeline-row {
-  min-height: 110px;
-  height: 110px;        /* اضافه کردن ارتفاع ثابت برای کل ردیف */
-  align-items: stretch; /* تغییر از flex-start به stretch برای پر شدن ارتفاع کانتینر فرزند */
-}
-
-
-/* ================= CREW SECTION MODAL ================= */
+/* ==========================================================================
+   ۷. بخش اختصاصی خدمه پرواز (Crew List) در مودال
+   ========================================================================== */
 .crew-list {
   display: flex;
   flex-direction: column;
@@ -433,9 +450,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
-  background: #1f2937; /* رنگ تیره هماهنگ با تم */
+  background: #1f2937;
   border-radius: 8px;
-  border-left: 3px solid #3b82f6; /* یک خط ظریف آبی رنگ برای زیبایی */
+  border-left: 3px solid #3b82f6;
 }
 
 .crew-info {
@@ -452,7 +469,6 @@
   letter-spacing: 0.5px;
 }
 
-/* متمایز کردن کاپیتان با رنگ متفاوت در صورت تمایل */
 .crew-badge.captain {
   color: #fbbf24;
 }
