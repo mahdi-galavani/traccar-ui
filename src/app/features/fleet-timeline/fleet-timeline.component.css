@@ -406,6 +406,8 @@
 .flight-block-card {
   position: absolute;
   height: 75px;
+  text-align: center;
+  font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif;
   transition: all 0.2s ease;
 }
 
