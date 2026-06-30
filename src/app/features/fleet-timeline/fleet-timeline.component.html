@@ -302,6 +302,34 @@
           <div class="row">E: {{ airplane?.economicClassSeat ?? 0 }}</div>
         </div>
 
+        <div class="section crew-section">
+          <h3>Flight Crew</h3>
+
+          @let crewList = selectedSchedule()?.flight?.crew;
+          @if (crewList && crewList.length > 0) {
+            <div class="crew-list">
+              @for (member of crewList; track member.id || $index) {
+                <div class="crew-item">
+                  <div class="crew-info">
+              <span class="crew-badge" [class]="member.person?.job?.title?.toLowerCase()">
+                {{ member.person?.job?.title === 'CAPTAIN' ? '👨‍✈️' : '👤' }}
+                {{ member.crewJob?.description || member.person?.job?.title }}
+              </span>
+                    <strong class="crew-name">
+                      {{ member.person?.name ?? '' }} {{ member.person?.family ?? '' }}
+                    </strong>
+                  </div>
+                  @if (member.person?.phoneNumber) {
+                    <small class="crew-phone">📞 {{ member.person?.phoneNumber }}</small>
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="no-crew">No crew members assigned to this flight.</div>
+          }
+        </div>
+
       }
 
       <!-- CHECK -->

@@ -400,6 +400,7 @@
 .slots-lane-wrapper {
   position: relative;
   overflow: hidden;
+  height: 100%; /* مطمئن می‌شویم ارتفاع کامل را می‌گیرد */
 }
 
 /* هر lane ارتفاع مشخص دارد */
@@ -414,5 +415,63 @@
 /* spacing بین lanes */
 .timeline-row {
   min-height: 110px;
-  align-items: flex-start;
+  height: 110px;        /* اضافه کردن ارتفاع ثابت برای کل ردیف */
+  align-items: stretch; /* تغییر از flex-start به stretch برای پر شدن ارتفاع کانتینر فرزند */
+}
+
+
+/* ================= CREW SECTION MODAL ================= */
+.crew-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.crew-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #1f2937; /* رنگ تیره هماهنگ با تم */
+  border-radius: 8px;
+  border-left: 3px solid #3b82f6; /* یک خط ظریف آبی رنگ برای زیبایی */
+}
+
+.crew-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.crew-badge {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #9ca3af;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* متمایز کردن کاپیتان با رنگ متفاوت در صورت تمایل */
+.crew-badge.captain {
+  color: #fbbf24;
+}
+
+.crew-name {
+  font-size: 13px;
+  color: #ffffff;
+}
+
+.crew-phone {
+  font-size: 11px;
+  color: #9ca3af;
+  direction: ltr;
+}
+
+.no-crew {
+  font-size: 13px;
+  color: #6b7280;
+  text-align: center;
+  padding: 10px 0;
+  font-style: italic;
 }
