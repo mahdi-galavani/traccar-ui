@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FleetScheduleApiService } from '../../core/services/api/fleet-schedule-api.service';
 import { AirplaneApiService } from '../../core/services/api/airplane-api.service';
 import { AirplaneDto } from '../../core/models/airplane.model';
-import { FleetScheduleDto } from '../../core/models/fleet-schedule.model';
+import { FleetScheduleDto, ScheduleSegment } from '../../core/models/fleet-schedule.model';
 import { TranslatePipe } from '@ngx-translate/core';
 
 export type TimelineViewMode = '1_WEEK' | '2_WEEKS' | '1_MONTH';
@@ -104,6 +104,84 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
     );
   });
 
+  readonly scheduleSegments = computed(() => {
+
+    return this.currentAirplaneSchedules()
+      .flatMap(schedule => this.createSegments(schedule));
+
+  });
+
+  private createSegments(schedule: FleetScheduleDto): ScheduleSegment[] {
+
+    const segments: ScheduleSegment[] = [];
+
+    const start = new Date(schedule.plannedStartTime);
+    const end = new Date(schedule.plannedEndTime);
+
+    const current = new Date(start);
+
+    current.setHours(0, 0, 0, 0);
+
+    while (current <= end) {
+
+      const isFirst =
+        current.toDateString() === start.toDateString();
+
+      const isLast =
+        current.toDateString() === end.toDateString();
+
+      const startMinutes =
+        isFirst
+          ? start.getHours() * 60 + start.getMinutes()
+          : 0;
+
+      const endMinutes =
+        isLast
+          ? end.getHours() * 60 + end.getMinutes()
+          : 1440;
+
+      const day = current.getDay();
+
+      const isoDay =
+        day === 0
+          ? 6
+          : day - 1;
+
+      segments.push({
+
+        schedule,
+
+        dayIndex: isoDay,
+
+        startMinutes,
+
+        endMinutes,
+
+        isFirstSegment: isFirst,
+
+        isLastSegment: isLast
+
+      });
+
+      current.setDate(current.getDate() + 1);
+
+    }
+
+    return segments;
+
+  }
+
+  getSegmentsForDay(dayIndex: number): ScheduleSegment[] {
+
+    return this.scheduleSegments()
+      .filter(segment => segment.dayIndex === dayIndex);
+
+  }
+
+  getSchedule(segment: ScheduleSegment): FleetScheduleDto {
+    return segment.schedule;
+  }
+
   readonly currentAirplaneDetails = computed(() => {
     return this.airplanes().find(p => p.id === this.selectedAirplaneId()) ?? null;
   });
@@ -143,26 +221,22 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   // RESPONSIVE BLOCK ENGINE
   // =========================
 
-  getBlockSize(schedule: FleetScheduleDto): 'xs' | 'sm' | 'md' | 'lg' {
+  getBlockSizeBySegment(segment: ScheduleSegment): 'xs' | 'sm' | 'md' | 'lg' {
 
-    const start = new Date(schedule.plannedStartTime);
-    const end = new Date(schedule.plannedEndTime);
+    const duration =
+      segment.endMinutes - segment.startMinutes;
 
-    const startMinutes = start.getHours() * 60 + start.getMinutes();
+    if (duration <= 45)
+      return 'xs';
 
-    let endMinutes = end.getHours() * 60 + end.getMinutes();
+    if (duration <= 90)
+      return 'sm';
 
-    let duration = endMinutes - startMinutes;
-
-    if (duration <= 0) {
-      duration += 1440;
-    }
-
-    if (duration <= 45) return 'xs';
-    if (duration <= 90) return 'sm';
-    if (duration <= 240) return 'md';
+    if (duration <= 240)
+      return 'md';
 
     return 'lg';
+
   }
 
   // =========================
@@ -230,40 +304,24 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   // POSITIONING ON TIMELINE
   // =========================
 
-  getFlightStyle(schedule: FleetScheduleDto): { [key: string]: string } {
+  getSegmentStyle(segment: ScheduleSegment): { [key: string]: string } {
 
-    if (!schedule.plannedStartTime || !schedule.plannedEndTime) return {};
+    const leftPercent =
+      (segment.startMinutes / 1440) * 100;
 
-    const start = new Date(schedule.plannedStartTime);
-    const end = new Date(schedule.plannedEndTime);
-
-    const startMinutes = start.getHours() * 60 + start.getMinutes();
-
-    let endMinutes = end.getHours() * 60 + end.getMinutes();
-
-    let durationMinutes = endMinutes - startMinutes;
-
-    if (durationMinutes <= 0) durationMinutes += 1440;
-
-    const leftPercent = (startMinutes / 1440) * 100;
-    const widthPercent = (durationMinutes / 1440) * 100;
+    const widthPercent =
+      ((segment.endMinutes - segment.startMinutes) / 1440) * 100;
 
     return {
+
+      position: 'absolute',
+
       left: `${leftPercent}%`,
-      width: `${widthPercent}%`,
-      position: 'absolute'
+
+      width: `${widthPercent}%`
+
     };
-  }
 
-  isFlightOnDay(schedule: FleetScheduleDto, dayIndex: number): boolean {
-    if (!schedule.plannedStartTime) return false;
-
-    const date = new Date(schedule.plannedStartTime);
-
-    const day = date.getDay();
-    const isoDay = day === 0 ? 6 : day - 1;
-
-    return isoDay === dayIndex;
   }
 
   selectedSchedule = signal<FleetScheduleDto | null>(null);

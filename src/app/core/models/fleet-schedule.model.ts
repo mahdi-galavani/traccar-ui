@@ -33,7 +33,14 @@ export interface FleetScheduleUpdateStatusDto {
 
 export interface ScheduleSegment {
   schedule: FleetScheduleDto;
+
   dayIndex: number;
+
   startMinutes: number;
+
   endMinutes: number;
+
+  isFirstSegment: boolean;
+
+  isLastSegment: boolean;
 }
