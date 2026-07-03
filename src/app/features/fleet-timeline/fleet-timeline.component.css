@@ -219,7 +219,6 @@
   position: absolute;
   height: 76px;
   top: 17px; /* تراز دقیق عمودی وسط در ردیف ۱۱۰ پیکسلی */
-  border-radius: 12px;
   box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.7),
   0 0 1px 1px rgba(255, 255, 255, 0.05) inset;
   cursor: pointer;
@@ -234,24 +233,36 @@
   text-align: center;
 }
 
-/* 🔴 شروع segment */
+/* 🔴 مدیریت ردیوس سگمنت‌های متقاطع (Cross-Day Corners) */
+
+/* سگمنت اول (شروع پرواز): فقط سمت چپ گرد، سمت راست صاف */
 .flight-block-card.first-segment {
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
+  border-top-left-radius: 12px !important;
+  border-bottom-left-radius: 12px !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
 }
 
-/* 🔴 وسط segment */
+/* سگمنت وسط (عبور کامل از روز): هر ۴ گوشه کاملاً صاف */
 .flight-block-card.middle-segment {
-  border-radius: 0;
-
+  border-radius: 0px !important;
 }
 
-/* 🔴 پایان segment */
+/* سگمنت آخر (پایان پرواز در روز بعد): سمت چپ صاف، سمت راست گرد */
 .flight-block-card.last-segment {
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-top-right-radius: 12px !important;
+  border-bottom-right-radius: 12px !important;
 }
 
+/* کارت‌های معمولی که متقاطع نیستند (هم اول هستند هم آخر): هر ۴ گوشه گرد */
+.flight-block-card.first-segment.last-segment {
+  border-radius: 12px !important;
+}
+
+
+/* ادامه‌ی استایل‌های افکت‌ها و هاور (بدون تغییر) */
 .flight-block-card:hover {
   transform: translateY(-3px) scale(1.01);
   z-index: 25;
