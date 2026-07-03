@@ -24,10 +24,11 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   // =========================
   // STATE
   // =========================
-
   readonly viewMode = signal<TimelineViewMode>('1_WEEK');
   readonly airplanes = signal<AirplaneDto[]>([]);
-  readonly selectedAirplaneId = signal<string | null>(null);
+
+  // تغییر به نوع اتحادی برای پذیرش حالت تکی و کلی
+  readonly selectedAirplaneId = signal<string | 'ALL'>('ALL');
   readonly schedules = signal<FleetScheduleDto[]>([]);
   readonly loading = signal(false);
 
@@ -39,7 +40,6 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   // =========================
   // INIT
   // =========================
-
   ngOnInit(): void {
     this.loadAirplanes();
     this.loadSchedules();
@@ -52,9 +52,11 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
     }
   }
 
-  // =========================
-  // CLOCK
-  // =========================
+  getAirplaneRegister(airplane: any): string {
+    if (!airplane) return 'A/C';
+    // اگر شیء کامل بود از register استفاده می‌کند، در غیر این صورت شناسه را برمی‌گرداند
+    return airplane.register || airplane.id || 'A/C';
+  }
 
   private startLiveClock(): void {
     this.clockInterval = setInterval(() => {
@@ -62,27 +64,18 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
     }, 10000);
   }
 
-  // =========================
-  // LOAD AIRPLANES
-  // =========================
-
   loadAirplanes(): void {
     this.airplaneApi.load().subscribe(planes => {
       this.airplanes.set(planes);
-
-      if (planes.length > 0 && !this.selectedAirplaneId()) {
-        this.selectedAirplaneId.set(planes[0].id!);
+      // حالت پیش‌فرض را روی ALL تنظیم می‌کنیم، در صورت تمایل می‌توانید روی اولین هواپیما بگذارید.
+      if (!this.selectedAirplaneId()) {
+        this.selectedAirplaneId.set('ALL');
       }
     });
   }
 
-  // =========================
-  // LOAD SCHEDULES
-  // =========================
-
   loadSchedules(): void {
     this.loading.set(true);
-
     this.scheduleApi.load().subscribe({
       next: (data) => {
         this.schedules.set(data);
@@ -96,78 +89,42 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   // COMPUTED FILTERS
   // =========================
 
+  // فیلتر هوشمند برنامه‌ها بر اساس حالت تکی یا کلی
   readonly currentAirplaneSchedules = computed(() => {
     const planeId = this.selectedAirplaneId();
-
+    if (planeId === 'ALL') {
+      return this.schedules();
+    }
     return this.schedules().filter(s =>
-      s.airplane?.id === planeId ||
-      s.airplane?.id?.toString() === planeId
+      s.airplane?.id === planeId || s.airplane?.id?.toString() === planeId
     );
   });
 
   readonly scheduleSegments = computed(() => {
-
     return this.currentAirplaneSchedules()
       .flatMap(schedule => this.createSegments(schedule));
-
   });
 
-  private parseLocalDateTime(value: string): Date {
-
-    // حذف timezone اگر وجود دارد
-    const cleaned = value
-      .replace('Z', '')
-      .split('+')[0]
-      .split('-')
-      .slice(0, 3)
-      .join('-') + 'T' + value.split('T')[1]?.split('+')[0]?.split('Z')[0];
-
-    const [datePart, timePart] = cleaned.split('T');
-
-    const [year, month, day] = datePart.split('-').map(Number);
-
-    const [hour = 0, minute = 0, second = 0] =
-      (timePart || '00:00:00').split(':').map(Number);
-
-    return new Date(year, month - 1, day, hour, minute, second, 0);
-  }
+  readonly currentAirplaneDetails = computed(() => {
+    const planeId = this.selectedAirplaneId();
+    if (planeId === 'ALL') return null;
+    return this.airplanes().find(p => p.id === planeId) ?? null;
+  });
 
   private createSegments(schedule: FleetScheduleDto): ScheduleSegment[] {
-
     const segments: ScheduleSegment[] = [];
-
     const start = TimeUtils.parseUTC(schedule.plannedStartTime);
     const end = TimeUtils.parseUTC(schedule.plannedEndTime);
 
-    const startDay = new Date(Date.UTC(
-      start.getUTCFullYear(),
-      start.getUTCMonth(),
-      start.getUTCDate()
-    ));
+    const startDay = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
+    const endDay = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate()));
 
-    const endDay = new Date(Date.UTC(
-      end.getUTCFullYear(),
-      end.getUTCMonth(),
-      end.getUTCDate()
-    ));
-
-    for (
-      let day = new Date(startDay);
-      day <= endDay;
-      day.setUTCDate(day.getUTCDate() + 1)
-    ) {
-
+    for (let day = new Date(startDay); day <= endDay; day.setUTCDate(day.getUTCDate() + 1)) {
       const isFirst = TimeUtils.getUTCDateKey(day) === TimeUtils.getUTCDateKey(start);
       const isLast = TimeUtils.getUTCDateKey(day) === TimeUtils.getUTCDateKey(end);
 
-      const startMinutes = isFirst
-        ? TimeUtils.toUTCMinutes(start)
-        : 0;
-
-      const endMinutes = isLast
-        ? TimeUtils.toUTCMinutes(end)
-        : 1440;
-
+      const startMinutes = isFirst ? TimeUtils.toUTCMinutes(start) : 0;
+      const endMinutes = isLast ? TimeUtils.toUTCMinutes(end) : 1440;
       const dayIndex = TimeUtils.getISOWeekDay(day);
 
       segments.push({
@@ -179,110 +136,54 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
         isLastSegment: isLast
       });
     }
-
     return segments;
   }
 
   getSegmentsForDay(dayIndex: number): ScheduleSegment[] {
-
-    return this.scheduleSegments()
-      .filter(segment => segment.dayIndex === dayIndex);
-
+    return this.scheduleSegments().filter(segment => segment.dayIndex === dayIndex);
   }
 
   getSchedule(segment: ScheduleSegment): FleetScheduleDto {
     return segment.schedule;
   }
 
-  readonly currentAirplaneDetails = computed(() => {
-    return this.airplanes().find(p => p.id === this.selectedAirplaneId()) ?? null;
-  });
-
   // =========================
   // TIME HELPERS
   // =========================
-
   readonly currentTimePosition = computed(() => {
-
     const now = new Date();
-
-    const totalMinutes =
-      now.getUTCHours() * 60 + now.getUTCMinutes();
-
+    const totalMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
     const positionPercent = (totalMinutes / 1440) * 100;
-
     return `${Math.min(Math.max(positionPercent, 0), 100)}%`;
   });
 
-  readonly currentTimeString = computed(() => {
-    const now = this.currentTime();
-
-    return now.toLocaleTimeString('fa-IR', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    });
-  });
-
-  readonly showCurrentTimeLine = computed(() => {
-    return true;
-  });
-
-  // =========================
-  // RESPONSIVE BLOCK ENGINE
-  // =========================
+  readonly showCurrentTimeLine = computed(() => true);
 
   getBlockSizeBySegment(segment: ScheduleSegment): 'xs' | 'sm' | 'md' | 'lg' {
-
-    const duration =
-      segment.endMinutes - segment.startMinutes;
-
-    if (duration <= 45)
-      return 'xs';
-
-    if (duration <= 90)
-      return 'sm';
-
-    if (duration <= 240)
-      return 'md';
-
+    const duration = segment.endMinutes - segment.startMinutes;
+    if (duration <= 45) return 'xs';
+    if (duration <= 90) return 'sm';
+    if (duration <= 240) return 'md';
     return 'lg';
-
   }
-
-  // =========================
-  // TYPE ICONS
-  // =========================
 
   getTypeIcon(type: string): string {
     switch (type) {
-      case 'FLIGHT':
-        return '✈';
-      case 'CHECK':
-        return '🔧';
-      case 'DFDR':
-        return '📦';
-      default:
-        return '•';
+      case 'FLIGHT': return '✈';
+      case 'CHECK': return '🔧';
+      case 'DFDR': return '📦';
+      default: return '•';
     }
   }
 
   getTypeLabel(type: string): string {
     switch (type) {
-      case 'FLIGHT':
-        return 'Flight';
-      case 'CHECK':
-        return 'Maintenance Check';
-      case 'DFDR':
-        return 'DFDR Readout';
-      default:
-        return type;
+      case 'FLIGHT': return 'Flight';
+      case 'CHECK': return 'Maintenance Check';
+      case 'DFDR': return 'DFDR Readout';
+      default: return type;
     }
   }
-
-  // =========================
-  // AIRPORT HELPERS
-  // =========================
 
   getAirportCode(airport: any): string {
     if (!airport) return '---';
@@ -291,13 +192,8 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
 
   formatTime(isoString: string | undefined): string {
     if (!isoString) return '';
-
     return TimeUtils.formatUTC(isoString);
   }
-
-  // =========================
-  // VIEW / ACTIONS
-  // =========================
 
   switchView(mode: TimelineViewMode): void {
     this.viewMode.set(mode);
@@ -308,64 +204,56 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   }
 
   // =========================
-  // POSITIONING ON TIMELINE
+  // POSITIONING & OVERLAP ENGINE
   // =========================
-
   getSegmentStyle(segment: ScheduleSegment, dayIdx: number): { [key: string]: string } {
     const leftPercent = (segment.startMinutes / 1440) * 100;
     const widthPercent = ((segment.endMinutes - segment.startMinutes) / 1440) * 100;
 
-    // استخراج تمام پروازهای آن روز برای محاسبه لاین‌ها
-    const daySchedules = this.getSegmentsForDay(dayIdx).map(s => s.schedule);
+    const daySegments = this.getSegmentsForDay(dayIdx);
+    const daySchedules = daySegments.map(s => s.schedule);
+
+    // الگوریتم لاین‌بندی داینامیک پیشرفته بر اساس تداخل زمان‌ها و تفکیک بر اساس هواپیما
     const lanes = this.getLanesForDay(daySchedules);
     const laneIdx = this.getLaneIndex(segment.schedule, lanes);
 
-    // تنظیم تاپ پویا (مثلاً هر لاین ۳۵ پیکسل فضا بگیرد)
-    const topPosition = 12 + (laneIdx * 40);
+    // محاسبه‌ی تاپ پویا: کارت‌ها ارتفاع فشرده‌تری می‌گیرند تا در ردیف ۱۱۰ پیکسلی جا شوند
+    const cardHeight = 42;
+    const gap = 6;
+    const topPosition = 12 + (laneIdx * (cardHeight + gap));
 
     return {
       position: 'absolute',
       left: `${leftPercent}%`,
       width: `${widthPercent}%`,
-      top: `${topPosition}px`
+      top: `${topPosition}px`,
+      height: `${cardHeight}px`
     };
   }
 
-  selectedSchedule = signal<FleetScheduleDto | null>(null);
-  showModal = signal(false);
-
-  openScheduleDetails(schedule: FleetScheduleDto): void {
-    this.selectedSchedule.set(schedule);
-    this.showModal.set(true);
-  }
-
-  closeModal(): void {
-    this.showModal.set(false);
-    this.selectedSchedule.set(null);
-  }
-
   getLanesForDay(schedules: FleetScheduleDto[]): FleetScheduleDto[][] {
-
     const sorted = [...schedules].sort((a, b) =>
-      new Date(a.plannedStartTime).getTime() -
-      new Date(b.plannedStartTime).getTime()
+      new Date(a.plannedStartTime).getTime() - new Date(b.plannedStartTime).getTime()
     );
 
     const lanes: FleetScheduleDto[][] = [];
+    const isAllMode = this.selectedAirplaneId() === 'ALL';
 
     for (const schedule of sorted) {
-
       const start = new Date(schedule.plannedStartTime).getTime();
       const end = new Date(schedule.plannedEndTime).getTime();
-
       let placed = false;
 
       for (const lane of lanes) {
+        // قانون اول: در حالت ALL، پروازهای دو هواپیمای مختلف به هیچ وجه در یک لاین افقی قرار نگیرند
+        if (isAllMode && lane.length > 0 && lane[0].airplane?.id !== schedule.airplane?.id) {
+          continue;
+        }
 
+        // قانون دوم: بررسی عدم تداخل زمانی
         const overlap = lane.some(existing => {
           const exStart = new Date(existing.plannedStartTime).getTime();
           const exEnd = new Date(existing.plannedEndTime).getTime();
-
           return !(end <= exStart || start >= exEnd);
         });
 
@@ -380,26 +268,29 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
         lanes.push([schedule]);
       }
     }
-
     return lanes;
   }
 
   getLaneIndex(schedule: FleetScheduleDto, lanes: FleetScheduleDto[][]): number {
-
     for (let i = 0; i < lanes.length; i++) {
-      if (lanes[i].includes(schedule)) {
-        return i;
-      }
+      if (lanes[i].includes(schedule)) return i;
     }
-
     return 0;
   }
 
-  getLaneTop(index: number): string {
-    return `${index * 34}px`;
+  // =========================
+  // MODAL STATE
+  // =========================
+  selectedSchedule = signal<FleetScheduleDto | null>(null);
+  showModal = signal(false);
+
+  openScheduleDetails(schedule: FleetScheduleDto): void {
+    this.selectedSchedule.set(schedule);
+    this.showModal.set(true);
   }
 
-  getAirplane(schedule: FleetScheduleDto): AirplaneDto | null {
-    return (schedule.airplane as AirplaneDto) ?? null;
+  closeModal(): void {
+    this.showModal.set(false);
+    this.selectedSchedule.set(null);
   }
 }

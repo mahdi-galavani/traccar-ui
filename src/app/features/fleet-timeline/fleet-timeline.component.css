@@ -131,10 +131,11 @@
 .timeline-row {
   display: flex;
   border-bottom: 1px solid rgba(31, 41, 55, 0.7);
-  height: 110px;        /* فیکس ردیف روی ۱۱۰ پیکسل */
-  min-height: 110px;
-  align-items: stretch; /* برای پر شدن کامل ارتفاع توسط فرزندان */
+  min-height: 120px;    /* کمی افزایش حداقل ارتفاع برای راحتی لاین‌های تو در تو */
+  height: auto;
+  align-items: stretch;
   position: relative;
+  padding-bottom: 16px;
 }
 
 .day-cell-label {
@@ -146,7 +147,6 @@
   color: #e5e7eb;
   border-right: 1px solid #1f2937;
   background: rgba(15, 23, 42, 0.4);
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,7 +155,6 @@
 .slots-lane-wrapper {
   flex: 1;
   position: relative;
-  height: 100%;
   background: #0d111c;
   overflow: hidden;
 }
@@ -188,163 +187,148 @@
   pointer-events: none;
 }
 
-.current-time-line .time-marker {
-  position: absolute;
-  top: 0;
-  left: -5px;
-  width: 12px;
-  height: 12px;
-  background: #ef4444;
-  border-radius: 50%;
-}
-
-.current-time-line .time-label {
-  position: absolute;
-  top: -34px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #ef4444;
-  color: #ffffff;
-  font-size: 11px;
-  font-weight: 800;
-  padding: 3px 10px;
-  border-radius: 6px;
-  white-space: nowrap;
-}
-
 /* ==========================================================================
    ۴. کارت‌های پرواز مدرن (Flight & Block Cards)
    ========================================================================== */
 .flight-block-card {
   position: absolute;
-  height: 76px;
-  top: 17px; /* تراز دقیق عمودی وسط در ردیف ۱۱۰ پیکسلی */
-  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.7),
+  /* ارتفاع از طریق تکه کد هوشمند شما در فایل ts کنترل می‌شود اما پایه را منعطف می‌کنیم */
+  min-height: 38px;
+  box-shadow: 0 6px 15px -4px rgba(0, 0, 0, 0.6),
   0 0 1px 1px rgba(255, 255, 255, 0.05) inset;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
   display: flex;
+  flex-direction: row;
   align-items: center;
-  padding: 0 16px;
+  justify-content: center;
+  padding: 2px 8px; /* پدینگ بهینه‌شده برای جلوگیری از سرریز عمودی */
   overflow: hidden;
   backdrop-filter: blur(8px);
   z-index: 10;
   box-sizing: border-box;
-  text-align: center;
 }
 
-/* 🔴 مدیریت ردیوس سگمنت‌های متقاطع (Cross-Day Corners) */
-
-/* سگمنت اول (شروع پرواز): فقط سمت چپ گرد، سمت راست صاف */
+/* مدیریت ردیوس سگمنت‌های متقاطع */
 .flight-block-card.first-segment {
-  border-top-left-radius: 12px !important;
-  border-bottom-left-radius: 12px !important;
+  border-top-left-radius: 8px !important;
+  border-bottom-left-radius: 8px !important;
   border-top-right-radius: 0px !important;
   border-bottom-right-radius: 0px !important;
 }
 
-/* سگمنت وسط (عبور کامل از روز): هر ۴ گوشه کاملاً صاف */
 .flight-block-card.middle-segment {
   border-radius: 0px !important;
 }
 
-/* سگمنت آخر (پایان پرواز در روز بعد): سمت چپ صاف، سمت راست گرد */
 .flight-block-card.last-segment {
   border-top-left-radius: 0px !important;
   border-bottom-left-radius: 0px !important;
-  border-top-right-radius: 12px !important;
-  border-bottom-right-radius: 12px !important;
+  border-top-right-radius: 8px !important;
+  border-bottom-right-radius: 8px !important;
 }
 
-/* کارت‌های معمولی که متقاطع نیستند (هم اول هستند هم آخر): هر ۴ گوشه گرد */
 .flight-block-card.first-segment.last-segment {
-  border-radius: 12px !important;
+  border-radius: 8px !important;
 }
 
-
-/* ادامه‌ی استایل‌های افکت‌ها و هاور (بدون تغییر) */
 .flight-block-card:hover {
-  transform: translateY(-3px) scale(1.01);
+  transform: scale(1.02);
   z-index: 25;
-  box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.8),
+  box-shadow: 0 10px 20px -4px rgba(0, 0, 0, 0.8),
   0 0 0 1px rgba(255, 255, 255, 0.15) inset;
 }
 
 /* تم‌ها و گرادیان نئونی کارت‌ها */
 .flight-block-card.type-flight {
-  background: linear-gradient(135deg, rgba(6, 78, 59, 0.85) 0%, rgba(16, 185, 129, 0.8) 100%);
-  border-left: 4px solid #10b981;
-  box-shadow: 0 8px 20px -6px rgba(16, 185, 129, 0.2), 0 4px 12px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.9) 0%, rgba(16, 185, 129, 0.85) 100%);
+  border-left: 3px solid #10b981;
 }
 
 .flight-block-card.type-check {
-  background: linear-gradient(135deg, rgba(120, 53, 4, 0.85) 0%, rgba(245, 158, 11, 0.8) 100%);
-  border-left: 4px solid #f59e0b;
-  box-shadow: 0 8px 20px -6px rgba(245, 158, 11, 0.2), 0 4px 12px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, rgba(120, 53, 4, 0.9) 0%, rgba(245, 158, 11, 0.85) 100%);
+  border-left: 3px solid #f59e0b;
 }
 
 .flight-block-card.type-dfdr {
-  background: linear-gradient(135deg, rgba(76, 29, 149, 0.85) 0%, rgba(139, 92, 246, 0.8) 100%);
-  border-left: 4px solid #8b5cf6;
-  box-shadow: 0 8px 20px -6px rgba(139, 92, 246, 0.2), 0 4px 12px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, rgba(76, 29, 149, 0.9) 0%, rgba(139, 92, 246, 0.85) 100%);
+  border-left: 3px solid #8b5cf6;
 }
 
 .flight-block-card.is-cancelled {
-  background: linear-gradient(135deg, rgba(127, 29, 29, 0.9) 0%, rgba(220, 38, 38, 0.85) 100%) !important;
-  border-left: 4px solid #ef4444 !important;
-  box-shadow: 0 8px 20px -6px rgba(239, 68, 68, 0.3), 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  background: linear-gradient(135deg, rgba(127, 29, 29, 0.95) 0%, rgba(220, 38, 38, 0.9) 100%) !important;
+  border-left: 3px solid #ef4444 !important;
 }
 
 /* ساختار محتوایی المان‌های داخل کارت */
 .flight-block-content {
-  width: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
 }
 
+/* استایل‌دهی مجدد لایه‌های متنی جهت توزیع مناسب ارتفاع */
 .flight-block-content .title {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 800;
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  letter-spacing: 0.5px;
+  gap: 4px;
+  line-height: 1.2;
 }
 
 .flight-block-content .route {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
-  letter-spacing: 1px;
-  margin: 1px 0;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: 0.3px;
+  line-height: 1.2;
 }
 
 .flight-block-content .time {
-  font-size: 11px;
+  font-size: 9.5px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.85);
   direction: ltr;
-  background: rgba(0, 0, 0, 0.15);
-  padding: 1px 8px;
-  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 1px 6px;
+  border-radius: 10px;
   display: inline-block;
+  line-height: 1.1;
+  white-space: nowrap;
 }
 
-/* استایل کپسول‌های وضعیت کمکی درون قالب قدیمی برای جلوگیری از خرابی احتمالی */
-.flight-time { font-size: 11px; font-weight: 700; color: #a7f3d0; }
-.type-check .flight-time { color: #fde68a; }
-.type-dfdr .flight-time { color: #ddd6fe; }
-.is-cancelled .flight-time { color: #fca5a5 !important; }
+/* سایزبندی‌های فشرده سوییچ‌کیس قالب هوشمند شما */
+.block-xs {
+  font-size: 12px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-/* سایزبندی‌های فشرده سوییچ‌کیس قالب شما */
-.block-xs { font-size: 16px; color: #fff; }
-.block-sm { font-size: 12px; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
-.block-md, .block-lg { width: 100%; }
+.block-sm {
+  font-size: 10px;
+  font-weight: 800;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.block-md, .block-lg {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
 /* ==========================================================================
    ۵. تولتیپ کارت‌ها (Tooltip Popup)
@@ -364,6 +348,7 @@
   transition: all 0.2s ease;
   width: 190px;
   z-index: 40;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
 
 .flight-block-card:hover .flight-tooltip-popup {
