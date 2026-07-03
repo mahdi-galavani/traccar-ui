@@ -311,24 +311,24 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   // POSITIONING ON TIMELINE
   // =========================
 
-  getSegmentStyle(segment: ScheduleSegment): { [key: string]: string } {
+  getSegmentStyle(segment: ScheduleSegment, dayIdx: number): { [key: string]: string } {
+    const leftPercent = (segment.startMinutes / 1440) * 100;
+    const widthPercent = ((segment.endMinutes - segment.startMinutes) / 1440) * 100;
 
-    const leftPercent =
-      (segment.startMinutes / 1440) * 100;
+    // استخراج تمام پروازهای آن روز برای محاسبه لاین‌ها
+    const daySchedules = this.getSegmentsForDay(dayIdx).map(s => s.schedule);
+    const lanes = this.getLanesForDay(daySchedules);
+    const laneIdx = this.getLaneIndex(segment.schedule, lanes);
 
-    const widthPercent =
-      ((segment.endMinutes - segment.startMinutes) / 1440) * 100;
+    // تنظیم تاپ پویا (مثلاً هر لاین ۳۵ پیکسل فضا بگیرد)
+    const topPosition = 12 + (laneIdx * 40);
 
     return {
-
       position: 'absolute',
-
       left: `${leftPercent}%`,
-
-      width: `${widthPercent}%`
-
+      width: `${widthPercent}%`,
+      top: `${topPosition}px`
     };
-
   }
 
   selectedSchedule = signal<FleetScheduleDto | null>(null);

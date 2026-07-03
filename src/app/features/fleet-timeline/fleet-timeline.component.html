@@ -101,7 +101,10 @@
                    [class.type-check]="flight.type === 'CHECK'"
                    [class.type-dfdr]="flight.type === 'DFDR'"
                    [class.is-cancelled]="flight.status === 'CANCELLED'"
-                   [ngStyle]="getSegmentStyle(segment)"
+                   [class.first-segment]="segment.isFirstSegment"
+                   [class.last-segment]="segment.isLastSegment"
+                   [class.middle-segment]="!segment.isFirstSegment && !segment.isLastSegment"
+                   [ngStyle]="getSegmentStyle(segment, dayIdx)"
                    (click)="openScheduleDetails(flight)">
 
                 <div class="flight-block-content">

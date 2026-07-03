@@ -234,6 +234,24 @@
   text-align: center;
 }
 
+/* 🔴 شروع segment */
+.flight-block-card.first-segment {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+/* 🔴 وسط segment */
+.flight-block-card.middle-segment {
+  border-radius: 0;
+
+}
+
+/* 🔴 پایان segment */
+.flight-block-card.last-segment {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
 .flight-block-card:hover {
   transform: translateY(-3px) scale(1.01);
   z-index: 25;
