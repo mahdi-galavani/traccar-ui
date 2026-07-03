@@ -5,6 +5,7 @@ import { AirplaneApiService } from '../../core/services/api/airplane-api.service
 import { AirplaneDto } from '../../core/models/airplane.model';
 import { FleetScheduleDto, ScheduleSegment } from '../../core/models/fleet-schedule.model';
 import { TranslatePipe } from '@ngx-translate/core';
+import { TimeUtils } from '../../core/TimeUtils';
 
 export type TimelineViewMode = '1_WEEK' | '2_WEEKS' | '1_MONTH';
 
@@ -111,64 +112,75 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
 
   });
 
+  private parseLocalDateTime(value: string): Date {
+
+    // حذف timezone اگر وجود دارد
+    const cleaned = value
+      .replace('Z', '')
+      .split('+')[0]
+      .split('-')
+      .slice(0, 3)
+      .join('-') + 'T' + value.split('T')[1]?.split('+')[0]?.split('Z')[0];
+
+    const [datePart, timePart] = cleaned.split('T');
+
+    const [year, month, day] = datePart.split('-').map(Number);
+
+    const [hour = 0, minute = 0, second = 0] =
+      (timePart || '00:00:00').split(':').map(Number);
+
+    return new Date(year, month - 1, day, hour, minute, second, 0);
+  }
+
   private createSegments(schedule: FleetScheduleDto): ScheduleSegment[] {
 
     const segments: ScheduleSegment[] = [];
 
-    const start = new Date(schedule.plannedStartTime);
-    const end = new Date(schedule.plannedEndTime);
+    const start = TimeUtils.parseUTC(schedule.plannedStartTime);
+    const end = TimeUtils.parseUTC(schedule.plannedEndTime);
 
-    const current = new Date(start);
+    const startDay = new Date(Date.UTC(
+      start.getUTCFullYear(),
+      start.getUTCMonth(),
+      start.getUTCDate()
+    ));
 
-    current.setHours(0, 0, 0, 0);
+    const endDay = new Date(Date.UTC(
+      end.getUTCFullYear(),
+      end.getUTCMonth(),
+      end.getUTCDate()
+    ));
 
-    while (current <= end) {
+    for (
+      let day = new Date(startDay);
+      day <= endDay;
+      day.setUTCDate(day.getUTCDate() + 1)
+    ) {
 
-      const isFirst =
-        current.toDateString() === start.toDateString();
+      const isFirst = TimeUtils.getUTCDateKey(day) === TimeUtils.getUTCDateKey(start);
+      const isLast = TimeUtils.getUTCDateKey(day) === TimeUtils.getUTCDateKey(end);
 
-      const isLast =
-        current.toDateString() === end.toDateString();
+      const startMinutes = isFirst
+        ? TimeUtils.toUTCMinutes(start)
+        : 0;
 
-      const startMinutes =
-        isFirst
-          ? start.getHours() * 60 + start.getMinutes()
-          : 0;
+      const endMinutes = isLast
+        ? TimeUtils.toUTCMinutes(end)
+        : 1440;
 
-      const endMinutes =
-        isLast
-          ? end.getHours() * 60 + end.getMinutes()
-          : 1440;
-
-      const day = current.getDay();
-
-      const isoDay =
-        day === 0
-          ? 6
-          : day - 1;
+      const dayIndex = TimeUtils.getISOWeekDay(day);
 
       segments.push({
-
         schedule,
-
-        dayIndex: isoDay,
-
+        dayIndex,
         startMinutes,
-
         endMinutes,
-
         isFirstSegment: isFirst,
-
         isLastSegment: isLast
-
       });
-
-      current.setDate(current.getDate() + 1);
-
     }
 
     return segments;
-
   }
 
   getSegmentsForDay(dayIndex: number): ScheduleSegment[] {
@@ -191,12 +203,11 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   // =========================
 
   readonly currentTimePosition = computed(() => {
-    const now = this.currentTime();
 
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
+    const now = new Date();
 
-    const totalMinutes = (hours * 60) + minutes;
+    const totalMinutes =
+      now.getUTCHours() * 60 + now.getUTCMinutes();
 
     const positionPercent = (totalMinutes / 1440) * 100;
 
@@ -281,11 +292,7 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   formatTime(isoString: string | undefined): string {
     if (!isoString) return '';
 
-    return new Date(isoString).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    });
+    return TimeUtils.formatUTC(isoString);
   }
 
   // =========================
