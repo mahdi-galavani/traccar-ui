@@ -1,31 +1,24 @@
-# ==========================================
-# مرحله ۱: نصب وابستگی‌ها و بیلد پروژه
-# ==========================================
 FROM node:24-alpine AS builder
 WORKDIR /app
 
-# کپی فایل‌های پکیج برای استفاده از سیستم کش داکر
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --ignore-scripts
 
-# کپی کل پروژه و اجرای بیلد
 COPY . .
+
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+ENV CI=true
+
 RUN npm run build
 
-# ==========================================
-# مرحله ۲: اجرای اپلیکیشن در محیط پروداکشن سبک
-# ==========================================
-FROM node:24-alpine
+# مرحله نهایی
+FROM node:20-alpine
 WORKDIR /app
 
-# کپی کردن پوشه خروجی بیلد از مرحله قبل
 COPY --from=builder /app/dist /app/dist
 COPY --from=builder /app/package*.json ./
 
-# نصب فقط وابستگی‌های ضروری پروداکشن
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev --ignore-scripts
 
 EXPOSE 4000
-
-# اجرای اسکریپت سرور SSR انگولار
 CMD ["npm", "run", "serve:ssr:airport-management-ui"]
