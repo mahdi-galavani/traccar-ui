@@ -43,3 +43,62 @@
     height: 100%;
   }
 }
+
+.mat-mdc-form-field {
+  display: inline-flex !important;
+  width: 100% !important;
+}
+
+.mat-mdc-form-field-infix {
+  padding: 0 !important;
+  border: none !important;
+  min-height: auto !important;
+}
+
+.mat-mdc-text-field-wrapper {
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
+}
+
+/* رفع استایل‌های دکمه‌های متریال */
+.mat-mdc-icon-button {
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  line-height: 28px !important;
+}
+
+.mat-mdc-icon-button .mat-mdc-button-touch-target {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+/* رفع استایل‌های DatePicker */
+.mat-datepicker-content {
+  background: #ffffff !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+}
+
+.mat-datepicker-toggle-default-icon {
+  color: #64748b !important;
+}
+
+.mat-datepicker-toggle-active {
+  color: #4f46e5 !important;
+}
+
+/* رفع مشکل z-index */
+.cdk-overlay-container {
+  z-index: 9999 !important;
+}
+
+/* رفع مشکل متن تکراری در ورودی‌ها */
+.mat-datepicker-input,
+.mat-timepicker-input {
+  caret-color: #4f46e5 !important;
+}

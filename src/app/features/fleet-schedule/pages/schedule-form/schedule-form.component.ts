@@ -123,15 +123,34 @@ export class ScheduleFormComponent implements OnInit {
     this.loading.set(true);
     this.api.loadById(id).subscribe({
       next: (dto: FleetScheduleDto) => {
+        // تبدیل رشته به تاریخ با فرمت صحیح
+        let startDate: Date | null = null;
+        let endDate: Date | null = null;
+
+        if (dto.plannedStartTime) {
+          const dateStr = dto.plannedStartTime.replace('Z', '');
+          startDate = new Date(dateStr);
+          // اطمینان از معتبر بودن تاریخ
+          if (isNaN(startDate.getTime())) {
+            startDate = new Date(dto.plannedStartTime);
+          }
+        }
+
+        if (dto.plannedEndTime) {
+          const dateStr = dto.plannedEndTime.replace('Z', '');
+          endDate = new Date(dateStr);
+          if (isNaN(endDate.getTime())) {
+            endDate = new Date(dto.plannedEndTime);
+          }
+        }
+
         this.form.patchValue({
           id: dto.id,
           version: dto.version,
           type: dto.type,
           airplane: dto.airplane?.id ? String(dto.airplane.id) : null,
-
-          plannedStartTime: dto.plannedStartTime ? new Date(dto.plannedStartTime.replace('Z', '')) : null,
-          plannedEndTime: dto.plannedEndTime ? new Date(dto.plannedEndTime.replace('Z', '')) : null,
-
+          plannedStartTime: startDate,
+          plannedEndTime: endDate,
           flightNumber: dto.flight?.number || null,
           flightId: dto.flight?.id || null,
           flightVersion: dto.flight?.version || null,

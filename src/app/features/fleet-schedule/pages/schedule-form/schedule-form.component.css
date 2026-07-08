@@ -1,46 +1,267 @@
-/* افکت‌های ملایم برای بهبود تجربه کاربری سلکتورها */
-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b' viewBox='0 0 24 24'><path d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
+/* ==========================================================================
+   DATE & TIME PICKER - استایل‌های کامل
+   ========================================================================== */
+
+/* استایل‌های پایه برای ورودی‌ها */
+.date-input,
+.time-input {
+  color: #1e293b !important;
+  font-size: 14px !important;
+  height: auto !important;
+  padding: 12px 4px !important;
 }
 
-/* مدیریت پوزیشن آیکون سلکتور بر اساس جهت صفحه */
-:host-context([dir="ltr"]) select,
-[dir="ltr"] select {
-  background-position: right 16px center;
-  padding-right: 40px !important;
-  padding-left: 16px !important;
+.date-input::placeholder,
+.time-input::placeholder {
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
 }
 
-:host-context([dir="rtl"]) select,
-[dir="rtl"] select {
-  background-position: left 16px center;
-  padding-left: 40px !important;
-  padding-right: 16px !important;
+.date-input.rtl {
+  text-align: right !important;
 }
 
-/* رفع استایل‌های پیش‌فرض دکمه‌های متریال برای همخوانی با قالب هندسام شما */
-::v-deep .mat-mdc-icon-button {
-  width: 28px !important;
-  height: 28px !important;
+/* استایل دکمه‌های toggle */
+.date-toggle,
+.time-toggle {
+  color: #64748b !important;
+  transition: color 0.2s ease !important;
+}
+
+.date-toggle:hover,
+.time-toggle:hover {
+  color: #4f46e5 !important;
+}
+
+.date-toggle .mat-mdc-icon-button,
+.time-toggle .mat-mdc-icon-button {
+  width: 32px !important;
+  height: 32px !important;
   padding: 0 !important;
+  line-height: 32px !important;
 }
 
-/* انیمیشن فید این ملایم برای جزئیات هواپیما */
-.animate-fadeIn {
-  animation: fadeIn 0.25s ease-out forwards;
+.date-toggle .mat-mdc-icon-button svg,
+.time-toggle .mat-mdc-icon-button svg {
+  width: 20px !important;
+  height: 20px !important;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
+/* استایل پنل DatePicker */
+::ng-deep .mat-datepicker-popup {
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 8px !important;
+  min-width: 320px !important;
+}
+
+::ng-deep .mat-datepicker-content {
+  background: #ffffff !important;
+  border-radius: 16px !important;
+}
+
+::ng-deep .mat-calendar {
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  font-family: inherit !important;
+}
+
+/* هدر تقویم */
+::ng-deep .mat-calendar-header {
+  padding: 8px 12px !important;
+  background: #f8fafc !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+::ng-deep .mat-calendar-controls {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin: 0 !important;
+}
+
+::ng-deep .mat-calendar-controls .mat-mdc-button {
+  color: #1e293b !important;
+  font-weight: 600 !important;
+}
+
+::ng-deep .mat-calendar-controls .mat-mdc-button:hover {
+  background: #f1f5f9 !important;
+}
+
+/* سلول‌های تقویم */
+::ng-deep .mat-calendar-body-cell {
+  transition: all 0.15s ease !important;
+}
+
+::ng-deep .mat-calendar-body-cell:hover {
+  background: #f1f5f9 !important;
+  border-radius: 50% !important;
+}
+
+::ng-deep .mat-calendar-body-selected {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  border-radius: 50% !important;
+}
+
+::ng-deep .mat-calendar-body-today {
+  border-color: #4f46e5 !important;
+  border-width: 2px !important;
+}
+
+::ng-deep .mat-calendar-body-label {
+  color: #64748b !important;
+  font-weight: 600 !important;
+}
+
+::ng-deep .mat-calendar-body-cell-content {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #1e293b !important;
+}
+
+/* روزهای هفته */
+::ng-deep .mat-calendar-table-header th {
+  color: #94a3b8 !important;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  padding: 4px 0 !important;
+}
+
+/* دکمه‌های ماه */
+::ng-deep .mat-calendar-arrow {
+  border-left-color: #1e293b !important;
+}
+
+::ng-deep .mat-calendar-previous-button,
+::ng-deep .mat-calendar-next-button {
+  color: #1e293b !important;
+}
+
+::ng-deep .mat-calendar-previous-button:hover,
+::ng-deep .mat-calendar-next-button:hover {
+  background: #f1f5f9 !important;
+  border-radius: 50% !important;
+}
+
+/* ==========================================================================
+   TIME PICKER استایل‌ها
+   ========================================================================== */
+
+::ng-deep .mat-timepicker-popup {
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 16px !important;
+  min-width: 200px !important;
+}
+
+::ng-deep .mat-timepicker-content {
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  padding: 8px !important;
+}
+
+::ng-deep .mat-timepicker-table {
+  width: 100% !important;
+}
+
+::ng-deep .mat-timepicker-table td {
+  padding: 4px !important;
+}
+
+::ng-deep .mat-timepicker-button {
+  color: #1e293b !important;
+  font-weight: 600 !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  transition: all 0.15s ease !important;
+}
+
+::ng-deep .mat-timepicker-button:hover {
+  background: #f1f5f9 !important;
+}
+
+::ng-deep .mat-timepicker-button.active {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+}
+
+::ng-deep .mat-timepicker-column {
+  min-width: 40px !important;
+}
+
+::ng-deep .mat-timepicker-column-header {
+  color: #94a3b8 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  padding-bottom: 4px !important;
+}
+
+/* ==========================================================================
+   OVERLAY (برای رفع مشکل نمایش در حالت RTL)
+   ========================================================================== */
+
+::ng-deep .cdk-overlay-pane {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+::ng-deep .cdk-overlay-container {
+  z-index: 9999 !important;
+}
+
+/* رفع مشکل RTL */
+::ng-deep .mat-datepicker-popup[dir="rtl"] .mat-calendar {
+  direction: rtl !important;
+}
+
+::ng-deep .mat-datepicker-popup[dir="rtl"] .mat-calendar-controls {
+  flex-direction: row-reverse !important;
+}
+
+/* ==========================================================================
+   CUSTOM SCROLLBAR برای DatePicker
+   ========================================================================== */
+
+::ng-deep .mat-calendar-body-cell-content::-webkit-scrollbar {
+  width: 4px !important;
+}
+
+::ng-deep .mat-calendar-body-cell-content::-webkit-scrollbar-track {
+  background: #f1f5f9 !important;
+}
+
+::ng-deep .mat-calendar-body-cell-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1 !important;
+  border-radius: 4px !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  .custom-form-picker {
+    padding: 0 8px !important;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .date-input,
+  .time-input {
+    font-size: 12px !important;
+    padding: 10px 2px !important;
+  }
+
+  ::ng-deep .mat-datepicker-popup {
+    min-width: 280px !important;
+  }
+
+  ::ng-deep .mat-calendar-body-cell-content {
+    font-size: 12px !important;
   }
 }

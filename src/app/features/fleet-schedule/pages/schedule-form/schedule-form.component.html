@@ -119,6 +119,7 @@
         }
 
         <!-- زمان‌های برنامه‌ریزی شده -->
+        <!-- زمان‌های برنامه‌ریزی شده -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           <div class="flex flex-col">
@@ -132,9 +133,10 @@
                   [matDatepicker]="plannedStartPicker"
                   formControlName="plannedStartTime"
                   placeholder="YYYY/MM/DD"
-                  class="w-full py-3 bg-transparent text-sm font-mono focus:outline-none border-none outline-none"
+                  class="w-full py-3 bg-transparent text-sm font-mono focus:outline-none border-none outline-none date-input"
+                  [class.rtl]="('common.direction' | translate) === 'rtl'"
                 />
-                <mat-datepicker-toggle matSuffix [for]="plannedStartPicker" class="text-slate-400 hover:text-indigo-600"></mat-datepicker-toggle>
+                <mat-datepicker-toggle matSuffix [for]="plannedStartPicker" class="date-toggle"></mat-datepicker-toggle>
                 <mat-datepicker #plannedStartPicker></mat-datepicker>
               </div>
 
@@ -144,9 +146,9 @@
                   [matTimepicker]="plannedStartTimepicker"
                   formControlName="plannedStartTime"
                   placeholder="00:00"
-                  class="w-full py-3 bg-transparent text-sm font-mono text-center focus:outline-none border-none outline-none"
+                  class="w-full py-3 bg-transparent text-sm font-mono text-center focus:outline-none border-none outline-none time-input"
                 />
-                <mat-timepicker-toggle matSuffix [for]="plannedStartTimepicker" class="text-slate-400 hover:text-indigo-600"></mat-timepicker-toggle>
+                <mat-timepicker-toggle matSuffix [for]="plannedStartTimepicker" class="time-toggle"></mat-timepicker-toggle>
                 <mat-timepicker #plannedStartTimepicker></mat-timepicker>
               </div>
             </div>
@@ -166,9 +168,10 @@
                   [matDatepicker]="plannedEndPicker"
                   formControlName="plannedEndTime"
                   placeholder="YYYY/MM/DD"
-                  class="w-full py-3 bg-transparent text-sm font-mono focus:outline-none border-none outline-none"
+                  class="w-full py-3 bg-transparent text-sm font-mono focus:outline-none border-none outline-none date-input"
+                  [class.rtl]="('common.direction' | translate) === 'rtl'"
                 />
-                <mat-datepicker-toggle matSuffix [for]="plannedEndPicker" class="text-slate-400 hover:text-indigo-600"></mat-datepicker-toggle>
+                <mat-datepicker-toggle matSuffix [for]="plannedEndPicker" class="date-toggle"></mat-datepicker-toggle>
                 <mat-datepicker #plannedEndPicker></mat-datepicker>
               </div>
 
@@ -178,9 +181,9 @@
                   [matTimepicker]="plannedEndTimepicker"
                   formControlName="plannedEndTime"
                   placeholder="00:00"
-                  class="w-full py-3 bg-transparent text-sm font-mono text-center focus:outline-none border-none outline-none"
+                  class="w-full py-3 bg-transparent text-sm font-mono text-center focus:outline-none border-none outline-none time-input"
                 />
-                <mat-timepicker-toggle matSuffix [for]="plannedEndTimepicker" class="text-slate-400 hover:text-indigo-600"></mat-timepicker-toggle>
+                <mat-timepicker-toggle matSuffix [for]="plannedEndTimepicker" class="time-toggle"></mat-timepicker-toggle>
                 <mat-timepicker #plannedEndTimepicker></mat-timepicker>
               </div>
             </div>
