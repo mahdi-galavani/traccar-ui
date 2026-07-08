@@ -1,7 +1,14 @@
-import { Component, EventEmitter, Input, Output, signal, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
+
+// پکیج‌های رسمی انگولار متریال ۲۲
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatTimepickerModule } from '@angular/material/timepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 export interface CompleteEventResult {
   actualStartTime: string;
@@ -11,7 +18,16 @@ export interface CompleteEventResult {
 @Component({
   selector: 'app-complete-event-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslatePipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TranslatePipe,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatTimepickerModule
+  ],
+  providers: [provideNativeDateAdapter()], // آداپتور تاریخ بومی
   templateUrl: './complete-event-modal.component.html',
   styleUrl: './complete-event-modal.component.css',
 })
@@ -23,14 +39,15 @@ export class CompleteEventModalComponent implements OnChanges {
   @Output() confirmed = new EventEmitter<CompleteEventResult>();
   @Output() cancelled = new EventEmitter<void>();
 
-  actualStart = '';
-  actualEnd = '';
+  // تغییر به نوع Date یا رشته خالی برای همخوانی با متریال
+  actualStart: Date | string = '';
+  actualEnd: Date | string = '';
   error: string | null = null;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['open'] && this.open) {
-      this.actualStart = this.initialStart ?? '';
-      this.actualEnd = this.initialEnd ?? '';
+      this.actualStart = this.initialStart ? new Date(this.initialStart) : '';
+      this.actualEnd = this.initialEnd ? new Date(this.initialEnd) : '';
       this.error = null;
     }
   }
@@ -46,7 +63,10 @@ export class CompleteEventModalComponent implements OnChanges {
       return;
     }
 
-    if (new Date(this.actualEnd) <= new Date(this.actualStart)) {
+    const startDate = new Date(this.actualStart);
+    const endDate = new Date(this.actualEnd);
+
+    if (endDate <= startDate) {
       this.error = 'fleet_schedule.event_end_before_start';
       return;
     }
@@ -54,8 +74,8 @@ export class CompleteEventModalComponent implements OnChanges {
     this.error = null;
     this.open = false;
     this.confirmed.emit({
-      actualStartTime: this.actualStart,
-      actualEndTime: this.actualEnd,
+      actualStartTime: startDate.toISOString(),
+      actualEndTime: endDate.toISOString(),
     });
   }
 
