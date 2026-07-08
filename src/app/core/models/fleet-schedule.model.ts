@@ -43,4 +43,6 @@ export interface ScheduleSegment {
   isFirstSegment: boolean;
 
   isLastSegment: boolean;
+
+  isActual?: boolean;
 }

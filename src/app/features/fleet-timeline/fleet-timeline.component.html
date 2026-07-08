@@ -1,25 +1,60 @@
 <div class="timeline-container">
 
+  <!-- =========================
+       HEADER
+  ========================= -->
   <div class="timeline-header">
-    <div class="airplane-selector">
-      <label>{{ 'fleet_schedule.airplane' | translate }}:</label>
-      <select [value]="selectedAirplaneId()" (change)="selectAirplane($any($event.target).value)">
-        <option value="ALL">All Airplanes (Overview)</option>
-        @for (plane of airplanes(); track plane.id) {
-          <option [value]="plane.id">
-            {{ plane.register }} ({{ plane.type?.title }})
+    <div class="header-left">
+      <div class="airplane-selector">
+        <label>{{ 'fleet_schedule.airplane' | translate }}:</label>
+        <select [value]="selectedAirplaneId()"
+                (change)="selectAirplane($any($event.target).value)">
+          <option value="ALL">
+            All Airplanes (Overview)
           </option>
-        }
-      </select>
+          @for (plane of airplanes(); track plane.id) {
+            <option [value]="plane.id">
+              {{ plane.register }} ({{ plane.type?.title }})
+            </option>
+          }
+        </select>
+      </div>
     </div>
 
-    <div class="view-switcher">
-      <button [class.active]="viewMode() === '1_WEEK'" (click)="switchView('1_WEEK')">1 Week</button>
-      <button [class.active]="viewMode() === '2_WEEKS'" (click)="switchView('2_WEEKS')">2 Weeks</button>
-      <button [class.active]="viewMode() === '1_MONTH'" (click)="switchView('1_MONTH')">1 Month</button>
+    <div class="header-center">
+      <div class="view-switcher">
+        <button
+          [class.active]="viewMode() === '1_WEEK'"
+          (click)="switchView('1_WEEK')">
+          1 Week
+        </button>
+        <button
+          [class.active]="viewMode() === '2_WEEKS'"
+          (click)="switchView('2_WEEKS')">
+          2 Weeks
+        </button>
+        <button
+          [class.active]="viewMode() === '1_MONTH'"
+          (click)="switchView('1_MONTH')">
+          1 Month
+        </button>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button class="toggle-actual-btn"
+              [class.active]="showActualTimes()"
+              (click)="toggleActualTimes()">
+        <span class="icon">⏱</span>
+        <span class="label">Actual Times</span>
+        <span class="toggle-indicator"></span>
+      </button>
     </div>
   </div>
 
+  <!-- =========================
+       AIRPLANE META BAR
+  ========================= -->
   @if (selectedAirplaneId() !== 'ALL' && currentAirplaneDetails()) {
     <div class="airplane-meta-bar">
       <div class="meta-item">
@@ -29,47 +64,93 @@
       <div class="meta-item">
         <span class="meta-label">Config</span>
         <span class="meta-value">
-          F:{{ currentAirplaneDetails()?.firstClassSeat ?? 0 }} |
-          B:{{ currentAirplaneDetails()?.businessClassSeat ?? 0 }} |
-          E:{{ currentAirplaneDetails()?.economicClassSeat ?? 0 }}
+          F: {{ currentAirplaneDetails()?.firstClassSeat ?? 0 }} |
+          B: {{ currentAirplaneDetails()?.businessClassSeat ?? 0 }} |
+          E: {{ currentAirplaneDetails()?.economicClassSeat ?? 0 }}
         </span>
       </div>
     </div>
   }
 
+  <!-- =========================
+       LEGEND
+  ========================= -->
+  <div class="timeline-legend">
+    <div class="legend-item">
+      <span class="color-bar planned-bar"></span>
+      <span class="legend-label">Planned</span>
+    </div>
+    @if (showActualTimes()) {
+      <div class="legend-item">
+        <span class="color-bar actual-bar"></span>
+        <span class="legend-label">Actual</span>
+      </div>
+      <div class="legend-item deviation-legend">
+        <span class="deviation-indicator early">Early</span>
+        <span class="deviation-indicator on-time">On Time</span>
+        <span class="deviation-indicator late">Late</span>
+      </div>
+    }
+  </div>
+
+  <!-- =========================
+       TIMELINE BOARD
+  ========================= -->
   <div class="timeline-board">
+
+    <!-- Time Axis -->
     <div class="time-axis-row">
-      <div class="axis-corner-cell">Day / Time</div>
+      <div class="axis-corner-cell">
+        Day / Time
+      </div>
       <div class="hours-container">
         @for (hour of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]; track hour) {
           <div class="hour-tick">
-            <span>{{ hour }}:00</span>
+            <span>{{hour}}:00</span>
           </div>
         }
       </div>
     </div>
 
+    <!-- Timeline Rows -->
     <div class="timeline-rows-container">
-      @for (day of WEEK_DAYS; track day; let dayIdx = $index) {
+      @for(day of WEEK_DAYS; track day; let dayIdx = $index) {
         <div class="timeline-row">
-          <div class="day-cell-label">{{ day }}</div>
+
+          <!-- Day Label -->
+          <div class="day-cell-label">
+            {{day}}
+          </div>
+
+          <!-- Slots Lane Wrapper -->
           <div class="slots-lane-wrapper">
 
-            @if (showCurrentTimeLine()) {
-              <div class="current-time-line" [style.left]="currentTimePosition()"></div>
+            <!-- Current Time Line -->
+            @if(showCurrentTimeLine()) {
+              <div class="current-time-line"
+                   [style.left]="currentTimePosition()">
+              </div>
             }
 
+            <!-- Grid Guidelines -->
             <div class="grid-guidelines">
-              @for (tick of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]; track tick) {
+              @for(tick of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]; track tick) {
                 <div class="line-tick"></div>
               }
             </div>
 
-            @for (segment of getSegmentsForDay(dayIdx); track segment.schedule.id ?? $index) {
+            <!-- =========================
+                 PLANNED SEGMENTS (زمان برنامه‌ریزی شده)
+            ========================= -->
+            <!-- =========================
+     PLANNED SEGMENTS (زمان برنامه‌ریزی شده)
+========================= -->
+            @for(segment of getSegmentsForDay(dayIdx); track segment.schedule.id ?? $index) {
               @let flight = getSchedule(segment);
               @let blockSize = getBlockSizeBySegment(segment);
+              @let deviation = getTimeDeviation(flight);
 
-              <div class="flight-block-card"
+              <div class="flight-block-card planned-block"
                    [class.type-flight]="flight.type === 'FLIGHT'"
                    [class.type-check]="flight.type === 'CHECK'"
                    [class.type-dfdr]="flight.type === 'DFDR'"
@@ -77,86 +158,124 @@
                    [class.first-segment]="segment.isFirstSegment"
                    [class.last-segment]="segment.isLastSegment"
                    [class.middle-segment]="!segment.isFirstSegment && !segment.isLastSegment"
-                   [ngStyle]="getSegmentStyle(segment, dayIdx)"
+                   [class.has-deviation]="deviation !== null && Math.abs(deviation) > 15"
+                   [ngStyle]="getSegmentStyle(segment, dayIdx, false)"
                    (click)="openScheduleDetails(flight)">
 
-                @if (selectedAirplaneId() === 'ALL' && flight.airplane && blockSize !== 'xs' && blockSize !== 'sm') {
-                  <span class="airplane-tag">{{ getAirplaneRegister(flight.airplane) }}</span>
+                <!-- Deviation Badge -->
+                @if(deviation !== null && Math.abs(deviation) > 10) {
+                  <div class="deviation-badge"
+                       [style.background]="getDeviationColor(deviation)">
+                    {{formatDeviation(deviation)}}
+                  </div>
                 }
 
+                <!-- Airplane Tag (ALL mode) -->
+                @if(selectedAirplaneId() === 'ALL' && flight.airplane && blockSize !== 'xs' && blockSize !== 'sm') {
+                  <span class="airplane-tag">
+        {{getAirplaneRegister(flight.airplane)}}
+      </span>
+                }
+
+                <!-- Block Content -->
                 <div class="flight-block-content">
-                  @switch (blockSize) {
-                    @case ('xs') {
+                  @switch(blockSize) {
+                    @case('xs') {
                       <div class="block-xs" [title]="flight.flight?.number ?? flight.type">
-                        {{ getTypeIcon(flight.type) }}
+                        {{getTypeIcon(flight.type)}}
                       </div>
                     }
-                    @case ('sm') {
+                    @case('sm') {
                       <div class="block-sm" [title]="flight.flight?.number ?? flight.type">
-                        <span class="icon">{{ getTypeIcon(flight.type) }}</span>
-                        <span class="num">{{ flight.type === 'FLIGHT' ? flight.flight?.number : flight.type }}</span>
+                        <span class="icon">{{getTypeIcon(flight.type)}}</span>
+                        <span class="num">
+              {{flight.type === 'FLIGHT' ? flight.flight?.number : flight.type}}
+            </span>
                       </div>
                     }
                     @default {
                       <div class="block-md">
                         <div class="title">
-                          {{ getTypeIcon(flight.type) }} {{ flight.flight?.number }}
+                          {{getTypeIcon(flight.type)}}
+                          {{flight.flight?.number}}
                         </div>
-                        @if (flight.type === 'FLIGHT') {
+                        @if(flight.type === 'FLIGHT') {
                           <div class="route">
-                            {{ getAirportCode(flight.departure) }} → {{ getAirportCode(flight.arrival) }}
+                            {{getAirportCode(flight.departure)}}
+                            →
+                            {{getAirportCode(flight.arrival)}}
                           </div>
                         }
-                        <div class="time">
-                          @if (flight.event?.actualStartTime && flight.event?.actualEndTime) {
-
-                            <div class="actual-bar-wrapper">
-
-                              <div
-                                class="actual-bar"
-                                [style.left]="getActualLeft(flight)"
-                                [style.width]="getActualWidth(flight)">
-                              </div>
-
-                            </div>
-
-                            <div class="actual-time">
-                              {{ formatTime(flight.event.actualStartTime) }}
-                              —
-                              {{ formatTime(flight.event.actualEndTime) }}
-                            </div>
-
-                          }
-                          {{ formatTime(flight.plannedStartTime) }} — {{ formatTime(flight.plannedEndTime) }}
+                        <div class="schedule-times">
+                          <div class="planned-time">
+                            <span class="label">P</span>
+                            {{formatTime(flight.plannedStartTime)}}
+                          </div>
                         </div>
                       </div>
                     }
                   }
                 </div>
 
+                <!-- Tooltip -->
                 <div class="flight-tooltip-popup">
                   <div class="tooltip-header">
-                    <strong>{{ getTypeLabel(flight.type) }}</strong>
-                    @if (flight.status === 'CANCELLED') {
-                      <span style="color:#ef4444;"> (CANCELLED)</span>
+                    <strong>{{getTypeLabel(flight.type)}}</strong>
+                    @if(flight.status === 'CANCELLED') {
+                      <span style="color:#ef4444;">(CANCELLED)</span>
                     }
                   </div>
                   <div class="tooltip-body">
-                    @if (flight.airplane) {
-                      <span style="color: #38bdf8; font-weight: bold;">Tail: {{ getAirplaneRegister(flight.airplane) }}</span><br>
+                    @if(flight.airplane) {
+                      <span style="color:#38bdf8;font-weight:bold;">
+            Tail: {{getAirplaneRegister(flight.airplane)}}
+          </span>
+                      <br>
                     }
-                    @if (flight.type === 'FLIGHT') {
-                      <span>No: {{ flight.flight?.number }}</span><br>
-                      <span>{{ getAirportCode(flight.departure) }} → {{ getAirportCode(flight.arrival) }}</span>
+                    @if(flight.type === 'FLIGHT') {
+                      <span>No: {{flight.flight?.number}}</span>
+                      <br>
+                      <span>{{getAirportCode(flight.departure)}} → {{getAirportCode(flight.arrival)}}</span>
                     } @else {
-                      <span>{{ flight.type }}</span>
+                      <span>{{flight.type}}</span>
                     }
                     <br>
-                    <small>{{ formatTime(flight.plannedStartTime) }} — {{ formatTime(flight.plannedEndTime) }}</small>
+                    <small>Planned: {{formatTime(flight.plannedStartTime)}} - {{formatTime(flight.plannedEndTime)}}</small>
+                    @if(flight.event?.actualStartTime && flight.event?.actualEndTime) {
+                      <br>
+                      <small style="color:#86efac;">
+                        Actual: {{formatTime(flight.event.actualStartTime)}} - {{formatTime(flight.event.actualEndTime)}}
+                      </small>
+                      @if(deviation !== null) {
+                        <br>
+                        <small [style.color]="getDeviationColor(deviation)">
+                          Deviation: {{formatDeviation(deviation)}}
+                        </small>
+                      }
+                    }
                   </div>
                 </div>
-
               </div>
+            }
+
+            <!-- =========================
+                 ACTUAL SEGMENTS (زمان واقعی) - فقط خط آبی خالی
+            ========================= -->
+            @if(showActualTimes()) {
+              @for(segment of getActualSegmentsForDay(dayIdx); track segment.schedule.id ?? $index) {
+                @let flight = getSchedule(segment);
+                @let deviation = getTimeDeviation(flight);
+
+                <div class="actual-time-bar"
+                     [style.left]="(segment.startMinutes / 1440 * 100) + '%'"
+                     [style.width]="((segment.endMinutes - segment.startMinutes) / 1440 * 100) + '%'"
+                     [style.top]="(12 + 42 + 4) + 'px'"
+                     [class.has-deviation]="deviation !== null && Math.abs(deviation) > 15"
+                     [style.background]="deviation !== null ? getDeviationColor(deviation) : '#3b82f6'">
+
+                  <!-- فقط یک خط باریک آبی -->
+                </div>
+              }
             }
 
           </div>
@@ -166,49 +285,113 @@
   </div>
 </div>
 
-@if (showModal()) {
+<!-- =========================
+     MODAL
+========================== -->
+@if(showModal()) {
   <div class="modal-backdrop" (click)="closeModal()"></div>
+
   <div class="schedule-modal">
     <div class="modal-header">
       <div class="title">
-        {{ getTypeIcon(selectedSchedule()?.type!) }} {{ selectedSchedule()?.type }}
-        @if (selectedSchedule()?.status === 'CANCELLED') {
+        {{getTypeIcon(selectedSchedule()?.type!)}}
+        {{selectedSchedule()?.type}}
+        @if(selectedSchedule()?.status === 'CANCELLED') {
           <span class="cancel">CANCELLED</span>
         }
       </div>
       <button class="close-btn" (click)="closeModal()">✕</button>
     </div>
+
     <div class="modal-body">
-      @if (selectedSchedule()?.type === 'FLIGHT') {
+      @if(selectedSchedule()?.type === 'FLIGHT') {
+        <!-- Flight Information -->
         <div class="section">
           <h3>Flight Info</h3>
-          <div class="row"><span>Flight Number:</span><b>{{ selectedSchedule()?.flight?.number }}</b></div>
+          <div class="row">
+            <span>Flight Number:</span>
+            <b>{{selectedSchedule()?.flight?.number}}</b>
+          </div>
           <div class="row">
             <span>Route:</span>
-            <b>{{ getAirportCode(selectedSchedule()?.departure) }} → {{ getAirportCode(selectedSchedule()?.arrival) }}</b>
-          </div>
-          <div class="row">
-            <span>Time:</span>
-            <b>{{ formatTime(selectedSchedule()?.plannedStartTime) }} — {{ formatTime(selectedSchedule()?.plannedEndTime) }}</b>
+            <b>{{getAirportCode(selectedSchedule()?.departure)}} → {{getAirportCode(selectedSchedule()?.arrival)}}</b>
           </div>
         </div>
+
+        <!-- Time Comparison -->
+        <div class="section time-comparison-section">
+          <h3>Time Comparison</h3>
+
+          <!-- Planned Time -->
+          <div class="time-row planned-row">
+            <span class="time-label">📋 Planned</span>
+            <div class="time-values">
+              <span class="time-value">
+                {{formatFullDate(selectedSchedule()?.plannedStartTime)}}
+              </span>
+              <span class="time-arrow">→</span>
+              <span class="time-value">
+                {{formatFullDate(selectedSchedule()?.plannedEndTime)}}
+              </span>
+            </div>
+          </div>
+
+          <!-- Actual Time -->
+          @if(selectedSchedule()?.event?.actualStartTime && selectedSchedule()?.event?.actualEndTime) {
+            <div class="time-row actual-row">
+              <span class="time-label">✅ Actual</span>
+              <div class="time-values">
+                <span class="time-value actual-time-value">
+                  {{formatFullDate(selectedSchedule()?.event?.actualStartTime)}}
+                </span>
+                <span class="time-arrow">→</span>
+                <span class="time-value actual-time-value">
+                  {{formatFullDate(selectedSchedule()?.event?.actualEndTime)}}
+                </span>
+              </div>
+            </div>
+
+            <!-- Deviation -->
+            @let deviation = getTimeDeviation(selectedSchedule()!);
+            @if(deviation !== null) {
+              <div class="deviation-display"
+                   [style.color]="getDeviationColor(deviation)">
+                <span class="deviation-icon">
+                  {{deviation > 0 ? '⏰' : deviation < 0 ? '⏳' : '✅'}}
+                </span>
+                <span class="deviation-text">
+                  {{deviation > 0 ? 'Delayed by' : deviation < 0 ? 'Early by' : 'On Time'}}
+                  {{formatDeviation(deviation)}}
+                </span>
+              </div>
+            }
+          } @else {
+            <div class="no-actual-time">
+              ⏳ No actual time recorded yet
+            </div>
+          }
+        </div>
+
+        <!-- Aircraft -->
         <div class="section">
           <h3>Aircraft</h3>
           <div class="row">
             <span>Registration:</span>
-            <b>{{ getAirplaneRegister(selectedSchedule()?.airplane) }}</b>
+            <b>{{getAirplaneRegister(selectedSchedule()?.airplane)}}</b>
           </div>
         </div>
+
+        <!-- Crew -->
         <div class="section crew-section">
           <h3>Flight Crew</h3>
           @let crewList = selectedSchedule()?.flight?.crew ?? [];
-          @if (crewList.length > 0) {
+          @if(crewList.length > 0) {
             <div class="crew-list">
-              @for (member of crewList; track member.id ?? $index) {
+              @for(member of crewList; track member.id ?? $index) {
                 <div class="crew-item">
                   <div class="crew-info">
-                    <span class="crew-badge">{{ member.person?.job?.title }}</span>
-                    <strong class="crew-name">{{ member.person?.name }} {{ member.person?.family }}</strong>
+                    <span class="crew-badge">{{member.person?.job?.title}}</span>
+                    <strong class="crew-name">{{member.person?.name}} {{member.person?.family}}</strong>
                   </div>
                 </div>
               }
