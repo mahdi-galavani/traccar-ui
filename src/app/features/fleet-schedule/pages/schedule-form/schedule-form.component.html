@@ -120,14 +120,39 @@
 
         <!-- زمان‌های برنامه‌ریزی شده -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
           <div class="flex flex-col">
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ 'fleet_schedule.planned_start_time' | translate }}</label>
-            <div class="datetime-container">
-              <input
-                type="datetime-local"
-                formControlName="plannedStartTime"
-                dir="ltr"
-                class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-left font-mono transition-all shadow-sm hover:border-slate-300" />
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">
+              {{ 'fleet_schedule.planned_start_time' | translate }}
+            </label>
+            <div class="flex gap-2">
+              <div class="relative flex-1 custom-form-picker">
+                <input
+                  matInput
+                  [matDatepicker]="plannedStartPicker"
+                  formControlName="plannedStartTime"
+                  placeholder="YYYY/MM/DD"
+                  class="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm"
+                />
+                <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors" (click)="plannedStartPicker.open()">
+                  <i class="fas fa-calendar"></i>
+                </button>
+                <mat-datepicker #plannedStartPicker></mat-datepicker>
+              </div>
+
+              <div class="relative w-36 custom-form-picker">
+                <input
+                  matInput
+                  [matTimepicker]="plannedStartTimepicker"
+                  formControlName="plannedStartTime"
+                  placeholder="00:00"
+                  class="w-full px-3 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm"
+                />
+                <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors" (click)="plannedStartTimepicker.open()">
+                  <i class="fas fa-clock"></i>
+                </button>
+                <mat-timepicker #plannedStartTimepicker></mat-timepicker>
+              </div>
             </div>
             @if (isInvalid('plannedStartTime')) {
               <p class="mt-1 text-xs text-rose-500">⚠️ {{ 'validation.required' | translate }}</p>
@@ -135,18 +160,43 @@
           </div>
 
           <div class="flex flex-col">
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ 'fleet_schedule.planned_end_time' | translate }}</label>
-            <div class="datetime-container">
-              <input
-                type="datetime-local"
-                formControlName="plannedEndTime"
-                dir="ltr"
-                class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-left font-mono transition-all shadow-sm hover:border-slate-300" />
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">
+              {{ 'fleet_schedule.planned_end_time' | translate }}
+            </label>
+            <div class="flex gap-2">
+              <div class="relative flex-1 custom-form-picker">
+                <input
+                  matInput
+                  [matDatepicker]="plannedEndPicker"
+                  formControlName="plannedEndTime"
+                  placeholder="YYYY/MM/DD"
+                  class="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm"
+                />
+                <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors" (click)="plannedEndPicker.open()">
+                  <i class="fas fa-calendar"></i>
+                </button>
+                <mat-datepicker #plannedEndPicker></mat-datepicker>
+              </div>
+
+              <div class="relative w-36 custom-form-picker">
+                <input
+                  matInput
+                  [matTimepicker]="plannedEndTimepicker"
+                  formControlName="plannedEndTime"
+                  placeholder="00:00"
+                  class="w-full px-3 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm"
+                />
+                <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors" (click)="plannedEndTimepicker.open()">
+                  <i class="fas fa-clock"></i>
+                </button>
+                <mat-timepicker #plannedEndTimepicker></mat-timepicker>
+              </div>
             </div>
             @if (isInvalid('plannedEndTime')) {
               <p class="mt-1 text-xs text-rose-500">⚠️ {{ 'validation.required' | translate }}</p>
             }
           </div>
+
         </div>
 
         <!-- فیلدهای مبدا و مقصد — حالا در همه حالت‌ها نمایش داده می‌شود -->

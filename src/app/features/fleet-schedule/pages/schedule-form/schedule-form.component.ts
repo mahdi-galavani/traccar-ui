@@ -13,6 +13,11 @@ import { FlightCrewFormComponent } from '../../components/flight-crew-form/fligh
 import { SelectOption } from '../../../../core/models/base/crud-field.model';
 import { AirplaneDto } from '../../../../core/models/airplane.model';
 import { FleetScheduleDto, FleetScheduleType } from '../../../../core/models/fleet-schedule.model';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatTimepickerModule } from '@angular/material/timepicker';
 
 @Component({
   selector: 'app-schedule-form',
@@ -23,7 +28,12 @@ import { FleetScheduleDto, FleetScheduleType } from '../../../../core/models/fle
     TranslatePipe,
     FlightCrewFormComponent,
     RouterModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatTimepickerModule
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './schedule-form.component.html',
   styleUrl: './schedule-form.component.css',
 })
@@ -49,8 +59,9 @@ export class ScheduleFormComponent implements OnInit {
     version: new FormControl<number | null>(null),
     type: new FormControl<FleetScheduleType | null>(null, Validators.required),
     airplane: new FormControl<string | null>(null, Validators.required),
-    plannedStartTime: new FormControl<string | null>(null, Validators.required),
-    plannedEndTime: new FormControl<string | null>(null, Validators.required),
+    // نوع این دو فیلد در زمان کار با متریال می‌توانند Date یا رشته استاندارد باشند
+    plannedStartTime: new FormControl<any>(null, Validators.required),
+    plannedEndTime: new FormControl<any>(null, Validators.required),
     flightNumber: new FormControl<string | null>(null),
     flightId: new FormControl<string | null>(null),
     flightVersion: new FormControl<number | null>(null),
@@ -110,21 +121,16 @@ export class ScheduleFormComponent implements OnInit {
 
   private loadSchedule(id: string): void {
     this.loading.set(true);
-
     this.api.loadById(id).subscribe({
       next: (dto: FleetScheduleDto) => {
-        // Patch اصلی
         this.form.patchValue({
           id: dto.id,
           version: dto.version,
           type: dto.type,
           airplane: dto.airplane?.id ? String(dto.airplane.id) : null,
-          plannedStartTime: dto.plannedStartTime
-            ? moment(dto.plannedStartTime).format('YYYY-MM-DDTHH:mm')
-            : null,
-          plannedEndTime: dto.plannedEndTime
-            ? moment(dto.plannedEndTime).format('YYYY-MM-DDTHH:mm')
-            : null,
+          // تغییر مهم: تبدیل مستقیم به شیء Date برای سازگاری کامل با متریال
+          plannedStartTime: dto.plannedStartTime ? new Date(dto.plannedStartTime) : null,
+          plannedEndTime: dto.plannedEndTime ? new Date(dto.plannedEndTime) : null,
           flightNumber: dto.flight?.number || null,
           flightId: dto.flight?.id || null,
           flightVersion: dto.flight?.version || null,
@@ -132,10 +138,8 @@ export class ScheduleFormComponent implements OnInit {
           arrival: dto.arrival?.id ? String(dto.arrival.id) : null,
         });
 
-        // مهم: بعد از patch، handleTypeChange را صدا بزنیم
         this.handleTypeChange(dto.type);
 
-        // پر کردن crew فقط در حالت FLIGHT
         if (dto.type === 'FLIGHT' && dto.flight?.crew?.length) {
           this.crewArray.clear();
           dto.flight.crew.forEach((c) => {
@@ -149,7 +153,6 @@ export class ScheduleFormComponent implements OnInit {
             );
           });
         }
-
         this.loading.set(false);
       },
       error: () => {
@@ -203,6 +206,10 @@ export class ScheduleFormComponent implements OnInit {
 
     const v = this.form.getRawValue();
 
+    // تبدیل شیء تاریخ متریال به فرمت استاندارد و تمیز ISO برای بک‌اند
+    const startTimeIso = v.plannedStartTime ? moment(v.plannedStartTime).toISOString() : null;
+    const endTimeIso = v.plannedEndTime ? moment(v.plannedEndTime).toISOString() : null;
+
     const dto: FleetScheduleDto = {
       id: v.id ?? undefined,
       version: v.version ?? undefined,
@@ -210,8 +217,9 @@ export class ScheduleFormComponent implements OnInit {
       airplane: { id: v.airplane! },
       departure: { id: v.departure! },
       arrival: { id: v.arrival! },
-      plannedStartTime: `${v.plannedStartTime!}:00Z`,
-      plannedEndTime: `${v.plannedEndTime!}:00Z`,
+      // استفاده از مقادیر فرمت شده استاندارد به جای ترکیب دستی رشته‌ها
+      plannedStartTime: startTimeIso!,
+      plannedEndTime: endTimeIso!,
       status: 'SCHEDULED',
     };
 
@@ -219,7 +227,7 @@ export class ScheduleFormComponent implements OnInit {
     if (v.type === 'FLIGHT' && v.flightNumber) {
       dto.flight = {
         id: v.flightId ?? undefined,
-        version: v.flightVersion ?? undefined,
+        version: v.flightVersion != null ? Number(v.flightVersion) : 0,
         number: v.flightNumber,
         crew: (v.crew as any[]).map((c: any) => ({
           id: c.id ?? undefined,
