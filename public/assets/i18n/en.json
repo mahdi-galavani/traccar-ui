@@ -356,6 +356,7 @@
       "dfdr": "Flight Data Recording (DFDR)"
     },
     "statuses": {
+      "select": "select...",
       "completed": "completed",
       "draft": "Draft",
       "scheduled": "Scheduled",
@@ -370,8 +371,19 @@
     "register": "Registration Mark (Register)",
     "airplane_model": "Aircraft Model",
     "seat_style": "Seating Configuration",
-    "ownership": "Ownership Type"
+    "ownership": "Ownership Type",
+
+    "complete_modal_title": "Complete Event",
+    "complete_modal_desc": "Please confirm the actual start and end time for this event before marking it as completed.",
+    "actual_start_time": "Actual Start Time",
+    "actual_end_time": "Actual End Time",
+    "confirm_complete": "Confirm Completion",
+    "completed_successfully": "Event completed successfully",
+    "error_times_required": "Please fill in both actual start and end time",
+    "error_end_before_start": "End time must be after start time",
+    "error_complete_failed": "Failed to complete the event. Please try again"
   },
+
   "search": {
     "title": "Advanced Search",
     "criteria": "Search Criteria",

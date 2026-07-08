@@ -1,0 +1,75 @@
+@if (open) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm animate-fadeIn"
+       (click)="onBackdropClick($event)">
+    <div class="bg-white w-full max-w-md mx-4 rounded-2xl shadow-2xl overflow-hidden animate-scaleIn">
+
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-gradient-to-l from-emerald-50 to-white">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">✅</span>
+          <h2 class="text-base font-bold text-slate-800">
+            {{ 'fleet_schedule.complete_modal_title' | translate }}
+          </h2>
+        </div>
+        <button
+          type="button"
+          class="text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg p-1.5 transition-colors"
+          (click)="onClose()"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="px-6 py-5 space-y-4">
+        <p class="text-sm text-slate-500">
+          {{ 'fleet_schedule.complete_modal_desc' | translate }}
+        </p>
+
+        <div class="space-y-1.5">
+          <label class="block text-sm font-medium text-slate-700">
+            {{ 'fleet_schedule.actual_start_time' | translate }}
+          </label>
+          <input
+            type="datetime-local"
+            [(ngModel)]="actualStart"
+            class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+          />
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="block text-sm font-medium text-slate-700">
+            {{ 'fleet_schedule.actual_end_time' | translate }}
+          </label>
+          <input
+            type="datetime-local"
+            [(ngModel)]="actualEnd"
+            class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+          />
+        </div>
+
+        @if (error) {
+          <div class="flex items-center gap-2 text-rose-600 bg-rose-50 border border-rose-100 rounded-lg px-3 py-2 text-xs font-medium">
+            <span>⚠️</span>
+            <span>{{ error | translate }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="flex items-center justify-end gap-2 px-6 py-4 bg-slate-50 border-t border-slate-100">
+        <button
+          type="button"
+          class="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-200/60 rounded-xl transition-colors"
+          (click)="onClose()"
+        >
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button
+          type="button"
+          class="px-5 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md shadow-emerald-100 transition-all active:scale-98"
+          (click)="onConfirm()"
+        >
+          {{ 'fleet_schedule.confirm_complete' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

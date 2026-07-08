@@ -13,11 +13,20 @@ import {
   FleetScheduleStatus,
   FleetScheduleType
 } from '../../../../core/models/fleet-schedule.model';
+import { FormsModule } from '@angular/forms';
+import { CompleteEventModalComponent, CompleteEventResult } from '../modal/complete-event-modal.component';
 
 @Component({
   selector: 'app-schedule-list',
   standalone: true,
-  imports: [CommonModule, TranslatePipe, LoadingSpinnerComponent, EmptyStateComponent],
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    LoadingSpinnerComponent,
+    EmptyStateComponent,
+    FormsModule,
+    CompleteEventModalComponent,
+  ],
   templateUrl: './schedule-list.component.html',
   styleUrl: './schedule-list.component.css',
 })
@@ -26,6 +35,11 @@ export class ScheduleListComponent implements OnInit {
   private router = inject(Router);
   private confirmDialog = inject(ConfirmDialogService);
   private notification = inject(NotificationService);
+
+  readonly completeModalOpen = signal(false);
+  readonly completeModalStart = signal<string | null>(null);
+  readonly completeModalEnd = signal<string | null>(null);
+  private pendingCompleteItem: FleetScheduleDto | null = null;
 
   readonly items = signal<FleetScheduleDto[]>([]);
   readonly loading = signal(false);
@@ -78,6 +92,9 @@ export class ScheduleListComponent implements OnInit {
 
   onStatusChange(item: FleetScheduleDto, newStatus: FleetScheduleStatus): void {
     if (!item.id) return;
+    if (!newStatus || (newStatus as string) === 'null') {
+      return;
+    }
 
     if (newStatus === 'CANCELLED') {
       this.handleCancel(item.id);
@@ -89,39 +106,47 @@ export class ScheduleListComponent implements OnInit {
   }
 
   private handleComplete(item: FleetScheduleDto): void {
-    // اینجا می‌توانی از Modal/Dialog استفاده کنی
-    // فعلاً برای سادگی از prompt استفاده می‌کنیم (بعداً Modal حرفه‌ای بساز)
+    console.log('handleComplete called', item);
+    this.pendingCompleteItem = item;
+    this.completeModalStart.set(item.plannedStartTime?.slice(0, 16) || null);
+    this.completeModalEnd.set(item.plannedEndTime?.slice(0, 16) || null);
+    this.completeModalOpen.set(true);
+    console.log('modal open signal:', this.completeModalOpen());
+  }
 
-    const actualStart = prompt(
-      'زمان شروع واقعی (مثال: 2026-06-29T10:30):',
-      item.plannedStartTime?.slice(0, 16) || ''
-    );
-
-    if (actualStart === null) return; // کاربر cancel کرد
-
-    const actualEnd = prompt(
-      'زمان پایان واقعی (مثال: 2026-06-29T12:45):',
-      item.plannedEndTime?.slice(0, 16) || ''
-    );
-
-    if (actualEnd === null) return;
+  onCompleteConfirmed(result: CompleteEventResult): void {
+    const item = this.pendingCompleteItem;
+    this.completeModalOpen.set(false);
+    this.pendingCompleteItem = null;
+    if (!item?.id) return;
 
     const eventDto: FleetEventDto = {
-      actualStartTime: actualStart + ':00Z',   // تبدیل به ISO کامل
-      actualEndTime: actualEnd + ':00Z'
+      actualStartTime: this.toIso(result.actualStartTime),
+      actualEndTime: this.toIso(result.actualEndTime),
     };
 
-    this.api.setEvent(item.id!, eventDto).subscribe({
+    this.api.setEvent(item.id, eventDto).subscribe({
       next: () => {
         this.notification.success('fleet_schedule.event_registered');
         this.load();
       },
       error: (err) => {
         console.error(err);
-        this.notification.error('خطا در ثبت زمان واقعی');
-      }
+        this.notification.error('common.error');
+      },
     });
   }
+
+  onCompleteCancelled(): void {
+    this.completeModalOpen.set(false);
+    this.pendingCompleteItem = null;
+  }
+
+  private toIso(localDateTime: string): string {
+    // localDateTime شبیه '2026-06-29T10:30' هست
+    return new Date(localDateTime).toISOString();
+  }
+
 
   private handleCancel(id: string): void {
     if (!confirm('آیا از لغو این برنامه اطمینان دارید؟')) return;
@@ -134,7 +159,7 @@ export class ScheduleListComponent implements OnInit {
       error: (err) => {
         console.error(err);
         this.notification.error('common.error');
-      }
+      },
     });
   }
 
@@ -147,13 +172,13 @@ export class ScheduleListComponent implements OnInit {
       error: (err) => {
         console.error(err);
         this.notification.error('common.error');
-      }
+      },
     });
   }
 
   statusOptions(current: FleetScheduleStatus): FleetScheduleStatus[] {
     const all: FleetScheduleStatus[] = ['SCHEDULED', 'COMPLETED', 'CANCELLED'];
-    return all.filter(s => s !== current);
+    return all.filter((s) => s !== current);
   }
 
   /**
