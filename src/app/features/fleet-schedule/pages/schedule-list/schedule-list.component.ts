@@ -15,7 +15,6 @@ import {
 } from '../../../../core/models/fleet-schedule.model';
 import { FormsModule } from '@angular/forms';
 import { CompleteEventModalComponent, CompleteEventResult } from '../modal/complete-event-modal.component';
-import moment from 'moment-jalaali';
 
 @Component({
   selector: 'app-schedule-list',
@@ -32,6 +31,7 @@ import moment from 'moment-jalaali';
   styleUrl: './schedule-list.component.css',
 })
 export class ScheduleListComponent implements OnInit {
+
   private api = inject(FleetScheduleApiService);
   private router = inject(Router);
   private confirmDialog = inject(ConfirmDialogService);
@@ -40,6 +40,7 @@ export class ScheduleListComponent implements OnInit {
   readonly completeModalOpen = signal(false);
   readonly completeModalStart = signal<string | null>(null);
   readonly completeModalEnd = signal<string | null>(null);
+
   private pendingCompleteItem: FleetScheduleDto | null = null;
 
   readonly items = signal<FleetScheduleDto[]>([]);
@@ -63,6 +64,7 @@ export class ScheduleListComponent implements OnInit {
 
   load(): void {
     this.loading.set(true);
+
     this.api.load().subscribe({
       next: (data) => {
         this.items.set(data);
@@ -82,60 +84,91 @@ export class ScheduleListComponent implements OnInit {
 
   onDelete(item: FleetScheduleDto): void {
     if (!item.id) return;
-    this.confirmDialog.confirm({ message: 'common.confirm_delete' }).subscribe((confirmed) => {
+
+    this.confirmDialog.confirm({
+      message: 'common.confirm_delete'
+    }).subscribe((confirmed) => {
+
       if (!confirmed) return;
+
       this.api.delete(item.id!).subscribe(() => {
         this.notification.success('common.deleted');
         this.load();
       });
+
     });
   }
 
   onStatusChange(item: FleetScheduleDto, newStatus: FleetScheduleStatus): void {
+
     if (!item.id) return;
+
     if (!newStatus || (newStatus as string) === 'null') {
       return;
     }
 
     if (newStatus === 'CANCELLED') {
       this.handleCancel(item.id);
-    } else if (newStatus === 'COMPLETED') {
+    }
+    else if (newStatus === 'COMPLETED') {
       this.handleComplete(item);
-    } else {
+    }
+    else {
       this.handleStatusUpdate(item.id, newStatus);
     }
   }
 
   private handleComplete(item: FleetScheduleDto): void {
-    console.log('handleComplete called', item);
+
     this.pendingCompleteItem = item;
-    this.completeModalStart.set(item.plannedStartTime?.slice(0, 16) || null);
-    this.completeModalEnd.set(item.plannedEndTime?.slice(0, 16) || null);
+
+    // بدون هیچ تبدیل TimeZone
+    this.completeModalStart.set(
+      item.plannedStartTime
+        ? item.plannedStartTime.replace(/Z$/, '')
+        : null
+    );
+
+    this.completeModalEnd.set(
+      item.plannedEndTime
+        ? item.plannedEndTime.replace(/Z$/, '')
+        : null
+    );
+
     this.completeModalOpen.set(true);
-    console.log('modal open signal:', this.completeModalOpen());
   }
 
   onCompleteConfirmed(result: CompleteEventResult): void {
+
     const item = this.pendingCompleteItem;
+
     this.completeModalOpen.set(false);
     this.pendingCompleteItem = null;
+
     if (!item?.id) return;
 
     const eventDto: FleetEventDto = {
-      actualStartTime: this.toIso(result.actualStartTime),
-      actualEndTime: this.toIso(result.actualEndTime),
+
+      // همان مقداری که کاربر انتخاب کرده ارسال می‌شود
+      actualStartTime: result.actualStartTime,
+      actualEndTime: result.actualEndTime
+
     };
 
     this.api.setEvent(item.id, eventDto).subscribe({
+
       next: () => {
         this.notification.success('fleet_schedule.event_registered');
         this.load();
       },
+
       error: (err) => {
         console.error(err);
         this.notification.error('common.error');
-      },
+      }
+
     });
+
   }
 
   onCompleteCancelled(): void {
@@ -143,48 +176,54 @@ export class ScheduleListComponent implements OnInit {
     this.pendingCompleteItem = null;
   }
 
-  private toIso(localDateTime: string): string {
-    // این متد خروجی '2026-06-29T10:30' را دقیقاً به فرمت بدون آفست '2026-06-29T10:30:00' تبدیل می‌کند
-    return moment(localDateTime).format('YYYY-MM-DDTHH:mm:ss.000[Z]');
-  }
-
-
   private handleCancel(id: string): void {
-    if (!confirm('آیا از لغو این برنامه اطمینان دارید؟')) return;
+
+    if (!confirm('آیا از لغو این برنامه اطمینان دارید؟')) {
+      return;
+    }
 
     this.api.cancelStatus(id).subscribe({
+
       next: () => {
         this.notification.success('fleet_schedule.cancelled_successfully');
         this.load();
       },
+
       error: (err) => {
         console.error(err);
         this.notification.error('common.error');
-      },
+      }
+
     });
   }
 
   private handleStatusUpdate(id: string, status: FleetScheduleStatus): void {
+
     this.api.updateStatus({ id, status }).subscribe({
+
       next: () => {
         this.notification.success('common.saved');
         this.load();
       },
+
       error: (err) => {
         console.error(err);
         this.notification.error('common.error');
-      },
+      }
+
     });
   }
 
   statusOptions(current: FleetScheduleStatus): FleetScheduleStatus[] {
-    const all: FleetScheduleStatus[] = ['SCHEDULED', 'COMPLETED', 'CANCELLED'];
+    const all: FleetScheduleStatus[] = [
+      'SCHEDULED',
+      'COMPLETED',
+      'CANCELLED'
+    ];
+
     return all.filter((s) => s !== current);
   }
 
-  /**
-   * استخراج امن کد فرودگاه
-   */
   getAirportCode(airport: any): string {
     if (airport && typeof airport === 'object' && 'code' in airport) {
       return airport.code || '???';
@@ -192,9 +231,6 @@ export class ScheduleListComponent implements OnInit {
     return '???';
   }
 
-  /**
-   * استخراج امن علامت ثبت (Register) هواپیما
-   */
   getAirplaneRegister(airplane: any): string {
     if (airplane && typeof airplane === 'object' && 'register' in airplane) {
       return airplane.register || '—';
@@ -202,9 +238,6 @@ export class ScheduleListComponent implements OnInit {
     return '—';
   }
 
-  /**
-   * استخراج امن مدل هواپیما
-   */
   getAirplaneModelName(airplane: any): string {
     if (airplane && typeof airplane === 'object' && 'airplaneModel' in airplane) {
       return airplane.airplaneModel?.name || '';
