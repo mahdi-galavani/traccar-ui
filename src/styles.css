@@ -102,3 +102,41 @@
 .mat-timepicker-input {
   caret-color: #4f46e5 !important;
 }
+
+/* ==========================================================================
+   GLOBAL TIME PICKER FIXES
+   ========================================================================== */
+
+/* رفع استایل‌های پیش‌فرض متریال برای TimePicker */
+.mat-mdc-timepicker-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.mat-mdc-timepicker-toggle .mat-mdc-icon-button {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 4px !important;
+}
+
+.mat-mdc-timepicker-toggle .mat-mdc-icon-button .mat-mdc-button-touch-target {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+/* رفع مشکل نمایش TimePicker در حالت RTL */
+[dir="rtl"] .mat-timepicker-popup {
+  direction: rtl !important;
+}
+
+[dir="rtl"] .mat-timepicker-column {
+  direction: rtl !important;
+}
+
+/* رفع مشکل نمایش در موبایل */
+@media (max-width: 600px) {
+  .cdk-overlay-pane {
+    max-width: 90vw !important;
+  }
+}
