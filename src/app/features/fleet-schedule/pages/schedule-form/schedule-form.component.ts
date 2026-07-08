@@ -128,9 +128,11 @@ export class ScheduleFormComponent implements OnInit {
           version: dto.version,
           type: dto.type,
           airplane: dto.airplane?.id ? String(dto.airplane.id) : null,
-          // تغییر مهم: تبدیل مستقیم به شیء Date برای سازگاری کامل با متریال
-          plannedStartTime: dto.plannedStartTime ? new Date(dto.plannedStartTime) : null,
-          plannedEndTime: dto.plannedEndTime ? new Date(dto.plannedEndTime) : null,
+
+          // اصلاح مهم: لود کردن رشته تاریخ به صورت UTC خالص تا مرورگر آن را به زون محلی جابجا نکند
+          plannedStartTime: dto.plannedStartTime ? moment.utc(dto.plannedStartTime).toDate() : null,
+          plannedEndTime: dto.plannedEndTime ? moment.utc(dto.plannedEndTime).toDate() : null,
+
           flightNumber: dto.flight?.number || null,
           flightId: dto.flight?.id || null,
           flightVersion: dto.flight?.version || null,
@@ -206,9 +208,14 @@ export class ScheduleFormComponent implements OnInit {
 
     const v = this.form.getRawValue();
 
-    // تبدیل شیء تاریخ متریال به فرمت استاندارد و تمیز ISO برای بک‌اند
-    const startTimeIso = v.plannedStartTime ? moment(v.plannedStartTime).toISOString() : null;
-    const endTimeIso = v.plannedEndTime ? moment(v.plannedEndTime).toISOString() : null;
+    // استفاده از فرمت محلی بدون تبدیل زون به UTC با فرمت رسمی جاوا LocalDateTime
+    const startTimeIso = v.plannedStartTime
+      ? moment(v.plannedStartTime).format('YYYY-MM-DDTHH:mm:ss.000[Z]')
+      : null;
+
+    const endTimeIso = v.plannedEndTime
+      ? moment(v.plannedEndTime).format('YYYY-MM-DDTHH:mm:ss.000[Z]')
+      : null;
 
     const dto: FleetScheduleDto = {
       id: v.id ?? undefined,
@@ -217,7 +224,6 @@ export class ScheduleFormComponent implements OnInit {
       airplane: { id: v.airplane! },
       departure: { id: v.departure! },
       arrival: { id: v.arrival! },
-      // استفاده از مقادیر فرمت شده استاندارد به جای ترکیب دستی رشته‌ها
       plannedStartTime: startTimeIso!,
       plannedEndTime: endTimeIso!,
       status: 'SCHEDULED',
@@ -227,11 +233,12 @@ export class ScheduleFormComponent implements OnInit {
     if (v.type === 'FLIGHT' && v.flightNumber) {
       dto.flight = {
         id: v.flightId ?? undefined,
-        version: v.flightVersion != null ? Number(v.flightVersion) : 0,
+        // استفاده از شرط دقیق برای زنده نگه داشتن مقدار 0 و تغییرات بعدی آن
+        version: (v.flightVersion !== null && v.flightVersion !== undefined) ? Number(v.flightVersion) : 0,
         number: v.flightNumber,
         crew: (v.crew as any[]).map((c: any) => ({
           id: c.id ?? undefined,
-          version: c.version ?? undefined,
+          version: (c.version !== null && c.version !== undefined) ? Number(c.version) : undefined,
           person: { id: c.personId },
           crewJob: { id: c.crewJobId },
         })),

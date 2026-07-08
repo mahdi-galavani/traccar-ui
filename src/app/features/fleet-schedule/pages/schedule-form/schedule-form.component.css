@@ -1,74 +1,46 @@
-/* افکت‌های ملایم برای بهبود تجربه کاربری */
+/* افکت‌های ملایم برای بهبود تجربه کاربری سلکتورها */
 select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b' viewBox='0 0 24 24'><path d='M7 10l5 5 5-5z'/></svg>");
   background-repeat: no-repeat;
-  background-position: left 12px center;
-  padding-left: 32px !important;
 }
 
-/* در صورتی که دایرکشن راست به چپ (RTL) باشد، آیکون سلکتور جابجا شود */
+/* مدیریت پوزیشن آیکون سلکتور بر اساس جهت صفحه */
+:host-context([dir="ltr"]) select,
+[dir="ltr"] select {
+  background-position: right 16px center;
+  padding-right: 40px !important;
+  padding-left: 16px !important;
+}
+
 :host-context([dir="rtl"]) select,
 [dir="rtl"] select {
-  background-position: left 12px center;
-  padding-left: 32px !important;
+  background-position: left 16px center;
+  padding-left: 40px !important;
   padding-right: 16px !important;
 }
 
-/* استایل انیمیشن لودینگ اختصاصی سفارشی */
-@keyframes spin {
-  to { transform: rotate(360deg); }
+/* رفع استایل‌های پیش‌فرض دکمه‌های متریال برای همخوانی با قالب هندسام شما */
+::v-deep .mat-mdc-icon-button {
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
 }
 
-/* استایل پایه برای ورودی‌های تاریخ و زمان */
-input[type="datetime-local"] {
-  position: relative;
-  appearance: none;
-  -webkit-appearance: none;
-  color: #334155; /* slate-700 */
+/* انیمیشن فید این ملایم برای جزئیات هواپیما */
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out forwards;
 }
 
-/* مخفی کردن آیکون پیش‌فرض و زشت مرورگر در کروم، اج و سافاری */
-input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: auto;
-  height: auto;
-  color: transparent;
-  background: transparent;
-  cursor: pointer;
-  z-index: 10;
-}
-
-/* اضافه کردن آیکون تقویم شیک و سفارشی با استفاده از Pseudo-element */
-.datetime-container {
-  position: relative;
-}
-
-.datetime-container::after {
-  content: '📅';
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.1rem;
-  pointer-events: none;
-  transition: all 0.2s ease;
-  opacity: 0.6;
-}
-
-/* هماهنگ‌سازی موقعیت آیکون بر اساس جهت صفحه (راست‌چین / چپ‌چین) */
-[dir="rtl"] .datetime-container::after {
-  left: 1rem;
-}
-
-[dir="ltr"] .datetime-container::after {
-  right: 1rem;
-}
-
-/* افکت فوکوس روی آیکون */
-.datetime-container:focus-within::after {
-  opacity: 1;
-  filter: drop-shadow(0 0 4px rgba(79, 70, 229, 0.2)); /* indigo-600 shadow */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

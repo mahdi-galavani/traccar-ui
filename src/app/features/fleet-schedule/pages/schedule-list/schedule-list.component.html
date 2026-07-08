@@ -61,13 +61,13 @@
               <td class="px-4 py-4 whitespace-nowrap">
                 <div class="flex flex-col">
                   <div class="text-sm font-medium text-slate-700 font-mono" dir="ltr">
-                    <span>{{ item.plannedStartTime | date: 'HH:mm' }}</span>
+                    <span>{{ item.plannedStartTime | date: 'HH:mm' : '+0000' }}</span>
                     <span class="text-slate-400 mx-1">→</span>
-                    <span>{{ item.plannedEndTime | date: 'HH:mm' }}</span>
+                    <span>{{ item.plannedEndTime | date: 'HH:mm' : '+0000' }}</span>
                   </div>
                   <span class="text-xs text-slate-400 mt-0.5 font-mono">
-                    {{ item.plannedStartTime | date: 'yyyy/MM/dd' }}
-                  </span>
+      {{ item.plannedStartTime | date: 'yyyy/MM/dd' : '+0000' }}
+    </span>
                 </div>
               </td>
 

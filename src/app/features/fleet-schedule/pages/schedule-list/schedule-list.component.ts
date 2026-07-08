@@ -15,6 +15,7 @@ import {
 } from '../../../../core/models/fleet-schedule.model';
 import { FormsModule } from '@angular/forms';
 import { CompleteEventModalComponent, CompleteEventResult } from '../modal/complete-event-modal.component';
+import moment from 'moment-jalaali';
 
 @Component({
   selector: 'app-schedule-list',
@@ -143,8 +144,8 @@ export class ScheduleListComponent implements OnInit {
   }
 
   private toIso(localDateTime: string): string {
-    // localDateTime شبیه '2026-06-29T10:30' هست
-    return new Date(localDateTime).toISOString();
+    // این متد خروجی '2026-06-29T10:30' را دقیقاً به فرمت بدون آفست '2026-06-29T10:30:00' تبدیل می‌کند
+    return moment(localDateTime).format('YYYY-MM-DDTHH:mm:ss.000[Z]');
   }
 
 

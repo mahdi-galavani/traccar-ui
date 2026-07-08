@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import moment from 'moment-jalaali';
 
 export interface CompleteEventResult {
   actualStartTime: string;
@@ -74,8 +75,8 @@ export class CompleteEventModalComponent implements OnChanges {
     this.error = null;
     this.open = false;
     this.confirmed.emit({
-      actualStartTime: startDate.toISOString(),
-      actualEndTime: endDate.toISOString(),
+      actualStartTime: moment(this.actualStart).format('YYYY-MM-DDTHH:mm:ss.000[Z]'),
+      actualEndTime: moment(this.actualEnd).format('YYYY-MM-DDTHH:mm:ss.000[Z]'),
     });
   }
 
