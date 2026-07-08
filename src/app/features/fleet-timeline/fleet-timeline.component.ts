@@ -293,4 +293,46 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
     this.showModal.set(false);
     this.selectedSchedule.set(null);
   }
+
+
+  getActualLeft(schedule: FleetScheduleDto): string {
+    if (!schedule.event?.actualStartTime) {
+      return '0%';
+    }
+
+    const start = TimeUtils.parseUTC(schedule.plannedStartTime);
+    const actual = TimeUtils.parseUTC(schedule.event.actualStartTime);
+
+    const diff =
+      (actual.getTime() - start.getTime()) / 60000;
+
+    const plannedDuration =
+      (TimeUtils.parseUTC(schedule.plannedEndTime).getTime() - start.getTime()) /
+      60000;
+
+    return `${(diff / plannedDuration) * 100}%`;
+  }
+
+  getActualWidth(schedule: FleetScheduleDto): string {
+    if (
+      !schedule.event?.actualStartTime ||
+      !schedule.event?.actualEndTime
+    ) {
+      return '0%';
+    }
+
+    const actualStart = TimeUtils.parseUTC(schedule.event.actualStartTime);
+    const actualEnd = TimeUtils.parseUTC(schedule.event.actualEndTime);
+
+    const plannedStart = TimeUtils.parseUTC(schedule.plannedStartTime);
+    const plannedEnd = TimeUtils.parseUTC(schedule.plannedEndTime);
+
+    const actualMinutes =
+      (actualEnd.getTime() - actualStart.getTime()) / 60000;
+
+    const plannedMinutes =
+      (plannedEnd.getTime() - plannedStart.getTime()) / 60000;
+
+    return `${(actualMinutes / plannedMinutes) * 100}%`;
+  }
 }

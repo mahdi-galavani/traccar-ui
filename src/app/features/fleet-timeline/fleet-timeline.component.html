@@ -108,6 +108,25 @@
                           </div>
                         }
                         <div class="time">
+                          @if (flight.event?.actualStartTime && flight.event?.actualEndTime) {
+
+                            <div class="actual-bar-wrapper">
+
+                              <div
+                                class="actual-bar"
+                                [style.left]="getActualLeft(flight)"
+                                [style.width]="getActualWidth(flight)">
+                              </div>
+
+                            </div>
+
+                            <div class="actual-time">
+                              {{ formatTime(flight.event.actualStartTime) }}
+                              —
+                              {{ formatTime(flight.event.actualEndTime) }}
+                            </div>
+
+                          }
                           {{ formatTime(flight.plannedStartTime) }} — {{ formatTime(flight.plannedEndTime) }}
                         </div>
                       </div>

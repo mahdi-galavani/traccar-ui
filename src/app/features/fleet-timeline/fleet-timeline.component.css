@@ -507,3 +507,28 @@
   padding: 10px 0;
   font-style: italic;
 }
+
+.actual-bar-wrapper{
+  position:relative;
+  width:100%;
+  height:4px;
+  margin-top:4px;
+  background:#2b3446;
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.actual-bar{
+  position:absolute;
+  top:0;
+  height:100%;
+  border-radius:999px;
+  background:#22c55e;
+}
+
+.actual-time{
+  margin-top:3px;
+  font-size:10px;
+  color:#86efac;
+  font-weight:600;
+}
