@@ -10,11 +10,11 @@
         <select [value]="selectedAirplaneId()"
                 (change)="selectAirplane($any($event.target).value)">
           <option value="ALL">
-            All Airplanes (Overview)
+            🌐 All Airplanes (Overview)
           </option>
           @for (plane of airplanes(); track plane.id) {
             <option [value]="plane.id">
-              {{ plane.register }} ({{ plane.type?.title }})
+              🛩 {{ plane.register }} ({{ plane.type?.title }})
             </option>
           }
         </select>
@@ -24,13 +24,13 @@
     <div class="header-center">
       <div class="view-switcher">
         <button [class.active]="viewMode() === '1_WEEK'" (click)="switchView('1_WEEK')">
-          1 Week
+          📅 1W
         </button>
         <button [class.active]="viewMode() === '2_WEEKS'" (click)="switchView('2_WEEKS')">
-          2 Weeks
+          📅 2W
         </button>
         <button [class.active]="viewMode() === '1_MONTH'" (click)="switchView('1_MONTH')">
-          1 Month
+          📅 1M
         </button>
       </div>
     </div>
@@ -39,8 +39,8 @@
       <button class="toggle-actual-btn"
               [class.active]="showActualTimes()"
               (click)="toggleActualTimes()">
-        <span class="icon">⏱</span>
-        <span class="label">Actual Times</span>
+        <span class="icon">⚡</span>
+        <span class="label">Actual</span>
         <span class="toggle-indicator"></span>
       </button>
     </div>
@@ -52,20 +52,24 @@
   @if (selectedAirplaneId() !== 'ALL' && currentAirplaneDetails()) {
     <div class="airplane-meta-bar">
       <div class="meta-item">
-        <span class="meta-label">Aircraft</span>
+        <span class="meta-label">✈ Aircraft</span>
         <span class="meta-value">{{ currentAirplaneDetails()?.register }}</span>
       </div>
       <div class="meta-item">
-        <span class="meta-label">Config</span>
+        <span class="meta-label">⚙ Config</span>
         <span class="meta-value">
-          F: {{ currentAirplaneDetails()?.firstClassSeat ?? 0 }} |
-          B: {{ currentAirplaneDetails()?.businessClassSeat ?? 0 }} |
-          E: {{ currentAirplaneDetails()?.economicClassSeat ?? 0 }}
+          F{{ currentAirplaneDetails()?.firstClassSeat ?? 0 }}
+          B{{ currentAirplaneDetails()?.businessClassSeat ?? 0 }}
+          E{{ currentAirplaneDetails()?.economicClassSeat ?? 0 }}
         </span>
       </div>
       <div class="meta-item">
-        <span class="meta-label">Status</span>
+        <span class="meta-label">📊 Status</span>
         <span class="meta-value" style="color: #22c55e;">● Active</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">📈 Flights</span>
+        <span class="meta-value">{{currentAirplaneSchedules().length}}</span>
       </div>
     </div>
   }
@@ -76,12 +80,12 @@
   <div class="timeline-legend">
     <div class="legend-item">
       <span class="color-bar planned-bar"></span>
-      <span class="legend-label">Planned Schedule</span>
+      <span class="legend-label">📋 Planned</span>
     </div>
     @if (showActualTimes()) {
       <div class="legend-item">
         <span class="color-bar actual-bar"></span>
-        <span class="legend-label">Actual Execution</span>
+        <span class="legend-label">⚡ Actual</span>
       </div>
       <div class="legend-item deviation-legend">
         <span class="deviation-indicator early">⏳ Early</span>
@@ -99,11 +103,11 @@
     <!-- Time Axis -->
     <div class="time-axis-row">
       <div class="axis-corner-cell">
-        Day / Time
+        <span>📆 Day</span>
       </div>
       <div class="hours-container">
-        @for (hour of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]; track hour) {
-          <div class="hour-tick">
+        @for (hour of [0,2,4,6,8,10,12,14,16,18,20,22]; track hour) {
+          <div class="hour-tick" [style.width]="(100/12) + '%'">
             <span>{{hour}}:00</span>
           </div>
         }
@@ -118,7 +122,8 @@
           <!-- Day Label -->
           <div class="day-cell-label">
             <span class="day-name">{{day}}</span>
-            <span class="day-number">{{ dayIdx + 1 }}</span>
+            <span class="day-number">#{{ dayIdx + 1 }}</span>
+            <span class="day-flights">{{getSegmentsForDay(dayIdx).length}} flights</span>
           </div>
 
           <!-- Slots Lane Wrapper -->
@@ -127,28 +132,26 @@
             <!-- Current Time Line -->
             @if(showCurrentTimeLine()) {
               <div class="current-time-line" [style.left]="currentTimePosition()">
-                <div class="time-indicator">
-                  {{ currentTimePosition() }}
-                </div>
+                <div class="time-indicator">🔴 NOW</div>
               </div>
             }
 
             <!-- Grid Guidelines -->
             <div class="grid-guidelines">
-              @for(tick of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]; track tick) {
+              @for(tick of [0,2,4,6,8,10,12,14,16,18,20,22]; track tick) {
                 <div class="line-tick"></div>
               }
             </div>
 
             <!-- =========================
-                 PLANNED SEGMENTS
+                 PLANNED SEGMENTS - طراحی جدید
             ========================= -->
             @for(segment of getSegmentsForDay(dayIdx); track segment.schedule.id ?? $index) {
               @let flight = getSchedule(segment);
               @let blockSize = getBlockSizeBySegment(segment);
               @let deviation = getTimeDeviation(flight);
 
-              <div class="flight-block-card planned-block"
+              <div class="flight-card glass-card"
                    [class.type-flight]="flight.type === 'FLIGHT'"
                    [class.type-check]="flight.type === 'CHECK'"
                    [class.type-dfdr]="flight.type === 'DFDR'"
@@ -160,108 +163,85 @@
                    [ngStyle]="getSegmentStyle(segment, dayIdx, false)"
                    (click)="openScheduleDetails(flight)">
 
-                <!-- Deviation Badge -->
-                @if(deviation !== null && Math.abs(deviation) > 5) {
-                  <div class="deviation-badge" [style.background]="getDeviationColor(deviation)">
-                    <span class="dev-icon">{{ deviation > 0 ? '⏰' : '⏳' }}</span>
-                    {{formatDeviation(deviation)}}
+                <!-- Card Header - Flight Number & Status -->
+                <div class="card-header">
+                  <div class="flight-badge">
+                    <span class="flight-icon">{{getTypeIcon(flight.type)}}</span>
+                    <span class="flight-code">{{flight.flight?.number || flight.type}}</span>
                   </div>
-                }
-
-                <!-- Airplane Tag -->
-                @if(selectedAirplaneId() === 'ALL' && flight.airplane) {
-                  <span class="airplane-tag">
-                    {{getAirplaneRegister(flight.airplane)}}
-                  </span>
-                }
-
-                <!-- Block Content -->
-                <div class="flight-block-content">
-                  @switch(blockSize) {
-                    @case('xs') {
-                      <div class="block-xs" [title]="flight.flight?.number ?? flight.type">
-                        <span class="icon-lg">{{getTypeIcon(flight.type)}}</span>
-                      </div>
-                    }
-                    @case('sm') {
-                      <div class="block-sm">
-                        <span class="icon">{{getTypeIcon(flight.type)}}</span>
-                        <span class="flight-num">
-                          {{flight.type === 'FLIGHT' ? flight.flight?.number : flight.type}}
-                        </span>
-                        @if(flight.type === 'FLIGHT') {
-                          <span class="route-mini">
-                            {{getAirportCode(flight.departure)}}→{{getAirportCode(flight.arrival)}}
-                          </span>
-                        }
-                      </div>
-                    }
-                    @default {
-                      <div class="block-md">
-                        <div class="title-row">
-                          <span class="icon">{{getTypeIcon(flight.type)}}</span>
-                          <span class="flight-number">{{flight.flight?.number}}</span>
-                          @if(flight.type === 'FLIGHT') {
-                            <span class="flight-status" [class.scheduled]="flight.status === 'SCHEDULED'"
-                                  [class.completed]="flight.status === 'COMPLETED'"
-                                  [class.cancelled]="flight.status === 'CANCELLED'">
-                              {{flight.status}}
-                            </span>
-                          }
-                        </div>
-                        @if(flight.type === 'FLIGHT') {
-                          <div class="route-row">
-                            <span class="airport-code">{{getAirportCode(flight.departure)}}</span>
-                            <span class="route-arrow">→</span>
-                            <span class="airport-code">{{getAirportCode(flight.arrival)}}</span>
-                          </div>
-                        }
-                        <div class="time-row">
-                          <span class="time-label">🕐</span>
-                          <span class="time-value">{{formatTime(flight.plannedStartTime)}}</span>
-                          <span class="time-sep">-</span>
-                          <span class="time-value">{{formatTime(flight.plannedEndTime)}}</span>
-                        </div>
-                      </div>
-                    }
+                  @if(flight.status && flight.type === 'FLIGHT') {
+                    <span class="status-pill" [class.scheduled]="flight.status === 'SCHEDULED'"
+                          [class.completed]="flight.status === 'COMPLETED'"
+                          [class.cancelled]="flight.status === 'CANCELLED'">
+                      {{flight.status === 'SCHEDULED' ? '📌' : flight.status === 'COMPLETED' ? '✅' : '🚫'}}
+                      {{flight.status}}
+                    </span>
                   }
                 </div>
+
+                <!-- Card Body - Route & Times -->
+                <div class="card-body">
+                  @if(flight.type === 'FLIGHT') {
+                    <div class="route-display">
+                      <span class="airport origin">{{getAirportCode(flight.departure)}}</span>
+                      <span class="route-arrow">✈</span>
+                      <span class="airport dest">{{getAirportCode(flight.arrival)}}</span>
+                    </div>
+                  }
+                  <div class="time-display">
+                    <span class="time-icon">🕐</span>
+                    <span class="time-text">{{formatTime(flight.plannedStartTime)}}</span>
+                    <span class="time-sep">—</span>
+                    <span class="time-text">{{formatTime(flight.plannedEndTime)}}</span>
+                  </div>
+                </div>
+
+                <!-- Card Footer - Additional Info -->
+                <div class="card-footer">
+                  @if(selectedAirplaneId() === 'ALL' && flight.airplane) {
+                    <span class="tail-tag">🛩 {{getAirplaneRegister(flight.airplane)}}</span>
+                  }
+                  @if(deviation !== null && Math.abs(deviation) > 5) {
+                    <span class="deviation-tag" [style.background]="getDeviationColor(deviation)">
+                      {{deviation > 0 ? '⏰' : '⏳'}} {{formatDeviation(deviation)}}
+                    </span>
+                  }
+                </div>
+
+                <!-- Glass Reflection Effect -->
+                <div class="glass-reflection"></div>
 
                 <!-- Tooltip -->
                 <div class="flight-tooltip-popup">
                   <div class="tooltip-header">
                     <strong>{{getTypeLabel(flight.type)}}</strong>
                     @if(flight.status === 'CANCELLED') {
-                      <span class="cancelled-badge">CANCELLED</span>
+                      <span class="cancelled-badge">🚫 CANCELLED</span>
                     }
                   </div>
                   <div class="tooltip-body">
                     <div class="tooltip-row">
-                      <span class="tooltip-label">Aircraft:</span>
+                      <span class="tooltip-label">✈ Aircraft:</span>
                       <span class="tooltip-value">{{getAirplaneRegister(flight.airplane)}}</span>
                     </div>
                     @if(flight.type === 'FLIGHT') {
                       <div class="tooltip-row">
-                        <span class="tooltip-label">Flight:</span>
-                        <span class="tooltip-value">{{flight.flight?.number}}</span>
-                      </div>
-                      <div class="tooltip-row">
-                        <span class="tooltip-label">Route:</span>
+                        <span class="tooltip-label">📍 Route:</span>
                         <span class="tooltip-value">{{getAirportCode(flight.departure)}} → {{getAirportCode(flight.arrival)}}</span>
                       </div>
                     }
                     <div class="tooltip-row">
-                      <span class="tooltip-label">Planned:</span>
+                      <span class="tooltip-label">📋 Planned:</span>
                       <span class="tooltip-value">{{formatTime(flight.plannedStartTime)}} - {{formatTime(flight.plannedEndTime)}}</span>
                     </div>
                     @if(flight.event?.actualStartTime && flight.event?.actualEndTime) {
                       <div class="tooltip-row actual-row">
-                        <span class="tooltip-label">Actual:</span>
+                        <span class="tooltip-label">⚡ Actual:</span>
                         <span class="tooltip-value actual-value">{{formatTime(flight.event.actualStartTime)}} - {{formatTime(flight.event.actualEndTime)}}</span>
                       </div>
                       @if(deviation !== null) {
                         <div class="tooltip-row deviation-row" [style.color]="getDeviationColor(deviation)">
-                          <span class="tooltip-label">Deviation:</span>
+                          <span class="tooltip-label">📊 Deviation:</span>
                           <span class="tooltip-value">{{formatDeviation(deviation)}}</span>
                         </div>
                       }
@@ -274,6 +254,9 @@
             <!-- =========================
                  ACTUAL TIME BARS
             ========================= -->
+            <!-- =========================
+     ACTUAL TIME BARS
+========================= -->
             @if(showActualTimes()) {
               @for(segment of getActualSegmentsForDay(dayIdx); track segment.schedule.id ?? $index) {
                 @let flight = getSchedule(segment);
@@ -281,15 +264,30 @@
                 @let hasActual = flight.event?.actualStartTime && flight.event?.actualEndTime;
 
                 @if(hasActual) {
+                  <!-- محاسبه موقعیت خط Actual با دقت بیشتر -->
+                  @let leftPos = (segment.startMinutes / 1440 * 100);
+                  @let widthPos = ((segment.endMinutes - segment.startMinutes) / 1440 * 100);
+
+                  <!-- پیدا کردن لاین مناسب برای خط Actual -->
+                  @let daySegments = getActualSegmentsForDay(dayIdx);
+                  @let daySchedules = daySegments.map(s => s.schedule);
+                  @let lanes = getLanesForDay(daySchedules, true);
+                  @let laneIdx = getLaneIndex(segment.schedule, lanes);
+
+                  <!-- محاسبه موقعیت عمودی دقیق -->
+                  @let cardHeight = 75;
+                  @let gap = 6;
+                  @let topPos = 14 + (laneIdx * (cardHeight + gap)) + cardHeight + 4;
+
                   <div class="actual-time-bar"
-                       [style.left]="(segment.startMinutes / 1440 * 100) + '%'"
-                       [style.width]="((segment.endMinutes - segment.startMinutes) / 1440 * 100) + '%'"
-                       [style.top]="(14 + 52 + 6) + 'px'"
+                       [style.left]="leftPos + '%'"
+                       [style.width]="widthPos + '%'"
+                       [style.top]="topPos + 'px'"
                        [class.has-deviation]="deviation !== null && Math.abs(deviation) > 15"
                        [style.background]="deviation !== null ? getDeviationColor(deviation) : '#3b82f6'">
                     <div class="actual-time-label">
                       <span class="label-icon">●</span>
-                      <span class="label-text">Actual</span>
+                      <span class="label-text">ACTUAL</span>
                     </div>
                   </div>
                 }
@@ -304,12 +302,13 @@
 </div>
 
 <!-- =========================
-     MODAL
+     MODAL - باقی می‌ماند
 ========================== -->
 @if(showModal()) {
   <div class="modal-backdrop" (click)="closeModal()"></div>
 
   <div class="schedule-modal">
+    <!-- محتوای مودال مانند قبل -->
     <div class="modal-header">
       <div class="title">
         <span class="modal-icon">{{getTypeIcon(selectedSchedule()?.type!)}}</span>
@@ -405,9 +404,6 @@
                   <span class="deviation-text">
                     {{deviation > 0 ? 'Delayed by' : deviation < 0 ? 'Early by' : 'On Time'}}
                     {{formatDeviation(deviation)}}
-                  </span>
-                  <span class="deviation-percent" [style.color]="getDeviationColor(deviation)">
-                    {{deviation !== 0 ? (deviation > 0 ? '+' : '') + (deviation / 60 * 100 / 100).toFixed(1) + '%' : '±0%'}}
                   </span>
                 </div>
               }

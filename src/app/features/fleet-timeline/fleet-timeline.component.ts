@@ -267,10 +267,10 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
     const lanes = this.getLanesForDay(daySchedules, isActual);
     const laneIdx = this.getLaneIndex(segment.schedule, lanes);
 
-    // برای کارت‌های برنامه‌ریزی شده
-    const cardHeight = 42;
+    // ارتفاع کارت اصلی رو افزایش می‌دیم تا Actual خط زیرش جا بگیره
+    const cardHeight = 75; // افزایش ارتفاع کارت
     const gap = 6;
-    const topPosition = 12 + (laneIdx * (cardHeight + gap));
+    const topPosition = 14 + (laneIdx * (cardHeight + gap));
 
     return {
       position: 'absolute',
