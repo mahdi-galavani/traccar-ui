@@ -129,9 +129,8 @@ export class ScheduleFormComponent implements OnInit {
           type: dto.type,
           airplane: dto.airplane?.id ? String(dto.airplane.id) : null,
 
-          // اصلاح مهم: لود کردن رشته تاریخ به صورت UTC خالص تا مرورگر آن را به زون محلی جابجا نکند
-          plannedStartTime: dto.plannedStartTime ? moment.utc(dto.plannedStartTime).toDate() : null,
-          plannedEndTime: dto.plannedEndTime ? moment.utc(dto.plannedEndTime).toDate() : null,
+          plannedStartTime: dto.plannedStartTime ? new Date(dto.plannedStartTime.replace('Z', '')) : null,
+          plannedEndTime: dto.plannedEndTime ? new Date(dto.plannedEndTime.replace('Z', '')) : null,
 
           flightNumber: dto.flight?.number || null,
           flightId: dto.flight?.id || null,
