@@ -17,7 +17,13 @@ import { FleetScheduleDto, FleetScheduleType } from '../../../../core/models/fle
 @Component({
   selector: 'app-schedule-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, FlightCrewFormComponent, RouterModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslatePipe,
+    FlightCrewFormComponent,
+    RouterModule,
+  ],
   templateUrl: './schedule-form.component.html',
   styleUrl: './schedule-form.component.css',
 })
@@ -46,6 +52,8 @@ export class ScheduleFormComponent implements OnInit {
     plannedStartTime: new FormControl<string | null>(null, Validators.required),
     plannedEndTime: new FormControl<string | null>(null, Validators.required),
     flightNumber: new FormControl<string | null>(null),
+    flightId: new FormControl<string | null>(null),
+    flightVersion: new FormControl<number | null>(null),
     departure: new FormControl<string | null>(null, Validators.required),
     arrival: new FormControl<string | null>(null, Validators.required),
     crew: new FormArray([]),
@@ -53,7 +61,7 @@ export class ScheduleFormComponent implements OnInit {
 
   readonly airplaneIdSignal = toSignal(
     this.form.controls.airplane.valueChanges as import('rxjs').Observable<string | null>,
-    { initialValue: null }
+    { initialValue: null },
   );
 
   readonly selectedAirplaneDetails = computed(() => {
@@ -61,7 +69,7 @@ export class ScheduleFormComponent implements OnInit {
     const list = this.airplanesList();
     if (!selectedId || list.length === 0) return null;
 
-    return list.find(a => String(a.id).trim() === String(selectedId).trim()) || null;
+    return list.find((a) => String(a.id).trim() === String(selectedId).trim()) || null;
   });
 
   get crewArray(): FormArray {
@@ -84,21 +92,19 @@ export class ScheduleFormComponent implements OnInit {
   private loadInitialData(): void {
     this.airplaneApi.load().subscribe((airplanes) => {
       this.airplanesList.set(airplanes);
-      this.airplaneOptions.set(
-        airplanes.map((a) => ({ label: a.register!, value: a.id! }))
-      );
+      this.airplaneOptions.set(airplanes.map((a) => ({ label: a.register!, value: a.id! })));
     });
 
     this.airportApi.load().subscribe((airports) => {
       this.airportOptions.set(
-        airports.map((a) => ({ label: `${a.name} (${a.code})`, value: a.id! }))
+        airports.map((a) => ({ label: `${a.name} (${a.code})`, value: a.id! })),
       );
     });
 
     this.typeOptions.set([
       { label: 'fleet_schedule.types.flight', value: 'FLIGHT' },
       { label: 'fleet_schedule.types.check', value: 'CHECK' },
-      { label: 'fleet_schedule.types.dfdr', value: 'DFDR' }
+      { label: 'fleet_schedule.types.dfdr', value: 'DFDR' },
     ]);
   }
 
@@ -113,9 +119,15 @@ export class ScheduleFormComponent implements OnInit {
           version: dto.version,
           type: dto.type,
           airplane: dto.airplane?.id ? String(dto.airplane.id) : null,
-          plannedStartTime: dto.plannedStartTime ? moment(dto.plannedStartTime).format('YYYY-MM-DDTHH:mm') : null,
-          plannedEndTime: dto.plannedEndTime ? moment(dto.plannedEndTime).format('YYYY-MM-DDTHH:mm') : null,
+          plannedStartTime: dto.plannedStartTime
+            ? moment(dto.plannedStartTime).format('YYYY-MM-DDTHH:mm')
+            : null,
+          plannedEndTime: dto.plannedEndTime
+            ? moment(dto.plannedEndTime).format('YYYY-MM-DDTHH:mm')
+            : null,
           flightNumber: dto.flight?.number || null,
+          flightId: dto.flight?.id || null,
+          flightVersion: dto.flight?.version || null,
           departure: dto.departure?.id ? String(dto.departure.id) : null,
           arrival: dto.arrival?.id ? String(dto.arrival.id) : null,
         });
@@ -129,9 +141,11 @@ export class ScheduleFormComponent implements OnInit {
           dto.flight.crew.forEach((c) => {
             this.crewArray.push(
               new FormGroup({
+                id: new FormControl(c.id),
+                version: new FormControl(c.version),
                 personId: new FormControl(c.person?.id, Validators.required),
                 crewJobId: new FormControl(c.crewJob?.id, Validators.required),
-              })
+              }),
             );
           });
         }
@@ -165,6 +179,8 @@ export class ScheduleFormComponent implements OnInit {
 
   private buildCrewRow(): FormGroup {
     return new FormGroup({
+      id: new FormControl(null),
+      version: new FormControl(null),
       personId: new FormControl(null, Validators.required),
       crewJobId: new FormControl(null, Validators.required),
     });
@@ -202,8 +218,12 @@ export class ScheduleFormComponent implements OnInit {
     // فقط در حالت FLIGHT اطلاعات پرواز را بفرست
     if (v.type === 'FLIGHT' && v.flightNumber) {
       dto.flight = {
+        id: v.flightId ?? undefined,
+        version: v.flightVersion ?? undefined,
         number: v.flightNumber,
         crew: (v.crew as any[]).map((c: any) => ({
+          id: c.id ?? undefined,
+          version: c.version ?? undefined,
           person: { id: c.personId },
           crewJob: { id: c.crewJobId },
         })),
