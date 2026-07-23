@@ -148,7 +148,6 @@
             ========================= -->
             @for(segment of getSegmentsForDay(dayIdx); track segment.schedule.id ?? $index) {
               @let flight = getSchedule(segment);
-              @let blockSize = getBlockSizeBySegment(segment);
               @let deviation = getTimeDeviation(flight);
 
               <div class="flight-card glass-card"

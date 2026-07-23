@@ -1,0 +1,176 @@
+<div class="dispatch-container">
+
+  <!-- =========================
+       TOP MONITOR BAR
+  ========================= -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <span class="mode-tag">Mode: LIVE</span>
+      <span class="time-mode-tag">Time mode: GMT</span>
+      <span class="aircraft-count">Displayed aircrafts: <strong>{{ airplanes().length }}</strong></span>
+    </div>
+
+    <div class="top-bar-center">
+      <span class="header-title">Fleet Monitoring & Gantt Schedule</span>
+    </div>
+
+    <div class="top-bar-right">
+      <button class="toggle-actual-btn" [class.active]="showActualTimes()" (click)="toggleActualTimes()">
+        ⚡ Actual Times
+      </button>
+    </div>
+  </div>
+
+  <!-- =========================
+       MAIN DISPATCH BOARD
+  ========================= -->
+  <div class="gantt-board-wrapper">
+
+    <!-- SIDEBAR: AIRPLANE LIST -->
+    <div class="sidebar-planes">
+      <div class="sidebar-header">
+        <span>AIRCRAFT</span>
+      </div>
+
+      <div class="planes-list">
+        @for (plane of airplanes(); track plane.id) {
+          <div class="plane-card">
+            <div class="plane-title-row">
+              <span class="plane-reg">{{ plane.register }}</span>
+              <span class="plane-type">({{ plane.type?.title || 'A320' }})</span>
+            </div>
+            <div class="plane-sub-meta">
+              <span>CY: {{ plane.firstClassSeat ?? 4 }}</span>
+              <span>BH: 06:20</span>
+              <span>FH: 02:43</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- MAIN TIMELINE GRID AREA -->
+    <div class="timeline-main-area">
+
+      <!-- TOP HOURS AXIS (00 - 23) -->
+      <div class="hours-header-row">
+        @for (hour of HOURS; track hour) {
+          <div class="hour-cell">
+            <span>{{ hour < 10 ? '0' + hour : hour }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- GANTT BODY ROWS -->
+      <div class="gantt-rows-container">
+
+        <!-- RED LIVE TIME LINE -->
+        <div class="current-time-line" [style.left]="currentTimePosition()">
+          <div class="now-pointer"></div>
+        </div>
+
+        @for (plane of airplanes(); track plane.id) {
+          <div class="gantt-row">
+
+            <!-- GUIDELINE LINES (24 HOURS) -->
+            <div class="row-grid-background">
+              @for (hour of HOURS; track hour) {
+                <div class="grid-hour-column"></div>
+              }
+            </div>
+
+            <!-- FLIGHT SLOTS IN ROW -->
+            <div class="row-events-layer">
+              @for (flight of getSchedulesForAirplane(plane.id); track flight.id) {
+                @let deviation = getTimeDeviation(flight);
+                @let hasActual = flight.event?.actualStartTime && flight.event?.actualEndTime;
+
+                <!-- PLANNED FLIGHT BOX -->
+                <div class="flight-box"
+                     [class.type-flight]="flight.type === 'FLIGHT'"
+                     [class.type-check]="flight.type === 'CHECK'"
+                     [class.type-dfdr]="flight.type === 'DFDR'"
+                     [class.is-cancelled]="flight.status === 'CANCELLED'"
+                     [ngStyle]="getPlannedStyle(flight)"
+                     (click)="openScheduleDetails(flight)">
+
+                  <!-- ACTUAL BAR (LINE INSIDE/ABOVE BOX) -->
+                  @if (showActualTimes() && hasActual) {
+                    <div class="actual-line-indicator"
+                         [ngStyle]="getActualStyle(flight)"
+                         [class.delayed]="deviation !== null && deviation > 15">
+                    </div>
+                  }
+
+                  <!-- FLIGHT NUMBER TOP -->
+                  <div class="box-top-info">
+                    <span class="flight-num">{{ flight.flight?.number || flight.type }}</span>
+                  </div>
+
+                  <!-- TIME & ROUTE BOTTOM -->
+                  <div class="box-bottom-info">
+                    <span class="time-lbl">{{ formatTime(flight.plannedStartTime) }}</span>
+                    <span class="airport-code">{{ getAirportCode(flight.departure) }}</span>
+                    <span class="airport-code">{{ getAirportCode(flight.arrival) }}</span>
+                    <span class="time-lbl">{{ formatTime(flight.plannedEndTime) }}</span>
+                  </div>
+
+                </div>
+              }
+            </div>
+
+          </div>
+        }
+      </div>
+
+      <!-- BOTTOM DATE TABS (FOOTER SELECTOR) -->
+      <div class="bottom-date-bar">
+        <div class="legend-btn">Legend</div>
+        <div class="date-tabs-list">
+          @for (tab of dateTabs(); track tab.dateStr) {
+            <div class="date-tab-item"
+                 [class.active]="selectedDate().toDateString() === tab.date.toDateString()"
+                 (click)="selectDate(tab)">
+              <span class="tab-date">{{ tab.dateStr }}</span>
+              <span class="tab-day">{{ tab.dayName }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- =========================
+     MODAL DETAILS
+========================= -->
+@if(showModal()) {
+  <div class="modal-backdrop" (click)="closeModal()"></div>
+  <div class="schedule-modal">
+    <div class="modal-header">
+      <div class="title">
+        ✈️ {{ selectedSchedule()?.flight?.number || selectedSchedule()?.type }}
+      </div>
+      <button class="close-btn" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="info-row">
+        <span>Aircraft:</span> <strong>{{ getAirplaneRegister(selectedSchedule()?.airplane) }}</strong>
+      </div>
+      <div class="info-row">
+        <span>Route:</span> <strong>{{ getAirportCode(selectedSchedule()?.departure) }} ➔ {{ getAirportCode(selectedSchedule()?.arrival) }}</strong>
+      </div>
+      <div class="info-row">
+        <span>Planned:</span> <strong>{{ formatFullDate(selectedSchedule()?.plannedStartTime) }} - {{ formatFullDate(selectedSchedule()?.plannedEndTime) }}</strong>
+      </div>
+      @if (selectedSchedule()?.event?.actualStartTime) {
+        <div class="info-row actual">
+          <span>Actual:</span> <strong>{{ formatFullDate(selectedSchedule()?.event?.actualStartTime) }} - {{ formatFullDate(selectedSchedule()?.event?.actualEndTime) }}</strong>
+        </div>
+      }
+    </div>
+  </div>
+}

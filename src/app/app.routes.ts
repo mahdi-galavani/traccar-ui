@@ -53,6 +53,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'fleet-timeline-all',
+        loadComponent: () =>
+          import('./features/fleet-timeline-all/fleet-timeline.component').then(
+            (m) => m.FleetTimelineComponent
+          ),
+      },
+      {
         path: 'personnel',
         loadChildren: () =>
           import('./features/personnel/personnel.routes').then((m) => m.PERSONNEL_ROUTES),

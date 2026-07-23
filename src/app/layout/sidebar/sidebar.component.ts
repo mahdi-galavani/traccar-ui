@@ -38,6 +38,7 @@ export class SidebarComponent {
     { titleKey: 'nav.locations', route: '/locations', icon: 'globe' },
     { titleKey: 'nav.fleetSchedule', route: '/fleet-schedule', icon: 'calendar' },
     { titleKey: 'nav.fleetTimeline', route: '/fleet-timeline', icon: 'clock' },
+    { titleKey: 'nav.fleetTimelineAll', route: '/fleet-timeline-all', icon: 'clock' },
   ];
 
   toggleSidebar(): void {
