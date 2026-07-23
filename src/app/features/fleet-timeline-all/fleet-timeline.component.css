@@ -1,6 +1,13 @@
 /* ==========================================================================
-   DISPATCH MONITORING THEME (DARK / DENSE AVIATION STYLE)
+   DISPATCH MONITORING THEME
    ========================================================================== */
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
 .dispatch-container {
   background: #1e242c;
   color: #cfd8dc;
@@ -8,10 +15,12 @@
   font-size: 11px;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
+  height: 100%; /* از vh به % تغییر کرد تا هدر بالای سایت را حساب کند */
+  width: 100%;
+  overflow: hidden; /* جلوگیری از ظاهر شدن اسکرول‌بار در سمت راست مرورگر */
   user-select: none;
   direction: ltr;
+  box-sizing: border-box;
 }
 
 /* ==========================================================================
@@ -20,11 +29,15 @@
 .top-bar {
   background: #14181f;
   border-bottom: 1px solid #2d3748;
-  padding: 6px 14px;
+  padding: 0 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 11px;
+  height: 38px;
+  min-height: 38px;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .top-bar-left {
@@ -60,15 +73,17 @@
 }
 
 /* ==========================================================================
-   MAIN GANTT LAYOUT
+   MAIN GANTT LAYOUT CONTAINER
    ========================================================================== */
 .gantt-board-wrapper {
   display: flex;
-  flex: 1;
+  flex: 1; /* تمام فضای خالی عمودی باقی‌مانده را پر می‌کند */
+  height: calc(100% - 38px); /* کسر ارتفاع top-bar */
   overflow: hidden;
+  position: relative;
 }
 
-/* SIDEBAR: AIRPLANES */
+/* SIDEBAR: AIRPLANE LIST */
 .sidebar-planes {
   width: 170px;
   min-width: 170px;
@@ -76,10 +91,12 @@
   border-right: 2px solid #2d3748;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .sidebar-header {
   height: 28px;
+  min-height: 28px;
   background: #101419;
   color: #78909c;
   font-weight: bold;
@@ -87,15 +104,18 @@
   align-items: center;
   padding-left: 10px;
   border-bottom: 1px solid #2d3748;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .planes-list {
   flex: 1;
-  overflow-y: auto;
+  overflow-y: hidden; /* توسط اسکرول گانت کنترل می‌شود */
 }
 
 .plane-card {
   height: 52px;
+  box-sizing: border-box;
   border-bottom: 1px solid #263238;
   padding: 6px 8px;
   display: flex;
@@ -134,24 +154,32 @@
   font-family: monospace;
 }
 
+.sidebar-footer-filler {
+  height: 36px;
+  min-height: 36px;
+  background: #0d1117;
+  border-top: 2px solid #2d3748;
+  flex-shrink: 0;
+}
+
 /* MAIN TIMELINE AREA */
 .timeline-main-area {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow-x: auto;
-  position: relative;
+  height: 100%;
+  overflow: hidden;
+  min-width: 0; /* جلوگیری از بهم خوردن سایز Flexbox */
 }
 
-/* HOURS HEADER (00 - 23) */
 .hours-header-row {
   display: flex;
   height: 28px;
+  min-height: 28px;
   background: #101419;
   border-bottom: 1px solid #2d3748;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .hour-cell {
@@ -166,16 +194,18 @@
   font-size: 10px;
 }
 
-/* GANTT ROWS CONTAINER */
+/* GANTT ROWS CONTAINER (تنها بخش اسکرول‌خور) */
 .gantt-rows-container {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
   background: #14181f;
 }
 
 .gantt-row {
   height: 52px;
+  box-sizing: border-box;
   border-bottom: 1px solid #263238;
   position: relative;
 }
@@ -199,7 +229,7 @@
 }
 
 /* ==========================================================================
-   FLIGHT BOX (BOXES IN TIMELINE)
+   FLIGHT BOX
    ========================================================================== */
 .flight-box {
   position: absolute;
@@ -216,6 +246,7 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.4);
   transition: transform 0.1s;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .flight-box:hover {
@@ -267,7 +298,6 @@
   font-weight: bold;
 }
 
-/* ACTUAL TIME LINE INDICATOR INSIDE BOX */
 .actual-line-indicator {
   position: absolute;
   top: 0;
@@ -281,7 +311,6 @@
   box-shadow: 0 0 4px #ff5252;
 }
 
-/* RED CURRENT TIME LINE */
 .current-time-line {
   position: absolute;
   top: 0;
@@ -301,20 +330,23 @@
 }
 
 /* ==========================================================================
-   BOTTOM DATE SELECTOR BAR (30 DAYS WITH NAVIGATION ARROWS)
+   BOTTOM DATE SELECTOR BAR (ثابت و فیکس در پایین صفحه)
    ========================================================================== */
 .bottom-date-bar {
   height: 36px;
+  min-height: 36px;
   background: #0d1117;
   border-top: 2px solid #2d3748;
   display: flex;
   align-items: center;
-  gap: 2px;
-  padding-right: 8px;
+  gap: 4px;
+  padding: 0 8px;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .legend-btn {
-  padding: 0 12px;
+  padding: 0 10px;
   color: #78909c;
   font-weight: bold;
   border-right: 1px solid #2d3748;
@@ -326,13 +358,13 @@
   background: #1a2028;
   border: 1px solid #2d3748;
   color: #4fc3f7;
-  padding: 6px 10px;
+  padding: 4px 8px;
   cursor: pointer;
   font-size: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
+  flex-shrink: 0;
 }
 
 .nav-arrow-btn:hover {
@@ -344,12 +376,12 @@
   background: #263238;
   border: 1px solid #455a64;
   color: #ffb74d;
-  padding: 4px 8px;
+  padding: 4px 10px;
   border-radius: 3px;
   cursor: pointer;
   font-size: 10px;
   font-weight: bold;
-  margin-left: 4px;
+  flex-shrink: 0;
 }
 
 .today-btn:hover {
@@ -363,15 +395,16 @@
   height: 100%;
   overflow-x: auto;
   scroll-behavior: smooth;
+  scrollbar-width: none;
 }
 
 .date-tabs-wrapper::-webkit-scrollbar {
-  display: none; /* مخفی کردن Scrollbar نوار تب‌ها */
+  display: none;
 }
 
 .date-tab-item {
-  min-width: 80px;
-  max-width: 85px;
+  min-width: 75px;
+  max-width: 80px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -381,7 +414,7 @@
   border-right: 1px solid #263238;
   color: #78909c;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  box-sizing: border-box;
 }
 
 .date-tab-item:hover {

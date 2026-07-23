@@ -1,7 +1,7 @@
 <div class="dispatch-container">
 
   <!-- =========================
-       TOP MONITOR BAR
+       1. TOP MONITOR BAR
   ========================= -->
   <div class="top-bar">
     <div class="top-bar-left">
@@ -22,7 +22,7 @@
   </div>
 
   <!-- =========================
-       MAIN DISPATCH BOARD
+       2. MAIN BOARD
   ========================= -->
   <div class="gantt-board-wrapper">
 
@@ -32,7 +32,7 @@
         <span>AIRCRAFT</span>
       </div>
 
-      <div class="planes-list">
+      <div class="planes-list" #planesListContainer>
         @for (plane of airplanes(); track plane.id) {
           <div class="plane-card">
             <div class="plane-title-row">
@@ -47,6 +47,9 @@
           </div>
         }
       </div>
+
+      <!-- فیلر خالی پایین سایدبار برای هم‌ترازی با نوار تاریخ -->
+      <div class="sidebar-footer-filler"></div>
     </div>
 
     <!-- MAIN TIMELINE GRID AREA -->
@@ -61,8 +64,8 @@
         }
       </div>
 
-      <!-- GANTT BODY ROWS -->
-      <div class="gantt-rows-container">
+      <!-- GANTT BODY ROWS (تنها بخش دارای اسکرول عمودی) -->
+      <div class="gantt-rows-container" #ganttContainer (scroll)="onGanttScroll()">
 
         <!-- RED LIVE TIME LINE -->
         <div class="current-time-line" [style.left]="currentTimePosition()">
@@ -94,7 +97,7 @@
                      [ngStyle]="getPlannedStyle(flight)"
                      (click)="openScheduleDetails(flight)">
 
-                  <!-- ACTUAL BAR (LINE INSIDE/ABOVE BOX) -->
+                  <!-- ACTUAL BAR -->
                   @if (showActualTimes() && hasActual) {
                     <div class="actual-line-indicator"
                          [ngStyle]="getActualStyle(flight)"
@@ -123,7 +126,7 @@
         }
       </div>
 
-      <!-- BOTTOM DATE TABS (30 DAYS BAR WITH NAVIGATION) -->
+      <!-- BOTTOM DATE TABS (ثابت در انتهای صفحه) -->
       <div class="bottom-date-bar">
         <div class="legend-btn">Legend</div>
 

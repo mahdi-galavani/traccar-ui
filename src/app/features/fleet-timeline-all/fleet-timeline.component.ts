@@ -37,6 +37,8 @@ export interface SegmentStyle {
 })
 export class FleetTimelineComponent implements OnInit, OnDestroy {
   @ViewChild('tabsContainer') tabsContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('ganttContainer') ganttContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('planesListContainer') planesListContainer!: ElementRef<HTMLDivElement>;
 
   private scheduleApi = inject(FleetScheduleApiService);
   private airplaneApi = inject(AirplaneApiService);
@@ -101,6 +103,13 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
     }
     this.dateTabs.set(tabs);
     this.selectedDate.set(today);
+  }
+
+  // تابعی برای هماهنگ‌سازی اسکرول سایدبار با جدول گانت
+  onGanttScroll(): void {
+    if (this.ganttContainer && this.planesListContainer) {
+      this.planesListContainer.nativeElement.scrollTop = this.ganttContainer.nativeElement.scrollTop;
+    }
   }
 
   selectDate(tab: DateTab): void {
