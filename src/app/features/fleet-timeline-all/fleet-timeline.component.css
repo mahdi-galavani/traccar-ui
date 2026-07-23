@@ -224,7 +224,6 @@
   border-color: #fff;
 }
 
-/* TYPES / COLORS */
 .flight-box.type-flight {
   background: #1b4332;
   border-color: #2d6a4f;
@@ -302,7 +301,7 @@
 }
 
 /* ==========================================================================
-   BOTTOM DATE SELECTOR BAR (TABS)
+   BOTTOM DATE SELECTOR BAR (30 DAYS WITH NAVIGATION ARROWS)
    ========================================================================== */
 .bottom-date-bar {
   height: 36px;
@@ -310,40 +309,95 @@
   border-top: 2px solid #2d3748;
   display: flex;
   align-items: center;
+  gap: 2px;
+  padding-right: 8px;
 }
 
 .legend-btn {
-  padding: 0 16px;
+  padding: 0 12px;
   color: #78909c;
   font-weight: bold;
   border-right: 1px solid #2d3748;
   cursor: pointer;
+  white-space: nowrap;
 }
 
-.date-tabs-list {
-  display: flex;
-  flex: 1;
-  height: 100%;
-}
-
-.date-tab-item {
-  flex: 1;
-  max-width: 120px;
+.nav-arrow-btn {
+  background: #1a2028;
+  border: 1px solid #2d3748;
+  color: #4fc3f7;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  transition: background 0.2s;
+}
+
+.nav-arrow-btn:hover {
+  background: #2d3748;
+  color: #fff;
+}
+
+.today-btn {
+  background: #263238;
+  border: 1px solid #455a64;
+  color: #ffb74d;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+.today-btn:hover {
+  background: #37474f;
+  color: #ffa726;
+}
+
+.date-tabs-wrapper {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+
+.date-tabs-wrapper::-webkit-scrollbar {
+  display: none; /* مخفی کردن Scrollbar نوار تب‌ها */
+}
+
+.date-tab-item {
+  min-width: 80px;
+  max-width: 85px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   background: #161b22;
   border-right: 1px solid #263238;
   color: #78909c;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
+}
+
+.date-tab-item:hover {
+  background: #212833;
+  color: #b0bec5;
 }
 
 .date-tab-item.active {
   background: #0288d1;
   color: #fff;
   font-weight: bold;
+}
+
+.date-tab-item.is-today:not(.active) {
+  border-bottom: 2px solid #ffb74d;
+  color: #ffb74d;
 }
 
 .tab-date { font-size: 11px; }

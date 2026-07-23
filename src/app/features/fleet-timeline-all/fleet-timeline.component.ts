@@ -1,16 +1,25 @@
-import { Component, OnInit, inject, signal, computed, OnDestroy } from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FleetScheduleApiService } from '../../core/services/api/fleet-schedule-api.service';
 import { AirplaneApiService } from '../../core/services/api/airplane-api.service';
 import { AirplaneDto } from '../../core/models/airplane.model';
 import { FleetScheduleDto } from '../../core/models/fleet-schedule.model';
-import { TranslatePipe } from '@ngx-translate/core';
 import { TimeUtils } from '../../core/TimeUtils';
 
 export interface DateTab {
   date: Date;
   dateStr: string; // فرمت DD/MM
   dayName: string;
+  isToday: boolean;
 }
 
 export interface SegmentStyle {
@@ -24,9 +33,10 @@ export interface SegmentStyle {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './fleet-timeline.component.html',
-  styleUrl: './fleet-timeline.component.css'
+  styleUrl: './fleet-timeline.component.css',
 })
 export class FleetTimelineComponent implements OnInit, OnDestroy {
+  @ViewChild('tabsContainer') tabsContainer!: ElementRef<HTMLDivElement>;
 
   private scheduleApi = inject(FleetScheduleApiService);
   private airplaneApi = inject(AirplaneApiService);
@@ -39,7 +49,7 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   readonly loading = signal(false);
   readonly showActualTimes = signal(true);
 
-  // تاریخ‌های قابل انتخاب در تب پایینی
+  // تاریخ‌های قابل انتخاب در تب پایینی (۳۰ روز)
   readonly selectedDate = signal<Date>(new Date());
   readonly dateTabs = signal<DateTab[]>([]);
 
@@ -70,29 +80,57 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
     }, 10000);
   }
 
+  /** ایجاد بازه ۳۰ روزه (۱۴ روز قبل تا ۱۵ روز بعد) */
   private generateDateTabs(): void {
     const tabs: DateTab[] = [];
     const today = new Date();
-    // ایجاد ۷ روز (از ۲ روز قبل تا ۴ روز بعد)
-    for (let i = -2; i <= 4; i++) {
+    today.setHours(0, 0, 0, 0);
+
+    for (let i = -14; i <= 15; i++) {
       const d = new Date(today);
       d.setDate(today.getDate() + i);
+
+      const isToday = d.toDateString() === today.toDateString();
+
       tabs.push({
         date: d,
         dateStr: `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`,
-        dayName: d.toLocaleDateString('en-US', { weekday: 'short' })
+        dayName: d.toLocaleDateString('en-US', { weekday: 'short' }),
+        isToday,
       });
     }
     this.dateTabs.set(tabs);
-    this.selectedDate.set(tabs[2].date); // روز جاری
+    this.selectedDate.set(today);
   }
 
   selectDate(tab: DateTab): void {
     this.selectedDate.set(tab.date);
   }
 
+  /** پیمایش افقی تب‌های تاریخ با دکمه‌های قبلی/بعدی */
+  scrollTabs(direction: 'left' | 'right'): void {
+    if (!this.tabsContainer) return;
+    const scrollAmount = direction === 'left' ? -250 : 250;
+    this.tabsContainer.nativeElement.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  }
+
+  /** پرش سریع به تاریخ امروز */
+  goToToday(): void {
+    const todayTab = this.dateTabs().find((t) => t.isToday);
+    if (todayTab) {
+      this.selectDate(todayTab);
+      const index = this.dateTabs().indexOf(todayTab);
+      if (this.tabsContainer) {
+        this.tabsContainer.nativeElement.scrollTo({
+          left: index * 85 - 150,
+          behavior: 'smooth',
+        });
+      }
+    }
+  }
+
   loadAirplanes(): void {
-    this.airplaneApi.load().subscribe(planes => {
+    this.airplaneApi.load().subscribe((planes) => {
       this.airplanes.set(planes);
     });
   }
@@ -104,7 +142,7 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
         this.schedules.set(data);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false)
+      error: () => this.loading.set(false),
     });
   }
 
@@ -112,14 +150,14 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   // COMPUTED FILTERS & GANTT ENGINE
   // =========================
 
-  /** دریافت تمام پروازها/رویدادهای مربوط به یک هواپیمای خاص در روز انتخاب‌شده */
   getSchedulesForAirplane(airplaneId: string | undefined): FleetScheduleDto[] {
     if (!airplaneId) return [];
     const selected = this.selectedDate();
     const selKey = TimeUtils.getUTCDateKey(selected);
 
-    return this.schedules().filter(s => {
-      const planeMatches = s.airplane?.id === airplaneId || s.airplane?.id?.toString() === airplaneId;
+    return this.schedules().filter((s) => {
+      const planeMatches =
+        s.airplane?.id === airplaneId || s.airplane?.id?.toString() === airplaneId;
       if (!planeMatches) return false;
 
       const pStart = TimeUtils.parseUTC(s.plannedStartTime);
@@ -128,7 +166,6 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
     });
   }
 
-  // محاسبه استایل برای باکس زمان برنامه‌ریزی‌شده (Planned)
   getPlannedStyle(schedule: FleetScheduleDto): SegmentStyle {
     const start = TimeUtils.parseUTC(schedule.plannedStartTime);
     const end = TimeUtils.parseUTC(schedule.plannedEndTime);
@@ -141,11 +178,10 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
 
     return {
       left: `${leftPercent}%`,
-      width: `${widthPercent}%`
+      width: `${widthPercent}%`,
     };
   }
 
-  // محاسبه استایل برای نوار زمان واقعی (Actual Bar/Line)
   getActualStyle(schedule: FleetScheduleDto): SegmentStyle {
     if (!schedule.event?.actualStartTime || !schedule.event?.actualEndTime) {
       return { left: '0%', width: '0%', display: 'none' };
@@ -162,13 +198,10 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
 
     return {
       left: `${leftPercent}%`,
-      width: `${widthPercent}%`
+      width: `${widthPercent}%`,
     };
   }
 
-  // =========================
-  // TYPE SAFE HELPERS
-  // =========================
   getAirplaneRegister(airplane: AirplaneDto | { id: string } | undefined): string {
     if (!airplane) return '---';
     if ('register' in airplane && airplane.register) {
@@ -177,9 +210,6 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
     return airplane.id || '---';
   }
 
-  // =========================
-  // TIME & DEVIATION HELPERS
-  // =========================
   readonly currentTimePosition = computed(() => {
     const now = this.currentTime();
     const totalMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
@@ -204,7 +234,7 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   }
 
   toggleActualTimes(): void {
-    this.showActualTimes.update(v => !v);
+    this.showActualTimes.update((v) => !v);
   }
 
   // =========================
@@ -227,8 +257,13 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
     if (!isoString) return '-';
     const date = TimeUtils.parseUTC(isoString);
     return new Intl.DateTimeFormat('en-GB', {
-      year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC'
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'UTC',
     }).format(date);
   }
 }

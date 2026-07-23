@@ -123,19 +123,31 @@
         }
       </div>
 
-      <!-- BOTTOM DATE TABS (FOOTER SELECTOR) -->
+      <!-- BOTTOM DATE TABS (30 DAYS BAR WITH NAVIGATION) -->
       <div class="bottom-date-bar">
         <div class="legend-btn">Legend</div>
-        <div class="date-tabs-list">
+
+        <!-- LEFT ARROW -->
+        <button class="nav-arrow-btn" (click)="scrollTabs('left')" title="Previous Days">◀</button>
+
+        <!-- SCROLLABLE TABS LIST -->
+        <div class="date-tabs-wrapper" #tabsContainer>
           @for (tab of dateTabs(); track tab.dateStr) {
             <div class="date-tab-item"
                  [class.active]="selectedDate().toDateString() === tab.date.toDateString()"
+                 [class.is-today]="tab.isToday"
                  (click)="selectDate(tab)">
               <span class="tab-date">{{ tab.dateStr }}</span>
               <span class="tab-day">{{ tab.dayName }}</span>
             </div>
           }
         </div>
+
+        <!-- RIGHT ARROW -->
+        <button class="nav-arrow-btn" (click)="scrollTabs('right')" title="Next Days">▶</button>
+
+        <!-- TODAY BUTTON -->
+        <button class="today-btn" (click)="goToToday()">Today</button>
       </div>
 
     </div>
