@@ -67,6 +67,8 @@ export class ScheduleFormComponent implements OnInit {
     flightVersion: new FormControl<number | null>(null),
     departure: new FormControl<string | null>(null, Validators.required),
     arrival: new FormControl<string | null>(null, Validators.required),
+    plannedStartDate: new FormControl<Date | null>(null, Validators.required),
+    plannedEndDate: new FormControl<Date | null>(null, Validators.required),
     crew: new FormArray([]),
   });
 
@@ -224,7 +226,11 @@ export class ScheduleFormComponent implements OnInit {
       return;
     }
 
+
     const v = this.form.getRawValue();
+
+    const startDateTime = this.combineDateAndTime(v.plannedStartDate, v.plannedStartTime);
+    const endDateTime = this.combineDateAndTime(v.plannedEndDate, v.plannedEndTime);
 
     // استفاده از فرمت محلی بدون تبدیل زون به UTC با فرمت رسمی جاوا LocalDateTime
     const startTimeIso = v.plannedStartTime
@@ -263,6 +269,8 @@ export class ScheduleFormComponent implements OnInit {
       };
     }
 
+
+
     this.api.save(dto).subscribe({
       next: () => {
         this.notification.success('common.saved');
@@ -273,5 +281,12 @@ export class ScheduleFormComponent implements OnInit {
         this.notification.error('common.error');
       },
     });
+  }
+
+  private combineDateAndTime(date: Date | null, time: string | null): string | null {
+    if (!date || !time) return null;
+    const [hours, minutes] = time.split(':').map(Number);
+    const momentObj = moment(date).set({ hour: hours, minute: minutes, second: 0, millisecond: 0 });
+    return momentObj.format('YYYY-MM-DDTHH:mm:ss.000[Z]');
   }
 }
