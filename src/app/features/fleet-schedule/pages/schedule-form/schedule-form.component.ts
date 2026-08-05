@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -13,11 +13,12 @@ import { FlightCrewFormComponent } from '../../components/flight-crew-form/fligh
 import { SelectOption } from '../../../../core/models/base/crud-field.model';
 import { AirplaneDto } from '../../../../core/models/airplane.model';
 import { FleetScheduleDto, FleetScheduleType } from '../../../../core/models/fleet-schedule.model';
-import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatTimepickerModule } from '@angular/material/timepicker';
+import { MAT_TIMEPICKER_CONFIG, MatTimepickerConfig, MatTimepickerModule } from '@angular/material/timepicker';
+import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
+
 
 @Component({
   selector: 'app-schedule-form',
@@ -31,9 +32,16 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    MatTimepickerModule
+    MatTimepickerModule,
   ],
-  providers: [provideNativeDateAdapter()],
+  providers:[
+    provideNativeDateAdapter(),
+    {
+      provide: MAT_TIMEPICKER_CONFIG,
+      useValue: { format: '24h' } as MatTimepickerConfig
+    },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+  ],
   templateUrl: './schedule-form.component.html',
   styleUrl: './schedule-form.component.css',
 })
@@ -226,7 +234,6 @@ export class ScheduleFormComponent implements OnInit {
       return;
     }
 
-
     const v = this.form.getRawValue();
 
     const startDateTime = this.combineDateAndTime(v.plannedStartDate, v.plannedStartTime);
@@ -258,18 +265,17 @@ export class ScheduleFormComponent implements OnInit {
       dto.flight = {
         id: v.flightId ?? undefined,
         // استفاده از شرط دقیق برای زنده نگه داشتن مقدار 0 و تغییرات بعدی آن
-        version: (v.flightVersion !== null && v.flightVersion !== undefined) ? Number(v.flightVersion) : 0,
+        version:
+          v.flightVersion !== null && v.flightVersion !== undefined ? Number(v.flightVersion) : 0,
         number: v.flightNumber,
         crew: (v.crew as any[]).map((c: any) => ({
           id: c.id ?? undefined,
-          version: (c.version !== null && c.version !== undefined) ? Number(c.version) : undefined,
+          version: c.version !== null && c.version !== undefined ? Number(c.version) : undefined,
           person: { id: c.personId },
           crewJob: { id: c.crewJobId },
         })),
       };
     }
-
-
 
     this.api.save(dto).subscribe({
       next: () => {
