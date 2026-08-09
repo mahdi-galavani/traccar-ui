@@ -6,9 +6,11 @@
   [columns]="columns"
   [items]="items()"
   [loading]="loading()"
+  [canViewListItems]="true"
   (add)="onAdd()"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)"
+  (viewListItems)="getAction($event)"
 />
 
 @if (showForm()) {
@@ -20,3 +22,14 @@
     (cancelled)="onCancel()"
   />
 }
+
+@if (showActionForm()) {
+  <app-dynamic-form
+    [title]="'user.roles'"
+    [fields]="roleFields"
+    [model]="selectedRoleModel()"
+    (saved)="onSaveRol($event)"
+    (cancelled)="onCancelRole()"
+  />
+}
+

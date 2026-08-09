@@ -20,11 +20,14 @@ export class DataTableComponent<T extends Record<string, any> = Record<string, a
   @Input() canEdit = true;
   @Input() canDelete = true;
   @Input() canViewItems = false; // 👈 قابلیت نمایش دکمه ورود به زیرمجموعه (پیش‌فرض غیرفعال)
-
+  @Input() canViewListItems = false // قابلیت نمایش دکمه لیست (پیش‌فرض غیرفعال)
+  
+  
   @Output() add = new EventEmitter<void>();
   @Output() edit = new EventEmitter<T>();
   @Output() delete = new EventEmitter<T>();
   @Output() viewItems = new EventEmitter<T>(); // 👈 ارسال آبجکت ردیف کلیک شده به کامپوننت پدر
+  @Output() viewListItems = new EventEmitter<T>(); // 👈 ارسال آبجکت ردیف کلیک شده به کامپوننت پدر
 
   /** resolves nested keys like 'type.title' */
   resolve(item: T, key: string): unknown {

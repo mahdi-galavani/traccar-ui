@@ -51,7 +51,8 @@
     "seats": "صندلی",
     "kg": "کیلوگرم",
     "direction": "rtl",
-    "error": "خطایی رخ داد"
+    "error": "خطایی رخ داد",
+    "listItems" : "  عملیات"
   },
   "auth": {
     "login": {
