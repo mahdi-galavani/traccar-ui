@@ -9,12 +9,12 @@
 <div class="table-wrapper">
   <table class="data-table">
     <thead>
-    <tr>
-      @for (col of columns; track col.key) {
-        <th [style.width]="col.width">{{ col.label | translate }}</th>
-      }
-      <th class="actions-col">{{ 'common.actions' | translate }}</th>
-    </tr>
+      <tr>
+        @for (col of columns; track col.key) {
+          <th [style.width]="col.width">{{ col.label | translate }}</th>
+        }
+        <th class="actions-col">{{ 'common.actions' | translate }}</th>
+      </tr>
     </thead>
     <tbody>
       @for (item of items; track item['id']) {
@@ -49,6 +49,15 @@
             @if (canDelete) {
               <button type="button" class="btn-icon btn-danger" (click)="delete.emit(item)">
                 {{ 'common.delete' | translate }}
+              </button>
+            }
+            @if (canViewListItems) {
+              <button
+                type="button"
+                class="btn-icon text-shadow-emerald-800"
+                (click)="viewListItems.emit(item)"
+              >
+                {{ 'common.listItems' | translate }}
               </button>
             }
           </td>
