@@ -15,6 +15,8 @@ import {
 } from '../../../../core/models/fleet-schedule.model';
 import { FormsModule } from '@angular/forms';
 import { CompleteEventModalComponent, CompleteEventResult } from '../modal/complete-event-modal.component';
+import { EditLoadModalComponent } from '../modal/edit-load-modal/edit-load-modal.component';
+import { FlightLoadDto } from '../modal/edit-load-modal/flight.model';
 
 @Component({
   selector: 'app-schedule-list',
@@ -26,12 +28,12 @@ import { CompleteEventModalComponent, CompleteEventResult } from '../modal/compl
     EmptyStateComponent,
     FormsModule,
     CompleteEventModalComponent,
+    EditLoadModalComponent,
   ],
   templateUrl: './schedule-list.component.html',
   styleUrl: './schedule-list.component.css',
 })
 export class ScheduleListComponent implements OnInit {
-
   private api = inject(FleetScheduleApiService);
   private router = inject(Router);
   private confirmDialog = inject(ConfirmDialogService);
@@ -40,6 +42,9 @@ export class ScheduleListComponent implements OnInit {
   readonly completeModalOpen = signal(false);
   readonly completeModalStart = signal<string | null>(null);
   readonly completeModalEnd = signal<string | null>(null);
+
+  readonly editLoadModalOpen = signal(false);
+  readonly selectedFlightId = signal<string | null>(null);
 
   private pendingCompleteItem: FleetScheduleDto | null = null;
 
@@ -85,22 +90,21 @@ export class ScheduleListComponent implements OnInit {
   onDelete(item: FleetScheduleDto): void {
     if (!item.id) return;
 
-    this.confirmDialog.confirm({
-      message: 'common.confirm_delete'
-    }).subscribe((confirmed) => {
+    this.confirmDialog
+      .confirm({
+        message: 'common.confirm_delete',
+      })
+      .subscribe((confirmed) => {
+        if (!confirmed) return;
 
-      if (!confirmed) return;
-
-      this.api.delete(item.id!).subscribe(() => {
-        this.notification.success('common.deleted');
-        this.load();
+        this.api.delete(item.id!).subscribe(() => {
+          this.notification.success('common.deleted');
+          this.load();
+        });
       });
-
-    });
   }
 
   onStatusChange(item: FleetScheduleDto, newStatus: FleetScheduleStatus): void {
-
     if (!item.id) return;
 
     if (!newStatus || (newStatus as string) === 'null') {
@@ -109,37 +113,27 @@ export class ScheduleListComponent implements OnInit {
 
     if (newStatus === 'CANCELLED') {
       this.handleCancel(item.id);
-    }
-    else if (newStatus === 'COMPLETED') {
+    } else if (newStatus === 'COMPLETED') {
       this.handleComplete(item);
-    }
-    else {
+    } else {
       this.handleStatusUpdate(item.id, newStatus);
     }
   }
 
   private handleComplete(item: FleetScheduleDto): void {
-
     this.pendingCompleteItem = item;
 
     // بدون هیچ تبدیل TimeZone
     this.completeModalStart.set(
-      item.plannedStartTime
-        ? item.plannedStartTime.replace(/Z$/, '')
-        : null
+      item.plannedStartTime ? item.plannedStartTime.replace(/Z$/, '') : null,
     );
 
-    this.completeModalEnd.set(
-      item.plannedEndTime
-        ? item.plannedEndTime.replace(/Z$/, '')
-        : null
-    );
+    this.completeModalEnd.set(item.plannedEndTime ? item.plannedEndTime.replace(/Z$/, '') : null);
 
     this.completeModalOpen.set(true);
   }
 
   onCompleteConfirmed(result: CompleteEventResult): void {
-
     const item = this.pendingCompleteItem;
 
     this.completeModalOpen.set(false);
@@ -148,15 +142,12 @@ export class ScheduleListComponent implements OnInit {
     if (!item?.id) return;
 
     const eventDto: FleetEventDto = {
-
       // همان مقداری که کاربر انتخاب کرده ارسال می‌شود
       actualStartTime: result.actualStartTime,
-      actualEndTime: result.actualEndTime
-
+      actualEndTime: result.actualEndTime,
     };
 
     this.api.setEvent(item.id, eventDto).subscribe({
-
       next: () => {
         this.notification.success('fleet_schedule.event_registered');
         this.load();
@@ -165,10 +156,8 @@ export class ScheduleListComponent implements OnInit {
       error: (err) => {
         console.error(err);
         this.notification.error('common.error');
-      }
-
+      },
     });
-
   }
 
   onCompleteCancelled(): void {
@@ -177,13 +166,11 @@ export class ScheduleListComponent implements OnInit {
   }
 
   private handleCancel(id: string): void {
-
     if (!confirm('آیا از لغو این برنامه اطمینان دارید؟')) {
       return;
     }
 
     this.api.cancelStatus(id).subscribe({
-
       next: () => {
         this.notification.success('fleet_schedule.cancelled_successfully');
         this.load();
@@ -192,15 +179,12 @@ export class ScheduleListComponent implements OnInit {
       error: (err) => {
         console.error(err);
         this.notification.error('common.error');
-      }
-
+      },
     });
   }
 
   private handleStatusUpdate(id: string, status: FleetScheduleStatus): void {
-
     this.api.updateStatus({ id, status }).subscribe({
-
       next: () => {
         this.notification.success('common.saved');
         this.load();
@@ -209,17 +193,12 @@ export class ScheduleListComponent implements OnInit {
       error: (err) => {
         console.error(err);
         this.notification.error('common.error');
-      }
-
+      },
     });
   }
 
   statusOptions(current: FleetScheduleStatus): FleetScheduleStatus[] {
-    const all: FleetScheduleStatus[] = [
-      'SCHEDULED',
-      'COMPLETED',
-      'CANCELLED'
-    ];
+    const all: FleetScheduleStatus[] = ['SCHEDULED', 'COMPLETED', 'CANCELLED'];
 
     return all.filter((s) => s !== current);
   }
@@ -243,5 +222,49 @@ export class ScheduleListComponent implements OnInit {
       return airplane.airplaneModel?.name || '';
     }
     return '';
+  }
+
+
+  onEditLoad(item: FleetScheduleDto): void {
+    // فقط برای پروازها مجاز است
+    if (item.type !== 'FLIGHT') {
+      this.notification.warning('fleet_schedule.load_edit_only_for_flights');
+      return;
+    }
+
+    // بررسی وجود flight و id آن
+    const flightId = item.flight?.id;
+    if (!flightId) {
+      this.notification.error('common.error');
+      return;
+    }
+
+    this.selectedFlightId.set(flightId); // flightId از نوع string است، نه undefined
+    this.editLoadModalOpen.set(true);
+  }
+
+  onLoadSaved(dto: FlightLoadDto): void {
+    const id = this.selectedFlightId();
+    if (!id) return;
+
+    this.api.modifyLoad(id, dto).subscribe({
+      next: () => {
+        this.notification.success('fleet_schedule.load_updated');
+        this.editLoadModalOpen.set(false);
+        this.load(); // رفرش لیست
+      },
+      error: (err) => {
+        console.error(err);
+        let msg = 'common.error';
+        if (err.status === 404) msg = 'fleet_schedule.flight_not_found';
+        else if (err.status === 400) msg = 'fleet_schedule.invalid_load_data';
+        this.notification.error(msg);
+      },
+    });
+  }
+
+  onLoadCancelled(): void {
+    this.editLoadModalOpen.set(false);
+    this.selectedFlightId.set(null);
   }
 }

@@ -445,4 +445,34 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   }
 
   protected readonly Math = Math;
+
+
+  getAirplaneField(field: string): number {
+    const airplane = this.selectedSchedule()?.airplane;
+    if (airplane && typeof airplane === 'object' && field in airplane) {
+      return (airplane as any)[field] ?? 0;
+    }
+    return 0;
+  }
+
+  getFlightField(field: string): number {
+    const flight = this.selectedSchedule()?.flight;
+    if (flight && typeof flight === 'object' && field in flight) {
+      return (flight as any)[field] ?? 0;
+    }
+    return 0;
+  }
+
+  getRemaining(field: 'firstClassSeat' | 'businessClassSeat' | 'economicClassSeat' | 'payload'): number {
+    const capacity = this.getAirplaneField(field);
+    const used = this.getFlightField(field);
+    return Math.max(0, capacity - used);
+  }
+
+  getPercentage(field: 'firstClassSeat' | 'businessClassSeat' | 'economicClassSeat' | 'payload'): number {
+    const capacity = this.getAirplaneField(field);
+    if (capacity === 0) return 0;
+    const used = this.getFlightField(field);
+    return Math.min(100, (used / capacity) * 100);
+  }
 }

@@ -6,6 +6,7 @@ import { FlightDto } from '../../models/flight.model';
 import { SearchRequest } from '../../models/base/search-request.model';
 import { API_BASE_PATH } from '../../../shared/constants/api-endpoints.constants';
 import { toHttpParams } from '../../../shared/utils/http-params.util';
+import { FlightLoadDto } from '../../../features/fleet-schedule/pages/modal/./edit-load-modal/flight.model';
 
 @Injectable({ providedIn: 'root' })
 export class FleetScheduleApiService extends BaseApiService<FleetScheduleDto, string> {
@@ -35,5 +36,9 @@ export class FleetScheduleApiService extends BaseApiService<FleetScheduleDto, st
 
   setEvent(scheduleId: string, event: FleetEventDto): Observable<void> {
     return this.http.put<void>(`${this.resourcePath}/event/${scheduleId}`, event);
+  }
+
+  modifyLoad(id: string, dto: FlightLoadDto): Observable<void> {
+    return this.http.put<void>(`${API_BASE_PATH.FLIGHT}/modify-load/${id}`, dto);
   }
 }

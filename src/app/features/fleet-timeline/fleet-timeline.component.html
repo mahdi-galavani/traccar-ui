@@ -347,6 +347,96 @@
             </div>
           </div>
         </div>
+        <!-- Load Capacity Comparison -->
+        <div class="section load-comparison-section">
+          <h3>📊 Load Capacity Comparison</h3>
+
+          <div class="load-comparison-grid">
+            <!-- First Class -->
+            <div class="load-item">
+              <div class="load-label">First Class</div>
+              <div class="load-values">
+                <span class="capacity-value">{{ getAirplaneField('firstClassSeat') }}</span>
+                <span class="separator">/</span>
+                <span class="used-value">{{ getFlightField('firstClassSeat') }}</span>
+                <span class="remaining-badge"
+                      [class.available]="getRemaining('firstClassSeat') > 0"
+                      [class.full]="getRemaining('firstClassSeat') === 0">
+          {{ getRemaining('firstClassSeat') }}
+        </span>
+              </div>
+              <div class="load-bar">
+                <div class="load-bar-fill"
+                     [style.width.%]="getPercentage('firstClassSeat')"
+                     [class.full]="getPercentage('firstClassSeat') === 100">
+                </div>
+              </div>
+            </div>
+
+            <!-- Business Class -->
+            <div class="load-item">
+              <div class="load-label">Business Class</div>
+              <div class="load-values">
+                <span class="capacity-value">{{ getAirplaneField('businessClassSeat') }}</span>
+                <span class="separator">/</span>
+                <span class="used-value">{{ getFlightField('businessClassSeat') }}</span>
+                <span class="remaining-badge"
+                      [class.available]="getRemaining('businessClassSeat') > 0"
+                      [class.full]="getRemaining('businessClassSeat') === 0">
+          {{ getRemaining('businessClassSeat') }}
+        </span>
+              </div>
+              <div class="load-bar">
+                <div class="load-bar-fill"
+                     [style.width.%]="getPercentage('businessClassSeat')"
+                     [class.full]="getPercentage('businessClassSeat') === 100">
+                </div>
+              </div>
+            </div>
+
+            <!-- Economic Class -->
+            <div class="load-item">
+              <div class="load-label">Economic Class</div>
+              <div class="load-values">
+                <span class="capacity-value">{{ getAirplaneField('economicClassSeat') }}</span>
+                <span class="separator">/</span>
+                <span class="used-value">{{ getFlightField('economicClassSeat') }}</span>
+                <span class="remaining-badge"
+                      [class.available]="getRemaining('economicClassSeat') > 0"
+                      [class.full]="getRemaining('economicClassSeat') === 0">
+          {{ getRemaining('economicClassSeat') }}
+        </span>
+              </div>
+              <div class="load-bar">
+                <div class="load-bar-fill"
+                     [style.width.%]="getPercentage('economicClassSeat')"
+                     [class.full]="getPercentage('economicClassSeat') === 100">
+                </div>
+              </div>
+            </div>
+
+            <!-- Payload -->
+            <div class="load-item">
+              <div class="load-label">Payload (kg)</div>
+              <div class="load-values">
+                <span class="capacity-value">{{ getAirplaneField('payload') }}</span>
+                <span class="separator">/</span>
+                <span class="used-value">{{ getFlightField('payload') }}</span>
+                <span class="remaining-badge"
+                      [class.available]="getRemaining('payload') > 0"
+                      [class.full]="getRemaining('payload') === 0">
+          {{ getRemaining('payload') }}
+        </span>
+              </div>
+              <div class="load-bar">
+                <div class="load-bar-fill"
+                     [style.width.%]="getPercentage('payload')"
+                     [class.full]="getPercentage('payload') === 100">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Time Comparison -->
         <div class="section time-comparison-section">

@@ -325,6 +325,14 @@
     }
   },
   "fleet_schedule": {
+    "edit_load": "ویرایش بار",
+    "first_class_seats": "صندلی‌های درجه یک (فرست کلاس)",
+    "business_class_seats": "صندلی‌های بیزینس کلاس",
+    "economic_class_seats": "صندلی‌های اکونومی کلاس",
+    "load_updated": "بار پرواز با موفقیت به‌روزرسانی شد",
+    "flight_not_found": "پرواز مورد نظر یافت نشد",
+    "invalid_load_data": "مقادیر وارد شده نامعتبر است",
+    "load_edit_only_for_flights": "ویرایش بار فقط برای آیتم‌های نوع پرواز (FLIGHT) امکان‌پذیر است",
     "route": "مسیر",
     "cancelled_successfully": "با موفقیت لغو شد",
     "flight_time": "زمان پرواز",

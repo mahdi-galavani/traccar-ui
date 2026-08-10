@@ -323,6 +323,14 @@
     }
   },
   "fleet_schedule": {
+    "edit_load": "Edit Load",
+    "first_class_seats": "First Class Seats",
+    "business_class_seats": "Business Class Seats",
+    "economic_class_seats": "Economic Class Seats",
+    "load_updated": "Flight load updated successfully",
+    "flight_not_found": "Flight not found",
+    "invalid_load_data": "Invalid input values",
+    "load_edit_only_for_flights": "Load editing is only available for FLIGHT type items",
     "route": "route",
     "cancelled_successfully": "Cancelled successfully",
     "flight_time": "Flight Time",

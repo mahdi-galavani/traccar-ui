@@ -95,6 +95,15 @@
                   <button type="button" class="text-rose-600 hover:text-rose-800 text-xs font-semibold bg-rose-50 hover:bg-rose-100/80 px-2.5 py-1.5 rounded-lg transition-all" (click)="onDelete(item)">
                     {{ 'common.delete' | translate }}
                   </button>
+                  @if (item.type === 'FLIGHT') {
+                    <button
+                      type="button"
+                      class="text-emerald-600 hover:text-emerald-800 text-xs font-semibold bg-emerald-50 hover:bg-emerald-100/80 px-2.5 py-1.5 rounded-lg transition-all"
+                      (click)="onEditLoad(item)"
+                    >
+                      {{ 'fleet_schedule.edit_load' | translate }}
+                    </button>
+                  }
                   <select class="bg-slate-50 border border-slate-200 text-slate-700 rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-indigo-500 font-medium cursor-pointer"
                           [value]="item.status"
                           (change)="onStatusChange(item, $any($event.target).value)">
@@ -119,3 +128,9 @@
   [initialEnd]="completeModalEnd()"
   (confirmed)="onCompleteConfirmed($event)"
   (cancelled)="onCompleteCancelled()"></app-complete-event-modal>
+
+<app-edit-load-modal
+  [open]="editLoadModalOpen()"
+  [flightId]="selectedFlightId()"
+  (saved)="onLoadSaved($event)"
+  (cancelled)="onLoadCancelled()"></app-edit-load-modal>
