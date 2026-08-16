@@ -303,148 +303,15 @@
 <!-- =========================
      MODAL - باقی می‌ماند
 ========================== -->
-@if(showModal()) {
-  <div class="modal-backdrop" (click)="closeModal()"></div>
+@if (showModal()) {
+  <app-modal-info
+    [selectedSchedule]="selectedSchedule()"
+    [selectedPilot]="selectedPilot()"
+    [pilotLoading]="pilotLoading()"
+    (loadPilot)="loadPilotDetails($event)"
+    (close)="closeModal()">
+  </app-modal-info>
 
-  <div class="schedule-modal">
-    <!-- محتوای مودال مانند قبل -->
-    <div class="modal-header">
-      <div class="title">
-        <span class="modal-icon">{{getTypeIcon(selectedSchedule()?.type!)}}</span>
-        {{selectedSchedule()?.type}}
-        @if(selectedSchedule()?.status === 'CANCELLED') {
-          <span class="cancel-badge">CANCELLED</span>
-        }
-      </div>
-      <button class="close-btn" (click)="closeModal()">✕</button>
-    </div>
-
-    <div class="modal-body">
-      @if(selectedSchedule()?.type === 'FLIGHT') {
-        <!-- Flight Information -->
-        <div class="section flight-info-section">
-          <h3>✈️ Flight Information</h3>
-          <div class="info-grid">
-            <div class="info-item">
-              <span class="info-label">Flight Number</span>
-              <span class="info-value">{{selectedSchedule()?.flight?.number}}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Route</span>
-              <span class="info-value">{{getAirportCode(selectedSchedule()?.departure)}} → {{getAirportCode(selectedSchedule()?.arrival)}}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Aircraft</span>
-              <span class="info-value">{{getAirplaneRegister(selectedSchedule()?.airplane)}}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Status</span>
-              <span class="info-value status-badge" [class.scheduled]="selectedSchedule()?.status === 'SCHEDULED'"
-                    [class.completed]="selectedSchedule()?.status === 'COMPLETED'"
-                    [class.cancelled]="selectedSchedule()?.status === 'CANCELLED'">
-                {{selectedSchedule()?.status}}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Time Comparison -->
-        <div class="section time-comparison-section">
-          <h3>⏱️ Time Comparison</h3>
-
-          <div class="time-comparison-container">
-            <!-- Planned Time -->
-            <div class="time-block planned-block">
-              <div class="time-block-header">
-                <span class="block-icon">📋</span>
-                <span class="block-label">Planned</span>
-              </div>
-              <div class="time-block-body">
-                <div class="time-pair">
-                  <span class="time-label">Start</span>
-                  <span class="time-value">{{formatFullDate(selectedSchedule()?.plannedStartTime)}}</span>
-                </div>
-                <div class="time-pair">
-                  <span class="time-label">End</span>
-                  <span class="time-value">{{formatFullDate(selectedSchedule()?.plannedEndTime)}}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Arrow -->
-            <div class="comparison-arrow">⇄</div>
-
-            <!-- Actual Time -->
-            @if(selectedSchedule()?.event?.actualStartTime && selectedSchedule()?.event?.actualEndTime) {
-              <div class="time-block actual-block">
-                <div class="time-block-header">
-                  <span class="block-icon">✅</span>
-                  <span class="block-label">Actual</span>
-                </div>
-                <div class="time-block-body">
-                  <div class="time-pair">
-                    <span class="time-label">Start</span>
-                    <span class="time-value actual-value">{{formatFullDate(selectedSchedule()?.event?.actualStartTime)}}</span>
-                  </div>
-                  <div class="time-pair">
-                    <span class="time-label">End</span>
-                    <span class="time-value actual-value">{{formatFullDate(selectedSchedule()?.event?.actualEndTime)}}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Deviation -->
-              @let deviation = getTimeDeviation(selectedSchedule()!);
-              @if(deviation !== null) {
-                <div class="deviation-display" [style.color]="getDeviationColor(deviation)">
-                  <span class="deviation-icon">
-                    {{deviation > 0 ? '⏰' : deviation < 0 ? '⏳' : '✅'}}
-                  </span>
-                  <span class="deviation-text">
-                    {{deviation > 0 ? 'Delayed by' : deviation < 0 ? 'Early by' : 'On Time'}}
-                    {{formatDeviation(deviation)}}
-                  </span>
-                </div>
-              }
-            } @else {
-              <div class="time-block actual-block no-data">
-                <div class="time-block-header">
-                  <span class="block-icon">⏳</span>
-                  <span class="block-label">Actual</span>
-                </div>
-                <div class="time-block-body">
-                  <div class="no-actual-time">
-                    No actual time recorded yet
-                  </div>
-                </div>
-              </div>
-            }
-          </div>
-        </div>
-
-        <!-- Crew -->
-        <div class="section crew-section">
-          <h3>👨‍✈️ Flight Crew</h3>
-          @let crewList = selectedSchedule()?.flight?.crew ?? [];
-          @if(crewList.length > 0) {
-            <div class="crew-grid">
-              @for(member of crewList; track member.id ?? $index) {
-                <div class="crew-card">
-                  <div class="crew-avatar">
-                    {{(member.person?.name?.charAt(0) || '') + (member.person?.family?.charAt(0) || '')}}
-                  </div>
-                  <div class="crew-details">
-                    <div class="crew-name">{{member.person?.name}} {{member.person?.family}}</div>
-                    <div class="crew-role">{{member.person?.job?.title}}</div>
-                  </div>
-                </div>
-              }
-            </div>
-          } @else {
-            <div class="no-crew">No crew assigned to this flight.</div>
-          }
-        </div>
-      }
-    </div>
-  </div>
 }
+
+
