@@ -82,113 +82,157 @@
 
         <div class="load-comparison-grid">
           <!-- First Class -->
+          @let firstUsed = getFlightField('firstClassSeat') || 0;
+          @let firstTotal = getAirplaneField('firstClassSeat') || 0;
+          @let firstPct = getLoadPercentage('firstClassSeat') || 0;
+          @let firstLeft = getRemaining('firstClassSeat') || 0;
+
           <div class="load-card">
             <div class="load-card-header">
               <span class="load-label">First Class</span>
               <span
                 class="remaining-badge"
-                [class.available]="getRemaining('firstClassSeat') > 0"
-                [class.full]="getRemaining('firstClassSeat') === 0"
+                [class.available]="firstLeft > 0"
+                [class.warning]="firstPct >= 80 && firstLeft > 0"
+                [class.full]="firstLeft === 0"
               >
-          {{ getRemaining('firstClassSeat') }} left
+          {{ firstLeft === 0 ? 'Full' : firstLeft + ' left' }}
         </span>
             </div>
 
-            <div class="load-main-values">
-              <span class="used">{{ getFlightField('firstClassSeat') }}</span>
-              <span class="separator">/</span>
-              <span class="capacity">{{ getAirplaneField('firstClassSeat') }}</span>
+            <div class="load-metrics">
+              <div class="load-main-values">
+                <span class="used">{{ firstUsed }}</span>
+                <span class="separator">/</span>
+                <span class="capacity">{{ firstTotal }}</span>
+                <span class="unit">seats</span>
+              </div>
+              <span class="percentage-text">{{ firstPct | number:'1.0-0' }}%</span>
             </div>
 
             <div class="progress-track">
               <div
                 class="progress-fill"
-                [style.width.%]="getLoadPercentage('firstClassSeat')"
-                [class.full]="getRemaining('firstClassSeat') === 0"
+                [style.width.%]="firstPct"
+                [class.warning]="firstPct >= 80 && firstLeft > 0"
+                [class.full]="firstLeft === 0"
               ></div>
             </div>
           </div>
 
           <!-- Business Class -->
+          @let bizUsed = getFlightField('businessClassSeat') || 0;
+          @let bizTotal = getAirplaneField('businessClassSeat') || 0;
+          @let bizPct = getLoadPercentage('businessClassSeat') || 0;
+          @let bizLeft = getRemaining('businessClassSeat') || 0;
+
           <div class="load-card">
             <div class="load-card-header">
               <span class="load-label">Business Class</span>
               <span
                 class="remaining-badge"
-                [class.available]="getRemaining('businessClassSeat') > 0"
-                [class.full]="getRemaining('businessClassSeat') === 0"
+                [class.available]="bizLeft > 0"
+                [class.warning]="bizPct >= 80 && bizLeft > 0"
+                [class.full]="bizLeft === 0"
               >
-          {{ getRemaining('businessClassSeat') }} left
+          {{ bizLeft === 0 ? 'Full' : bizLeft + ' left' }}
         </span>
             </div>
 
-            <div class="load-main-values">
-              <span class="used">{{ getFlightField('businessClassSeat') }}</span>
-              <span class="separator">/</span>
-              <span class="capacity">{{ getAirplaneField('businessClassSeat') }}</span>
+            <div class="load-metrics">
+              <div class="load-main-values">
+                <span class="used">{{ bizUsed }}</span>
+                <span class="separator">/</span>
+                <span class="capacity">{{ bizTotal }}</span>
+                <span class="unit">seats</span>
+              </div>
+              <span class="percentage-text">{{ bizPct | number:'1.0-0' }}%</span>
             </div>
 
             <div class="progress-track">
               <div
                 class="progress-fill"
-                [style.width.%]="getLoadPercentage('businessClassSeat')"
-                [class.full]="getRemaining('businessClassSeat') === 0"
+                [style.width.%]="bizPct"
+                [class.warning]="bizPct >= 80 && bizLeft > 0"
+                [class.full]="bizLeft === 0"
               ></div>
             </div>
           </div>
 
-          <!-- Economic Class -->
+          <!-- Economy Class -->
+          @let ecoUsed = getFlightField('economicClassSeat') || 0;
+          @let ecoTotal = getAirplaneField('economicClassSeat') || 0;
+          @let ecoPct = getLoadPercentage('economicClassSeat') || 0;
+          @let ecoLeft = getRemaining('economicClassSeat') || 0;
+
           <div class="load-card">
             <div class="load-card-header">
-              <span class="load-label">Economic Class</span>
+              <span class="load-label">Economy Class</span>
               <span
                 class="remaining-badge"
-                [class.available]="getRemaining('economicClassSeat') > 0"
-                [class.full]="getRemaining('economicClassSeat') === 0"
+                [class.available]="ecoLeft > 0"
+                [class.warning]="ecoPct >= 80 && ecoLeft > 0"
+                [class.full]="ecoLeft === 0"
               >
-          {{ getRemaining('economicClassSeat') }} left
+          {{ ecoLeft === 0 ? 'Full' : ecoLeft + ' left' }}
         </span>
             </div>
 
-            <div class="load-main-values">
-              <span class="used">{{ getFlightField('economicClassSeat') }}</span>
-              <span class="separator">/</span>
-              <span class="capacity">{{ getAirplaneField('economicClassSeat') }}</span>
+            <div class="load-metrics">
+              <div class="load-main-values">
+                <span class="used">{{ ecoUsed }}</span>
+                <span class="separator">/</span>
+                <span class="capacity">{{ ecoTotal }}</span>
+                <span class="unit">seats</span>
+              </div>
+              <span class="percentage-text">{{ ecoPct | number:'1.0-0' }}%</span>
             </div>
 
             <div class="progress-track">
               <div
                 class="progress-fill"
-                [style.width.%]="getLoadPercentage('economicClassSeat')"
-                [class.full]="getRemaining('economicClassSeat') === 0"
+                [style.width.%]="ecoPct"
+                [class.warning]="ecoPct >= 80 && ecoLeft > 0"
+                [class.full]="ecoLeft === 0"
               ></div>
             </div>
           </div>
 
           <!-- Payload -->
+          @let loadUsed = getFlightField('payload') || 0;
+          @let loadTotal = getAirplaneField('payload') || 0;
+          @let loadPct = getLoadPercentage('payload') || 0;
+          @let loadLeft = getRemaining('payload') || 0;
+
           <div class="load-card">
             <div class="load-card-header">
-              <span class="load-label">Payload (kg)</span>
+              <span class="load-label">Payload Capacity</span>
               <span
                 class="remaining-badge"
-                [class.available]="getRemaining('payload') > 0"
-                [class.full]="getRemaining('payload') === 0"
+                [class.available]="loadLeft > 0"
+                [class.warning]="loadPct >= 80 && loadLeft > 0"
+                [class.full]="loadLeft === 0"
               >
-          {{ getRemaining('payload') }} left
+          {{ loadLeft === 0 ? 'Full' : loadLeft + ' kg left' }}
         </span>
             </div>
 
-            <div class="load-main-values">
-              <span class="used">{{ getFlightField('payload') }}</span>
-              <span class="separator">/</span>
-              <span class="capacity">{{ getAirplaneField('payload') }}</span>
+            <div class="load-metrics">
+              <div class="load-main-values">
+                <span class="used">{{ loadUsed | number }}</span>
+                <span class="separator">/</span>
+                <span class="capacity">{{ loadTotal | number }}</span>
+                <span class="unit">kg</span>
+              </div>
+              <span class="percentage-text">{{ loadPct | number:'1.0-0' }}%</span>
             </div>
 
             <div class="progress-track">
               <div
                 class="progress-fill"
-                [style.width.%]="getLoadPercentage('payload')"
-                [class.full]="getRemaining('payload') === 0"
+                [style.width.%]="loadPct"
+                [class.warning]="loadPct >= 80 && loadLeft > 0"
+                [class.full]="loadLeft === 0"
               ></div>
             </div>
           </div>
