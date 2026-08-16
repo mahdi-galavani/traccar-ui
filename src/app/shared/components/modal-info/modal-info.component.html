@@ -31,11 +31,11 @@
            FLIGHT INFORMATION DETAILS
        -->
       <div class="section flight-info-section">
-        <h3>✈️ Flight Information</h3>
+        <h3>✈️ {{ 'fleet_schedule.flight_info' | translate }}</h3>
 
         <div class="info-grid">
           <div class="info-item">
-            <span class="info-label"> Flight Number </span>
+            <span class="info-label"> {{ 'fleet_schedule.flight_number' | translate }} </span>
 
             <span class="info-value">
               {{ selectedSchedule?.flight?.number || '-' }}
@@ -43,7 +43,7 @@
           </div>
 
           <div class="info-item">
-            <span class="info-label"> Route </span>
+            <span class="info-label"> {{ 'fleet_schedule.route' | translate }} </span>
 
             <span class="info-value">
               {{ getAirportCode(selectedSchedule?.departure) }}
@@ -55,7 +55,7 @@
           </div>
 
           <div class="info-item">
-            <span class="info-label"> Aircraft </span>
+            <span class="info-label"> {{ 'fleet_schedule.aircraft_type' | translate }} </span>
 
             <span class="info-value">
               {{ getAirplaneRegister(selectedSchedule?.airplane) }}
@@ -63,7 +63,7 @@
           </div>
 
           <div class="info-item">
-            <span class="info-label"> Status </span>
+            <span class="info-label"> {{ 'fleet_schedule.status' | translate }} </span>
 
             <span
               class="status-badge"
@@ -81,20 +81,19 @@
            3. TIME COMPARISON DETAILS
        -->
       <div class="section time-comparison-section">
-        <h3>⏱️ Time Comparison</h3>
+        <h3>⏱️ {{ 'fleet_schedule.time_comparison' | translate }}</h3>
 
         <div class="time-comparison-container">
           <!-- PLANNED -->
           <div class="time-block planned-block">
             <div class="time-block-header">
               <span class="block-icon"> 📋 </span>
-
-              <span class="block-label"> Planned </span>
+              <span class="block-label"> {{ 'fleet_schedule.Planned' | translate }} </span>
             </div>
 
             <div class="time-block-body">
               <div class="time-pair">
-                <span class="time-label"> Start </span>
+                <span class="block-label"> {{ 'fleet_schedule.start_time' | translate }} </span>
 
                 <span class="time-value">
                   {{ formatFullDate(selectedSchedule?.plannedStartTime) }}
@@ -102,7 +101,7 @@
               </div>
 
               <div class="time-pair">
-                <span class="time-label"> End </span>
+                <span class="block-label"> {{ 'fleet_schedule.end_time' | translate }} </span>
 
                 <span class="time-value">
                   {{ formatFullDate(selectedSchedule?.plannedEndTime) }}
@@ -119,12 +118,14 @@
               <div class="time-block-header">
                 <span class="block-icon"> ✅ </span>
 
-                <span class="block-label"> Actual </span>
+                <span class="block-label"> {{ 'fleet_schedule.actual' | translate }} </span>
               </div>
 
               <div class="time-block-body">
                 <div class="time-pair">
-                  <span class="time-label"> Start </span>
+                  <span class="block-label">
+                    {{ 'fleet_schedule.actual_start_time' | translate }}
+                  </span>
 
                   <span class="time-value actual-value">
                     {{ formatFullDate(selectedSchedule?.event?.actualStartTime) }}
@@ -132,8 +133,9 @@
                 </div>
 
                 <div class="time-pair">
-                  <span class="time-label"> End </span>
-
+                  <span class="block-label">
+                    {{ 'fleet_schedule.actual_end_time' | translate }}
+                  </span>
                   <span class="time-value actual-value">
                     {{ formatFullDate(selectedSchedule?.event?.actualEndTime) }}
                   </span>
@@ -163,11 +165,13 @@
               <div class="time-block-header">
                 <span class="block-icon"> ⏳ </span>
 
-                <span class="block-label"> Actual </span>
+                <span class="block-label"> {{ 'fleet_schedule.actual' | translate }} </span>
               </div>
 
               <div class="time-block-body">
-                <div class="no-actual-time">No actual time recorded yet</div>
+                <div class="no-actual-time">
+                  {{ 'fleet_schedule.no_actual_time_recorded' | translate }}
+                </div>
               </div>
             </div>
           }
@@ -177,7 +181,7 @@
       <!--  FLIGHT CREW-->
 
       <div class="section crew-section">
-        <h3>👨‍✈️ Flight Crew</h3>
+        <h3>👨‍✈️ {{ 'flight.crew' | translate }}</h3>
 
         @let crewList = selectedSchedule?.flight?.crew ?? [];
 
@@ -210,7 +214,7 @@
                     {{ member.person?.job?.title || 'Pilot' }}
                   </div>
 
-                  <div class="pilot-hint">👆 Click for details</div>
+                  <div class="pilot-hint">👆 {{ 'common.details' | translate }}</div>
                 </div>
               </div>
             }
@@ -222,7 +226,7 @@
             <div class="pilot-loading">
               <span>⏳</span>
 
-              <span> Loading pilot details... </span>
+              <span> {{ 'common.loading' | translate }} </span>
             </div>
           }
 
@@ -235,8 +239,9 @@
               <div class="pilot-details-header">
                 <div class="pilot-details-title">
                   <span class="pilot-details-icon"> 👨‍✈️ </span>
-
-                  <span> Pilot Details </span>
+                  <span class="block-label">
+                    {{ 'fleet_schedule.pilot_details' | translate }}
+                  </span>
                 </div>
 
                 <span class="pilot-name-badge">
@@ -252,11 +257,11 @@
                 <table class="pilot-details-table">
                   <thead>
                     <tr>
-                      <th>National Code</th>
-                      <th>Phone Number</th>
-                      <th>Job Title</th>
-                      <th>Job Code</th>
-                      <th>Aircraft Types</th>
+                      <th>{{ 'PERSONNEL.NATIONAL_CODE' | translate }}</th>
+                      <th>{{ 'PERSONNEL.PHONE' | translate }} </th>
+                      <th>{{ 'PERSONNEL.JOB' | translate }}</th>
+                      <th>{{ 'PERSONNEL.JOB_CODE' | translate }}</th>
+                      <th>{{ 'PERSONNEL.AIRCRAFT_TYPES' | translate }}</th>
                     </tr>
                   </thead>
 

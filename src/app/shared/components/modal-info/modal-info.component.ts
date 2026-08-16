@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
+import { TranslatePipe } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 
 import { FleetScheduleDto } from '../../../core/models/fleet-schedule.model';
@@ -8,7 +8,7 @@ import { AppPersonDto } from '../../../core/models/app-person.model';
 @Component({
   selector: 'app-modal-info',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './modal-info.component.html',
   styleUrl: './modal-info.component.css',
 })
