@@ -251,11 +251,8 @@
             }
 
             <!-- =========================
-                 ACTUAL TIME BARS
-            ========================= -->
-            <!-- =========================
-     ACTUAL TIME BARS
-========================= -->
+              ACTUAL TIME BARS
+             ========================= -->
             @if(showActualTimes()) {
               @for(segment of getActualSegmentsForDay(dayIdx); track segment.schedule.id ?? $index) {
                 @let flight = getSchedule(segment);
@@ -301,7 +298,7 @@
 </div>
 
 <!-- =========================
-     MODAL - باقی می‌ماند
+     MODAL
 ========================== -->
 @if (showModal()) {
   <app-modal-info

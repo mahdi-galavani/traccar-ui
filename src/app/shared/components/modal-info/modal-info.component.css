@@ -657,4 +657,123 @@
 
     align-items: flex-start;
   }
+
+
+  /* =========================================================
+   LOAD CAPACITY COMPARISON
+========================================================= */
+
+  .load-comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+
+  .load-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.2s ease;
+  }
+
+  .load-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .load-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .load-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+  }
+
+  .remaining-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: #e2e8f0;
+    color: #475569;
+    white-space: nowrap;
+  }
+
+  .remaining-badge.available {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  .remaining-badge.full {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+  .load-main-values {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+  }
+
+  .load-main-values .used {
+    color: #0f172a;
+  }
+
+  .load-main-values .separator {
+    color: #94a3b8;
+    font-weight: 500;
+    margin: 0 1px;
+  }
+
+  .load-main-values .capacity {
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+  }
+
+  /* Progress bar */
+  .progress-track {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: #3b82f6;
+    transition: width 0.4s ease;
+  }
+
+  .progress-fill.full {
+    background: #ef4444;
+  }
+
+  /* Responsive برای Load Capacity */
+  @media (max-width: 1100px) {
+    .load-comparison-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .load-comparison-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+
 }

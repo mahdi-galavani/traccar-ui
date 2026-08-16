@@ -27,7 +27,7 @@
   ==== -->
   <div class="modal-body">
     @if (selectedSchedule?.type === 'FLIGHT') {
-      <!-- 
+      <!--
            FLIGHT INFORMATION DETAILS
        -->
       <div class="section flight-info-section">
@@ -77,7 +77,124 @@
         </div>
       </div>
 
-      <!-- 
+      <div class="section load-comparison-section">
+        <h3>📊 Load Capacity Comparison</h3>
+
+        <div class="load-comparison-grid">
+          <!-- First Class -->
+          <div class="load-card">
+            <div class="load-card-header">
+              <span class="load-label">First Class</span>
+              <span
+                class="remaining-badge"
+                [class.available]="getRemaining('firstClassSeat') > 0"
+                [class.full]="getRemaining('firstClassSeat') === 0"
+              >
+          {{ getRemaining('firstClassSeat') }} left
+        </span>
+            </div>
+
+            <div class="load-main-values">
+              <span class="used">{{ getFlightField('firstClassSeat') }}</span>
+              <span class="separator">/</span>
+              <span class="capacity">{{ getAirplaneField('firstClassSeat') }}</span>
+            </div>
+
+            <div class="progress-track">
+              <div
+                class="progress-fill"
+                [style.width.%]="getLoadPercentage('firstClassSeat')"
+                [class.full]="getRemaining('firstClassSeat') === 0"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Business Class -->
+          <div class="load-card">
+            <div class="load-card-header">
+              <span class="load-label">Business Class</span>
+              <span
+                class="remaining-badge"
+                [class.available]="getRemaining('businessClassSeat') > 0"
+                [class.full]="getRemaining('businessClassSeat') === 0"
+              >
+          {{ getRemaining('businessClassSeat') }} left
+        </span>
+            </div>
+
+            <div class="load-main-values">
+              <span class="used">{{ getFlightField('businessClassSeat') }}</span>
+              <span class="separator">/</span>
+              <span class="capacity">{{ getAirplaneField('businessClassSeat') }}</span>
+            </div>
+
+            <div class="progress-track">
+              <div
+                class="progress-fill"
+                [style.width.%]="getLoadPercentage('businessClassSeat')"
+                [class.full]="getRemaining('businessClassSeat') === 0"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Economic Class -->
+          <div class="load-card">
+            <div class="load-card-header">
+              <span class="load-label">Economic Class</span>
+              <span
+                class="remaining-badge"
+                [class.available]="getRemaining('economicClassSeat') > 0"
+                [class.full]="getRemaining('economicClassSeat') === 0"
+              >
+          {{ getRemaining('economicClassSeat') }} left
+        </span>
+            </div>
+
+            <div class="load-main-values">
+              <span class="used">{{ getFlightField('economicClassSeat') }}</span>
+              <span class="separator">/</span>
+              <span class="capacity">{{ getAirplaneField('economicClassSeat') }}</span>
+            </div>
+
+            <div class="progress-track">
+              <div
+                class="progress-fill"
+                [style.width.%]="getLoadPercentage('economicClassSeat')"
+                [class.full]="getRemaining('economicClassSeat') === 0"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Payload -->
+          <div class="load-card">
+            <div class="load-card-header">
+              <span class="load-label">Payload (kg)</span>
+              <span
+                class="remaining-badge"
+                [class.available]="getRemaining('payload') > 0"
+                [class.full]="getRemaining('payload') === 0"
+              >
+          {{ getRemaining('payload') }} left
+        </span>
+            </div>
+
+            <div class="load-main-values">
+              <span class="used">{{ getFlightField('payload') }}</span>
+              <span class="separator">/</span>
+              <span class="capacity">{{ getAirplaneField('payload') }}</span>
+            </div>
+
+            <div class="progress-track">
+              <div
+                class="progress-fill"
+                [style.width.%]="getLoadPercentage('payload')"
+                [class.full]="getRemaining('payload') === 0"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--
            3. TIME COMPARISON DETAILS
        -->
       <div class="section time-comparison-section">
