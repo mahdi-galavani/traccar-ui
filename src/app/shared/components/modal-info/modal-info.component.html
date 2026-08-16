@@ -254,6 +254,7 @@
                     <tr>
                       <th>National Code</th>
                       <th>Phone Number</th>
+                      <th>Job Title</th>
                       <th>Job Code</th>
                       <th>Aircraft Types</th>
                     </tr>
@@ -268,6 +269,9 @@
                       </td>
                       <td>
                         {{ selectedPilot.phoneNumber || '-' }}
+                      </td>
+                      <td>
+                        {{ selectedPilot.job?.title || '-' }}
                       </td>
                       <td>
                         {{ selectedPilot.job?.code || '-' }}
