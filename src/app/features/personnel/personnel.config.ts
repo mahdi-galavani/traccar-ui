@@ -7,6 +7,7 @@ import { BASE_INFO_HEADER_CODE } from '../../shared/constants/app.constants';
 export const PERSONNEL_COLUMNS: CrudColumn[] = [
   { key: 'name', label: 'PERSONNEL.NAME' },
   { key: 'family', label: 'PERSONNEL.FAMILY' },
+  { key: 'aircraftTypes', label: 'PERSONNEL.AIRCRAFT_TYPES', type: 'multi-select' },
   { key: 'nationalCode', label: 'PERSONNEL.NATIONAL_CODE' },
   { key: 'phoneNumber', label: 'PERSONNEL.PHONE' },
   { key: 'job.title', label: 'PERSONNEL.JOB' },
@@ -28,6 +29,13 @@ export const PERSONNEL_FIELDS: FieldConfig[] = [
     minLength: 1,
   },
   {
+    key: 'aircraftTypes',
+    label: 'PERSONNEL.AIRCRAFT_TYPES',
+    type: 'multi-select',
+    required: true,
+    minLength: 1,
+  },
+  {
     key: 'nationalCode',
     label: 'PERSONNEL.NATIONAL_CODE',
     type: 'text',
@@ -44,9 +52,7 @@ export const PERSONNEL_FIELDS: FieldConfig[] = [
     label: 'PERSONNEL.JOB',
     type: 'select',
     loadOptions: () =>
-      inject(BaseInfoApiService).loadOptionsByHeaderCode(
-        BASE_INFO_HEADER_CODE.CREW_JOB,
-      ),
+      inject(BaseInfoApiService).loadOptionsByHeaderCode(BASE_INFO_HEADER_CODE.CREW_JOB),
     fromDto: (dto) => dto?.job?.id ?? null,
     toDto: (id) => (id ? { id } : null),
   },
