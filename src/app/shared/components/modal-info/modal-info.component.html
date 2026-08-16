@@ -4,22 +4,37 @@
   <!-- ===
        1. MODAL HEADER
   ==== -->
+  <!-- === 1. MODAL HEADER === -->
   <div class="modal-header">
     <div class="title">
-      <span class="modal-icon">
-        {{ getTypeIcon(selectedSchedule?.type || '') }}
-      </span>
+    <span class="modal-icon">
+      {{ getTypeIcon(selectedSchedule?.type || '') }}
+    </span>
 
       <span>
-        {{ selectedSchedule?.type || '-' }}
-      </span>
+      {{ selectedSchedule?.type || '-' }}
+    </span>
 
       @if (selectedSchedule?.status === 'CANCELLED') {
         <span class="cancel-badge"> CANCELLED </span>
       }
     </div>
 
-    <button type="button" class="close-btn" (click)="closeModal()">✕</button>
+    <!-- اکشن‌های هدر -->
+    <div class="header-actions">
+      @if (selectedSchedule) {
+        <button
+          type="button"
+          class="edit-btn"
+          (click)="editSchedule(selectedSchedule)"
+          title="ویرایش برنامه پروازی"
+        >
+          <span>ویرایش</span>
+        </button>
+      }
+
+      <button type="button" class="close-btn" (click)="closeModal()">✕</button>
+    </div>
   </div>
 
   <!-- ===

@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 
 import { FleetScheduleDto } from '../../../core/models/fleet-schedule.model';
 import { AppPersonDto } from '../../../core/models/app-person.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-modal-info',
@@ -17,6 +18,8 @@ export class ModalInfo {
   // INPUTS
   // =========================================================
 
+  private router = inject(Router);
+
   @Input() selectedSchedule: FleetScheduleDto | null = null;
   @Input() selectedPilot: AppPersonDto | null = null;
   @Input() pilotLoading = false;
@@ -28,6 +31,12 @@ export class ModalInfo {
   @Output() close = new EventEmitter<void>();
 
   @Output() loadPilot = new EventEmitter<string>();
+
+
+  editSchedule(item:any): void {
+    this.closeModal();
+    this.router.navigate(['/fleet-schedule/edit', item.id]);
+  }
 
   // =========================================================
   // MODAL
