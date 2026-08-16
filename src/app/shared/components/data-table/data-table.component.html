@@ -21,15 +21,21 @@
         <tr>
           @for (col of columns; track col.key) {
             <td>
-              @switch (col.pipe) {
-                @case ('boolean') {
-                  {{ (resolve(item, col.key) ? 'common.yes' : 'common.no') | translate }}
-                }
-                @case ('date') {
-                  {{ resolveDate(item, col.key) | date: 'short' }}
-                }
-                @default {
-                  {{ resolve(item, col.key) }}
+              @if (col.type === 'multi-select') {
+                {{ resolveMultiSelect(item, col.key) }}
+              } @else {
+                @switch (col.pipe) {
+                  @case ('boolean') {
+                    {{ (resolve(item, col.key) ? 'common.yes' : 'common.no') | translate }}
+                  }
+
+                  @case ('date') {
+                    {{ resolveDate(item, col.key) | date: 'short' }}
+                  }
+
+                  @default {
+                    {{ resolve(item, col.key) }}
+                  }
                 }
               }
             </td>

@@ -20,9 +20,8 @@ export class DataTableComponent<T extends Record<string, any> = Record<string, a
   @Input() canEdit = true;
   @Input() canDelete = true;
   @Input() canViewItems = false; // 👈 قابلیت نمایش دکمه ورود به زیرمجموعه (پیش‌فرض غیرفعال)
-  @Input() canViewListItems = false // قابلیت نمایش دکمه لیست (پیش‌فرض غیرفعال)
-  
-  
+  @Input() canViewListItems = false; // قابلیت نمایش دکمه لیست (پیش‌فرض غیرفعال)
+
   @Output() add = new EventEmitter<void>();
   @Output() edit = new EventEmitter<T>();
   @Output() delete = new EventEmitter<T>();
@@ -51,5 +50,19 @@ export class DataTableComponent<T extends Record<string, any> = Record<string, a
       return value;
     }
     return null;
+  }
+
+  // array type
+  resolveMultiSelect(item: T, key: string): string {
+    const value = this.resolve(item, key);
+
+    if (!Array.isArray(value)) {
+      return '-';
+    }
+
+    return value
+      .map((item: any) => item?.title ?? item?.name ?? item?.code ?? '')
+      .filter(Boolean)
+      .join(' - ');
   }
 }

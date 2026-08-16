@@ -4,13 +4,15 @@ import { Observable } from 'rxjs';
  * Generic field/column definitions consumed by DynamicFormComponent
  * and DataTableComponent (used by every CRUD feature).
  */
+
 export type FieldType =
   | 'text'
   | 'number'
   | 'textarea'
   | 'checkbox'
   | 'date'
-  | 'select';
+  | 'select'
+  | 'multi-select';
 
 export interface SelectOption {
   label: string;
@@ -40,8 +42,11 @@ export interface FieldConfig {
 
 export interface CrudColumn {
   /** can be nested, e.g. 'type.title' */
+  /** can be nested, e.g. 'type.title' */
   key: string;
   label: string;
   pipe?: 'date' | 'jalaliDate' | 'boolean';
   width?: string;
+  type?: 'text' | 'multi-select';
+
 }
