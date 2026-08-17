@@ -5,11 +5,11 @@ import { FleetScheduleApiService } from '../../core/services/api/fleet-schedule-
 import { AirplaneApiService } from '../../core/services/api/airplane-api.service';
 import { AppPersonApiService } from '../../core/services/api/app-person-api.service';
 import { AirplaneDto } from '../../core/models/airplane.model';
-import { FleetScheduleDto, ScheduleSegment } from '../../core/models/fleet-schedule.model';
+import { FleetScheduleDto, FleetScheduleSearchDto, ScheduleSegment } from '../../core/models/fleet-schedule.model';
 import { AppPersonDto } from '../../core/models/app-person.model';
 import { TimeUtils } from '../../core/TimeUtils';
 import { ModalInfo } from '../../shared/components/modal-info/modal-info.component';
-export type TimelineViewMode = '1_WEEK' | '2_WEEKS' | '1_MONTH';
+export type ViewMode = '1_WEEK' | '2_WEEKS';
 
 @Component({
   selector: 'app-fleet-timeline',
@@ -28,12 +28,47 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   // STATE
 
   readonly items = signal<AppPersonDto[]>([]);
-  readonly viewMode = signal<TimelineViewMode>('1_WEEK');
+
   readonly airplanes = signal<AirplaneDto[]>([]);
-  readonly selectedAirplaneId = signal<string | 'ALL'>('ALL');
+
+  readonly viewMode = signal<ViewMode>('1_WEEK');
+  readonly selectedAirplaneId = signal<string>('ALL');
   readonly schedules = signal<FleetScheduleDto[]>([]);
   readonly loading = signal(false);
   readonly showActualTimes = signal(true);
+
+
+  readonly dateRange = computed(() => {
+    const mode = this.viewMode();
+    const start = new Date();
+    start.setHours(0, 0, 0, 0); // ابتدای امروز
+
+    const daysCount = mode === '1_WEEK' ? 7 : 14;
+    const end = new Date(start);
+    end.setDate(start.getDate() + daysCount - 1);
+    end.setHours(23, 59, 59, 999);
+
+    return { start, end, daysCount };
+  });
+
+  /** ساخت لیست روزهای بازه جاری به همراه تاریخ دقیق */
+  readonly rangeDays = computed(() => {
+    const { start, daysCount } = this.dateRange();
+    const days: { date: Date; dateStr: string; dayName: string }[] = [];
+
+    for (let i = 0; i < daysCount; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+
+      days.push({
+        date: d,
+        dateStr: TimeUtils.getUTCDateKey(d), // فرمت YYYY-MM-DD
+        dayName: d.toLocaleDateString('en-US', { weekday: 'short' }),
+      });
+    }
+    return days;
+  });
+
 
   // LIVE CLOCK
 
@@ -99,25 +134,6 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Failed to load airplanes:', error);
-      },
-    });
-  }
-
-  // LOAD SCHEDULES
-
-  loadSchedules(): void {
-    this.loading.set(true);
-    this.scheduleApi.load().subscribe({
-      next: (data) => {
-        this.schedules.set(data);
-
-        this.loading.set(false);
-      },
-
-      error: (error) => {
-        console.error('Failed to load schedules:', error);
-
-        this.loading.set(false);
       },
     });
   }
@@ -228,8 +244,27 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
 
   // SEGMENTS BY DAY
 
-  getSegmentsForDay(dayIndex: number): ScheduleSegment[] {
-    return this.scheduleSegments().filter((segment) => segment.dayIndex === dayIndex);
+  getSegmentsForDay(dayIdx: number): any[] {
+    const targetDay = this.rangeDays()[dayIdx];
+    if (!targetDay) return [];
+
+    const targetDateKey = targetDay.dateStr; // تاریخ دقیق روز به فرمت YYYY-MM-DD
+
+    return this.schedules().filter((s) => {
+      // ۱. فیلتر هواپیما
+      if (this.selectedAirplaneId() !== 'ALL') {
+        const matchPlane =
+          s.airplane?.id === this.selectedAirplaneId() ||
+          s.airplane?.id?.toString() === this.selectedAirplaneId();
+        if (!matchPlane) return false;
+      }
+
+      // ۲. فیلتر دقیق بر اساس تاریخ شروع پرواز (نه فقط نام روز هفته)
+      const pStart = TimeUtils.parseUTC(s.plannedStartTime);
+      const flightDateKey = TimeUtils.getUTCDateKey(pStart);
+
+      return flightDateKey === targetDateKey;
+    });
   }
 
   getActualSegmentsForDay(dayIndex: number): ScheduleSegment[] {
@@ -321,8 +356,32 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
 
   // VIEW CONTROLS
 
-  switchView(mode: TimelineViewMode): void {
+  switchView(mode: ViewMode): void {
     this.viewMode.set(mode);
+    this.loadSchedules(); // فراخوانی مجدد بکند با بازه دقیق جدید
+  }
+
+  loadSchedules(): void {
+    this.loading.set(true);
+    const { start, end } = this.dateRange();
+
+    const searchDto: FleetScheduleSearchDto = {
+      from: start.toISOString(),
+      to: end.toISOString(),
+      boundaryTimes: true,
+    };
+
+    if (this.selectedAirplaneId() !== 'ALL') {
+      searchDto.airplane = { id: this.selectedAirplaneId() };
+    }
+
+    this.scheduleApi.searchByDto(searchDto).subscribe({
+      next: (data) => {
+        this.schedules.set(data);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false),
+    });
   }
 
   selectAirplane(id: string): void {
