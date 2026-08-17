@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 import { FleetScheduleApiService } from '../../core/services/api/fleet-schedule-api.service';
 import { AirplaneApiService } from '../../core/services/api/airplane-api.service';
 import { AirplaneDto } from '../../core/models/airplane.model';
-import { FleetScheduleDto } from '../../core/models/fleet-schedule.model';
+import { FleetScheduleDto, FleetScheduleSearchDto } from '../../core/models/fleet-schedule.model';
 import { TimeUtils } from '../../core/TimeUtils';
 import { ModalInfo } from '../../shared/components/modal-info/modal-info.component';
 import { AppPersonDto } from '../../core/models/app-person.model';
@@ -154,12 +154,32 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
 
   loadSchedules(): void {
     this.loading.set(true);
-    this.scheduleApi.load().subscribe({
+
+    // محاسبه ابتدا و انتخای بازه ۳۰ روزه بر اساس تب‌ها
+    const tabs = this.dateTabs();
+    if (tabs.length === 0) return;
+
+    const startDate = new Date(tabs[0].date);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(tabs[tabs.length - 1].date);
+    endDate.setHours(23, 59, 59, 999);
+
+    const searchDto: FleetScheduleSearchDto = {
+      from: startDate.toISOString(),
+      to: endDate.toISOString(),
+      boundaryTimes: true,
+    };
+
+    this.scheduleApi.searchByDto(searchDto).subscribe({
       next: (data) => {
         this.schedules.set(data);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: (err) => {
+        console.error('Error loading schedules:', err);
+        this.loading.set(false);
+      },
     });
   }
 

@@ -1,6 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter,inject, Input, Output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 

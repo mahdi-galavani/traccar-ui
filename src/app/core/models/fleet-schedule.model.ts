@@ -46,3 +46,15 @@ export interface ScheduleSegment {
 
   isActual?: boolean;
 }
+
+export interface FleetScheduleSearchDto {
+  airplane?: {
+    id: string;
+  };
+  flight?: {
+    id: string;
+  };
+  from?: string; // فرمت ISO string (مثال: 2026-08-17T17:28:09.072Z)
+  to?: string;   // فرمت ISO string
+  boundaryTimes?: boolean;
+}
