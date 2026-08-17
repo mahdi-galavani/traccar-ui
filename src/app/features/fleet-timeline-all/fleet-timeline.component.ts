@@ -14,6 +14,9 @@ import { AirplaneApiService } from '../../core/services/api/airplane-api.service
 import { AirplaneDto } from '../../core/models/airplane.model';
 import { FleetScheduleDto } from '../../core/models/fleet-schedule.model';
 import { TimeUtils } from '../../core/TimeUtils';
+import { ModalInfo } from '../../shared/components/modal-info/modal-info.component';
+import { AppPersonDto } from '../../core/models/app-person.model';
+import { AppPersonApiService } from '../../core/services/api/app-person-api.service';
 
 export interface DateTab {
   date: Date;
@@ -31,7 +34,7 @@ export interface SegmentStyle {
 @Component({
   selector: 'app-fleet-timeline',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ModalInfo],
   templateUrl: './fleet-timeline.component.html',
   styleUrl: './fleet-timeline.component.css',
 })
@@ -42,6 +45,7 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
 
   private scheduleApi = inject(FleetScheduleApiService);
   private airplaneApi = inject(AirplaneApiService);
+  private pilotApi = inject(AppPersonApiService);
 
   // =========================
   // STATE
@@ -50,7 +54,10 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   readonly schedules = signal<FleetScheduleDto[]>([]);
   readonly loading = signal(false);
   readonly showActualTimes = signal(true);
-
+  readonly selectedSchedule = signal<FleetScheduleDto | null>(null);
+  readonly showModal = signal(false);
+  readonly selectedPilot = signal<AppPersonDto | null>(null);
+  readonly pilotLoading = signal(false);
   // تاریخ‌های قابل انتخاب در تب پایینی (۳۰ روز)
   readonly selectedDate = signal<Date>(new Date());
   readonly dateTabs = signal<DateTab[]>([]);
@@ -108,7 +115,8 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   // تابعی برای هماهنگ‌سازی اسکرول سایدبار با جدول گانت
   onGanttScroll(): void {
     if (this.ganttContainer && this.planesListContainer) {
-      this.planesListContainer.nativeElement.scrollTop = this.ganttContainer.nativeElement.scrollTop;
+      this.planesListContainer.nativeElement.scrollTop =
+        this.ganttContainer.nativeElement.scrollTop;
     }
   }
 
@@ -211,13 +219,13 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
     };
   }
 
-  getAirplaneRegister(airplane: AirplaneDto | { id: string } | undefined): string {
-    if (!airplane) return '---';
-    if ('register' in airplane && airplane.register) {
-      return airplane.register;
-    }
-    return airplane.id || '---';
-  }
+  // getAirplaneRegister(airplane: AirplaneDto | { id: string } | undefined): string {
+  //   if (!airplane) return '---';
+  //   if ('register' in airplane && airplane.register) {
+  //     return airplane.register;
+  //   }
+  //   return airplane.id || '---';
+  // }
 
   readonly currentTimePosition = computed(() => {
     const now = this.currentTime();
@@ -249,8 +257,6 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
   // =========================
   // MODAL HANDLERS
   // =========================
-  selectedSchedule = signal<FleetScheduleDto | null>(null);
-  showModal = signal(false);
 
   openScheduleDetails(schedule: FleetScheduleDto): void {
     this.selectedSchedule.set(schedule);
@@ -262,17 +268,43 @@ export class FleetTimelineComponent implements OnInit, OnDestroy {
     this.selectedSchedule.set(null);
   }
 
-  formatFullDate(isoString: string | undefined): string {
-    if (!isoString) return '-';
-    const date = TimeUtils.parseUTC(isoString);
-    return new Intl.DateTimeFormat('en-GB', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-      timeZone: 'UTC',
-    }).format(date);
+  // formatFullDate(isoString: string | undefined): string {
+  //   if (!isoString) return '-';
+  //   const date = TimeUtils.parseUTC(isoString);
+  //   return new Intl.DateTimeFormat('en-GB', {
+  //     year: 'numeric',
+  //     month: '2-digit',
+  //     day: '2-digit',
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //     hour12: false,
+  //     timeZone: 'UTC',
+  //   }).format(date);
+  // }
+
+  // PILOT GET
+
+  loadPilotDetails(pilotId: string): void {
+    if (!pilotId) {
+      return;
+    }
+
+    this.pilotLoading.set(true);
+    this.selectedPilot.set(null);
+
+    this.pilotApi.loadById(pilotId).subscribe({
+      next: (pilot) => {
+        this.selectedPilot.set(pilot);
+
+        this.pilotLoading.set(false);
+      },
+
+      error: (error) => {
+        console.error(' Pilot error:', error);
+
+        this.selectedPilot.set(null);
+        this.pilotLoading.set(false);
+      },
+    });
   }
 }

@@ -161,31 +161,14 @@
 <!-- =========================
      MODAL DETAILS
 ========================= -->
-@if(showModal()) {
-  <div class="modal-backdrop" (click)="closeModal()"></div>
-  <div class="schedule-modal">
-    <div class="modal-header">
-      <div class="title">
-        ✈️ {{ selectedSchedule()?.flight?.number || selectedSchedule()?.type }}
-      </div>
-      <button class="close-btn" (click)="closeModal()">✕</button>
-    </div>
 
-    <div class="modal-body">
-      <div class="info-row">
-        <span>Aircraft:</span> <strong>{{ getAirplaneRegister(selectedSchedule()?.airplane) }}</strong>
-      </div>
-      <div class="info-row">
-        <span>Route:</span> <strong>{{ getAirportCode(selectedSchedule()?.departure) }} ➔ {{ getAirportCode(selectedSchedule()?.arrival) }}</strong>
-      </div>
-      <div class="info-row">
-        <span>Planned:</span> <strong>{{ formatFullDate(selectedSchedule()?.plannedStartTime) }} - {{ formatFullDate(selectedSchedule()?.plannedEndTime) }}</strong>
-      </div>
-      @if (selectedSchedule()?.event?.actualStartTime) {
-        <div class="info-row actual">
-          <span>Actual:</span> <strong>{{ formatFullDate(selectedSchedule()?.event?.actualStartTime) }} - {{ formatFullDate(selectedSchedule()?.event?.actualEndTime) }}</strong>
-        </div>
-      }
-    </div>
-  </div>
+@if (showModal()) {
+  <app-modal-info
+    [selectedSchedule]="selectedSchedule()"
+    [selectedPilot]="selectedPilot()"
+    [pilotLoading]="pilotLoading()"
+    (loadPilot)="loadPilotDetails($event)"
+    (close)="closeModal()">
+  </app-modal-info>
 }
+

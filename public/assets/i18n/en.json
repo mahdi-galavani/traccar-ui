@@ -50,7 +50,7 @@
     "kg": "kg",
     "direction": "ltr",
     "error": "error",
-    "listItems" : "listItems"
+    "listItems": "listItems"
   },
   "auth": {
     "login": {
@@ -313,7 +313,8 @@
       "DEPARTED": "Departed",
       "ARRIVED": "Arrived",
       "CANCELLED": "Cancelled",
-      "DRAFT": "Draft"
+      "DRAFT": "Draft",
+      "FLIGHT": "flight"
     },
     "messages": {
       "saveSuccess": "Flight saved successfully",
@@ -331,6 +332,8 @@
     "flight_not_found": "Flight not found",
     "invalid_load_data": "Invalid input values",
     "load_edit_only_for_flights": "Load editing is only available for FLIGHT type items",
+    "time_comparison": "Time Comparison",
+    "aircraft_type": "aircraft type",
     "route": "route",
     "cancelled_successfully": "Cancelled successfully",
     "flight_time": "Flight Time",
@@ -343,6 +346,7 @@
     "status": "Status",
     "start_time": "Start Time",
     "end_time": "End Time",
+    "Planned": "Planned",
     "planned_start_time": "Planned Start Time",
     "planned_end_time": "Planned End Time",
     "flight_info": "Flight Information",
@@ -356,6 +360,7 @@
     "payload": "Payload Capacity (kg)",
     "crew": "Flight Crew",
     "add_crew": "Add New Crew Member",
+    "pilot_details": "Pilot Details",
     "person": "Person / Personnel",
     "crew_job": "Crew Position / Role",
     "no_data": "No schedule data available",
@@ -381,9 +386,10 @@
     "airplane_model": "Aircraft Model",
     "seat_style": "Seating Configuration",
     "ownership": "Ownership Type",
-
+    "no_actual_time_recorded": "No actual time recorded yet",
     "complete_modal_title": "Complete Event",
     "complete_modal_desc": "Please confirm the actual start and end time for this event before marking it as completed.",
+    "actual": "Actual",
     "actual_start_time": "Actual Start Time",
     "actual_end_time": "Actual End Time",
     "confirm_complete": "Confirm Completion",
@@ -500,6 +506,7 @@
     "NATIONAL_CODE": "National Code",
     "PHONE": "Phone Number",
     "JOB": "Job",
+    "JOB_CODE": "JOB CODE",
     "AIRCRAFT_TYPES": "Aircraft Types"
   },
   "dashboard": {

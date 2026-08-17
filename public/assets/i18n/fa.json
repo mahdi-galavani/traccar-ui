@@ -52,7 +52,7 @@
     "kg": "کیلوگرم",
     "direction": "rtl",
     "error": "خطایی رخ داد",
-    "listItems" : "  عملیات"
+    "listItems": "  عملیات"
   },
   "auth": {
     "login": {
@@ -288,6 +288,7 @@
     "businessClassSeat": "صندلی‌های بیزینس",
     "economicClassSeat": "صندلی‌های اقتصادی",
     "payload": "محموله (کیلوگرم)",
+
     "crew": "خدمه پرواز",
     "crewJob": "سمت خدمه",
     "addCrew": "افزودن خدمه",
@@ -315,7 +316,8 @@
       "DEPARTED": "پرواز کرد",
       "ARRIVED": "رسید",
       "CANCELLED": "لغو شد",
-      "DRAFT": "پیش‌نویس"
+      "DRAFT": "پیش‌نویس",
+      "FLIGHT": " پرواز"
     },
     "messages": {
       "saveSuccess": "پرواز با موفقیت ذخیره شد",
@@ -325,6 +327,8 @@
     }
   },
   "fleet_schedule": {
+    "time_comparison": "مقایسه زمانی",
+    "aircraft_type": "انواع هواپیما",
     "edit_load": "ویرایش بار",
     "first_class_seats": "صندلی‌های درجه یک (فرست کلاس)",
     "business_class_seats": "صندلی‌های بیزینس کلاس",
@@ -345,6 +349,7 @@
     "status": "وضعیت",
     "start_time": "زمان شروع",
     "end_time": "زمان پایان",
+    "Planned": "برنامه ریزی شده",
     "planned_start_time": "زمان شروع برنامه‌ریزی‌شده",
     "planned_end_time": "زمان پایان برنامه‌ریزی‌شده",
     "flight_info": "اطلاعات پرواز",
@@ -358,6 +363,7 @@
     "payload": "ظرفیت بار (کیلوگرم)",
     "crew": "خدمه پرواز",
     "add_crew": "افزودن عضو جدید خدمه",
+    "pilot_details" : "مشخصات خلبان",
     "person": "شخص / پرسنل",
     "crew_job": "سمت / نقش خدمه",
     "no_data": "داده‌ای برای برنامه موجود نیست",
@@ -383,9 +389,10 @@
     "airplane_model": "مدل هواپیما",
     "seat_style": "پیکربندی صندلی‌ها",
     "ownership": "نوع مالکیت",
-
+    "no_actual_time_recorded": "هنوز هیچ زمان واقعی‌ای ثبت نشده است.",
     "complete_modal_title": "تکمیل رویداد",
     "complete_modal_desc": "لطفاً زمان دقیق شروع و پایان واقعی این رویداد را قبل از علامت‌گذاری به‌عنوان تکمیل‌شده تأیید کنید.",
+    "actual": "زمان واقعی",
     "actual_start_time": "زمان شروع واقعی",
     "actual_end_time": "زمان پایان واقعی",
     "confirm_complete": "تأیید تکمیل",

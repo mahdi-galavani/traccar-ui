@@ -1,7 +1,9 @@
 /* =========================================================
    BACKDROP
 ========================================================= */
-
+td , th{
+  text-align: justify !important;
+}
 .modal-backdrop {
   position: fixed;
   inset: 0;
