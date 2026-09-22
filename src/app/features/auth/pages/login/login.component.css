@@ -22,7 +22,7 @@
   flex: 1.2;
   position: relative;
   /* 🖼️ تصویری که باید دانلود کنی رو آدرسش رو اینجا بذار */
-  background-image: url('/assets/images/login-bg.jpg');
+  background-image: url('/assets/images/login-bg-center.jpg');
   background-size: cover;
   background-position: center;
   display: flex;

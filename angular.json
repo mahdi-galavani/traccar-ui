@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "airport-management-ui": {
+    "traccar-web": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -54,6 +54,12 @@
               "outputHashing": "all",
               "prerender": false
             },
+            "github": {
+              "baseHref": "/traccar-ui/",
+              "deployUrl": "/traccar-ui/",
+              "outputMode": "static",
+              "prerender": false
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
@@ -66,10 +72,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "airport-management-ui:build:production"
+              "buildTarget": "traccar-web:build:production"
             },
             "development": {
-              "buildTarget": "airport-management-ui:build:development",
+              "buildTarget": "traccar-web:build:development",
               "proxyConfig": "proxy.conf.json"
             }
           },
