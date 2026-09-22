@@ -7,12 +7,15 @@ import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { demoApiInterceptor } from './core/interceptors/demo-api.interceptor';
 import { LanguageService } from './core/services/language.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor, errorInterceptor])),
+    provideHttpClient(
+      withInterceptors([authInterceptor, loadingInterceptor, errorInterceptor, demoApiInterceptor]),
+    ),
     provideTranslateService({
       fallbackLang: 'en',
       loader: provideTranslateHttpLoader({

@@ -48,23 +48,6 @@
         </select>
       </div>
 
-      <!-- Aircraft Types: multi-select با checkbox -->
-      <div class="field field-span-2">
-        <label>{{ 'PERSONNEL.AIRCRAFT_TYPES' | translate }}</label>
-        <div class="checkbox-group">
-          @for (opt of aircraftTypeOptions(); track opt.value) {
-            <label class="checkbox-label">
-              <input
-                type="checkbox"
-                [checked]="isTypeSelected(+opt.value!)"
-                (change)="toggleAircraftType(+opt.value!)"
-              />
-              {{ opt.label }}
-            </label>
-          }
-        </div>
-      </div>
-
     </div>
 
     <div class="dialog-actions">

@@ -7,8 +7,7 @@ import { HttpParams } from '@angular/common/http';
  * becomes:
  *   criteria[0].field=status&criteria[0].operator=EQUAL&criteria[0].value=DRAFT&page=0
  *
- * Used by FleetScheduleApiService.search() to serialize SearchRequest
- * for GET /api/fleet-schedule/search?searchRequest=...
+ * Used by search-based API services to serialize nested request objects.
  */
 export function toHttpParams(obj: Record<string, unknown>, prefix = ''): HttpParams {
   let params = new HttpParams();

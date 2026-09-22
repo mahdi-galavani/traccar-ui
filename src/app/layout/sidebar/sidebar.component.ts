@@ -22,39 +22,40 @@ export class SidebarComponent {
   readonly openSubmenus = signal<Record<string, boolean>>({});
 
   readonly menu: MenuItem[] = [
-    // 👈 ایجاد آیتم والد برای مدیریت دسترسی (بدون روت مستقیم، همراه با فرزند)
-    { titleKey: 'nav.baseInfo', route: '/base-info', icon: 'database' },
+    { titleKey: 'common.dashboard', route: '/dashboard', icon: 'dashboard' },
+    {
+      titleKey: 'nav.operations',
+      icon: 'radar',
+      children: [
+        { titleKey: 'nav.liveTracking', route: '/tracking' },
+        { titleKey: 'nav.vehicles', route: '/vehicles' },
+        { titleKey: 'nav.trackers', route: '/trackers' },
+        { titleKey: 'nav.routes', route: '/routes' },
+        { titleKey: 'nav.geofences', route: '/geofences' },
+      ],
+    },
+    { titleKey: 'nav.locations', route: '/locations', icon: 'map' },
+    { titleKey: 'nav.reports', route: '/reports', icon: 'report' },
+    { titleKey: 'nav.personnel', route: '/personnel', icon: 'users' },
+    { titleKey: 'nav.settings', route: '/base-info', icon: 'settings' },
     {
       titleKey: 'nav.accessManagement',
       icon: 'lock',
       children: [
         { titleKey: 'nav.users', route: '/users' },
         { titleKey: 'nav.roles', route: '/users/roles' },
-      ]
+      ],
     },
-    { titleKey: 'nav.personnel', route: '/personnel' },
-    { titleKey: 'nav.airplanes', route: '/airplanes', icon: 'plane' },
-    { titleKey: 'nav.airports', route: '/airports', icon: 'map-pin' },
-    { titleKey: 'nav.locations', route: '/locations', icon: 'globe' },
-    { titleKey: 'nav.fleetSchedule', route: '/fleet-schedule', icon: 'calendar' },
-    { titleKey: 'nav.fleetTimeline', route: '/fleet-timeline', icon: 'clock' },
-    { titleKey: 'nav.fleetTimelineAll', route: '/fleet-timeline-all', icon: 'clock' },
   ];
 
   toggleSidebar(): void {
-    this.isCollapsed.update((val) => !val);
+    this.isCollapsed.update((value) => !value);
   }
 
   toggleSubmenu(titleKey: string, event: Event): void {
     event.stopPropagation();
-    if (this.isCollapsed()) {
-      this.isCollapsed.set(false);
-    }
-
-    this.openSubmenus.update((map) => ({
-      ...map,
-      [titleKey]: !map[titleKey],
-    }));
+    if (this.isCollapsed()) this.isCollapsed.set(false);
+    this.openSubmenus.update((map) => ({ ...map, [titleKey]: !map[titleKey] }));
   }
 
   isSubmenuOpen(titleKey: string): boolean {

@@ -1,0 +1,33 @@
+<section class="demo-page">
+  <div class="page-header">
+    <div><span class="eyebrow">TRACCAR OPERATIONS</span><h1>{{ titleKey | translate }}</h1><p>{{ descriptionKey | translate }}</p></div>
+    <a routerLink="/dashboard" class="back-link">{{ 'demo.backToDashboard' | translate }} ←</a>
+  </div>
+
+  @if (kind === 'tracking') {
+    <div class="tracking-layout">
+      <section class="map-card">
+        <div class="map-toolbar"><strong>{{ 'demo.liveMap' | translate }}</strong><span>GPS · 09:25:42</span></div>
+        <div class="map-canvas">
+          <div class="map-grid"></div><div class="map-road road-one"></div><div class="map-road road-two"></div>
+          @for (vehicle of rows(); track vehicle.id; let i = $index) {
+            <div class="map-marker" [class.offline-marker]="vehicle.status === 'offline'" [style.left.%]="markerX(i)" [style.top.%]="markerY(i)"><span>▣</span><small>{{ vehicle.name }}</small></div>
+          }
+          <div class="map-label label-north">{{ 'demo.northZone' | translate }}</div><div class="map-label label-center">{{ 'demo.centralZone' | translate }}</div><div class="map-label label-east">{{ 'demo.eastZone' | translate }}</div>
+        </div>
+        <div class="map-legend"><span><i class="legend-online"></i>{{ 'demo.moving' | translate }}</span><span><i class="legend-idle"></i>{{ 'demo.idle' | translate }}</span><span><i class="legend-offline"></i>{{ 'demo.offline' | translate }}</span></div>
+      </section>
+      <aside class="tracking-side"><div class="side-heading"><strong>{{ 'demo.activeVehicles' | translate }}</strong><span>{{ rows().length }}</span></div>@for (vehicle of rows(); track vehicle.id) {<div class="tracking-row"><span class="tracking-dot" [class]="'dot-' + vehicle.status"></span><div><strong>{{ vehicle.name }}</strong><small>{{ vehicle.location }}</small></div><b>{{ vehicle.speed }} <small>km/h</small></b></div>}</aside>
+    </div>
+  } @else if (kind === 'vehicles') {
+    <div class="table-card"><table><thead><tr><th>{{ 'demo.vehicle' | translate }}</th><th>{{ 'demo.plate' | translate }}</th><th>{{ 'demo.driver' | translate }}</th><th>{{ 'demo.location' | translate }}</th><th>{{ 'demo.speed' | translate }}</th><th>{{ 'common.status' | translate }}</th></tr></thead><tbody>@for (row of rows(); track row.id) {<tr><td><strong>{{ row.name }}</strong><small>{{ row.type }} · {{ row.deviceId }}</small></td><td>{{ row.plate }}</td><td>{{ row.driver }}</td><td>{{ row.location }}</td><td>{{ row.speed }} km/h</td><td><span class="status-badge" [class]="'status-' + row.status">{{ statusKey(row.status) | translate }}</span></td></tr>}</tbody></table></div>
+  } @else if (kind === 'trackers') {
+    <div class="table-card"><table><thead><tr><th>{{ 'demo.tracker' | translate }}</th><th>IMEI</th><th>{{ 'demo.vehicle' | translate }}</th><th>Protocol</th><th>{{ 'demo.signal' | translate }}</th><th>{{ 'common.status' | translate }}</th></tr></thead><tbody>@for (row of rows(); track row.id) {<tr><td><strong>{{ row.name }}</strong></td><td>{{ row.imei }}</td><td>{{ row.vehicle }}</td><td>{{ row.protocol }}</td><td><div class="signal"><span [style.width.%]="row.signal"></span></div><small>{{ row.signal }}%</small></td><td><span class="status-badge" [class]="'status-' + row.status">{{ statusKey(row.status) | translate }}</span></td></tr>}</tbody></table></div>
+  } @else if (kind === 'routes') {
+    <div class="cards-grid">@for (row of rows(); track row.id) {<article class="route-card"><div class="route-card-top"><span class="route-icon">↗</span><span class="status-badge" [class]="'status-' + row.status">{{ statusKey(row.status) | translate }}</span></div><h2>{{ row.name }}</h2><p>{{ row.origin }} <b>→</b> {{ row.destination }}</p><div class="route-metrics"><span><strong>{{ row.distance }}</strong><small>km</small></span><span><strong>{{ row.duration }}</strong><small>{{ 'demo.duration' | translate }}</small></span><span><strong>{{ row.vehicles }}</strong><small>{{ 'demo.assignedVehicles' | translate }}</small></span></div></article>}</div>
+  } @else if (kind === 'geofences') {
+    <div class="table-card"><table><thead><tr><th>{{ 'demo.geofence' | translate }}</th><th>Type</th><th>{{ 'demo.assignedVehicles' | translate }}</th><th>{{ 'common.status' | translate }}</th></tr></thead><tbody>@for (row of rows(); track row.id) {<tr><td><span class="color-dot" [style.background]="row.color"></span><strong>{{ row.name }}</strong></td><td>{{ row.type }}</td><td>{{ row.vehicles }}</td><td><span class="status-badge status-active">{{ 'demo.statusOnline' | translate }}</span></td></tr>}</tbody></table></div>
+  } @else {
+    <div class="report-grid">@for (report of reportCards; track report.titleKey) {<article class="report-card" [class]="'report-' + report.tone"><span class="report-icon">{{ report.icon }}</span><h2>{{ report.titleKey | translate }}</h2><p>{{ report.descriptionKey | translate }}</p><button type="button">{{ 'demo.openReport' | translate }} ←</button></article>}</div>
+  }
+</section>

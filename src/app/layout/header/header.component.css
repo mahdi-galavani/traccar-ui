@@ -8,7 +8,7 @@
   --border-subtle: rgba(226, 232, 240, 0.8);
   --text-main-dark: #0f172a;
   --text-muted-slate: #475569;
-  --aviation-blue: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  --fleet-blue: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
   --danger-glow: #f43f5e;
 }
 
@@ -73,7 +73,7 @@
 .brand-logo-mock {
   width: 38px;
   height: 38px;
-  background: var(--aviation-blue);
+  background: var(--fleet-blue);
   color: #ffffff;
   border-radius: 12px;
   display: flex;

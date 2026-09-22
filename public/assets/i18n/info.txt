@@ -1,12 +1,13 @@
-بخش API	کلید ترجمه                      مربوطه
+API بخش                کلید ترجمه
 
-/api/airplane/*                     airplane.*
-/api/airport/*                      airport.*
-/api/fleet-schedule/*	              fleetSchedule.*
-/api/flight/*	                      flight.*
-/api/location/*	                    location.*
-/api/base-info/*	                  baseInfo.*
-/api/app-user/*	                    user.*
-/api/app-role/*	                    role.*
-/api/app-menu/*	                    menu.*
-/api/app-person/*	                  person.*
+/api/location/*        location.*
+/api/base-info/*       baseInfo.*
+/api/base-info-header/* baseInfoHeader.*
+/api/app-user/*        user.*
+/api/app-role/*        role.*
+/api/app-menu/*        menu.*
+/api/app-person/*      person.*
+/api/vehicle/*         vehicle.*
+/api/tracker/*         tracker.*
+/api/route/*           route.*
+/api/geofence/*        geofence.*

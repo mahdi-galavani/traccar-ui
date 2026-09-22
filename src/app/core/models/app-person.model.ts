@@ -1,5 +1,3 @@
-import { BaseInfoCodeDto } from './airplane.model';
-
 export interface AppPersonDto {
   id?: string;
   version?: number;
@@ -7,6 +5,8 @@ export interface AppPersonDto {
   family: string;
   nationalCode: string;
   phoneNumber?: string;
-  job?: BaseInfoCodeDto;
-  aircraftTypes?: BaseInfoCodeDto[];
+  job?: {
+    id?: number;
+    title?: string;
+  };
 }

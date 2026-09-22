@@ -17,8 +17,8 @@ export const RTL_LANGS: SupportedLang[] = ['fa'];
 
 /** known base-info-header codes, used to load select options in *.config.ts files */
 export const BASE_INFO_HEADER_CODE = {
-  AIRPLANE_TYPE: 'aircraft-type',
-  AIRPLANE_OWNERSHIP: 'aircraft-ownership',
-  SEAT_STYLE: 'seat-style',
-  CREW_JOB: 'crew-job',
+  VEHICLE_TYPE: 'vehicle-type',
+  PERSONNEL_ROLE: 'personnel-role',
+  ROUTE_TYPE: 'route-type',
+  ALERT_TYPE: 'alert-type',
 } as const;

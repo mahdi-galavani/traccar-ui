@@ -32,7 +32,7 @@
           <span class="prefix-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </span>
-          <input id="username" type="text" formControlName="username" autocomplete="username" placeholder="e.g., captain_galavani" />
+          <input id="username" type="text" formControlName="username" autocomplete="username" placeholder="e.g., ops_admin" />
         </div>
         @if (form.controls.username.invalid && form.controls.username.touched) {
           <span class="error-msg">{{ 'validation.required' | translate }}</span>
@@ -59,9 +59,14 @@
         </div>
       }
 
+      <div class="demo-hint">
+        <span>✦</span>
+        <span>حالت دمو: <strong>admin</strong> / <strong>admin</strong></span>
+      </div>
+
       <button type="submit" class="submit-btn" [disabled]="loading()">
         <span *ngIf="!loading()">{{ 'auth.loginButton' | translate }}</span>
-        <div *ngIf="loading()" class="airport-loader">
+        <div *ngIf="loading()" class="demo-loader">
           <span class="loader-dot"></span>
           <span class="loader-dot"></span>
           <span class="loader-dot"></span>

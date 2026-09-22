@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
-import { roleGuard } from './core/guards/role.guard';
+
+const demoPage = () =>
+  import('./features/demo/demo-page.component').then((m) => m.DemoPageComponent);
 
 export const routes: Routes = [
   {
@@ -13,17 +15,18 @@ export const routes: Routes = [
       import('./layout/main-layout/main-layout.component').then((m) => m.MainLayoutComponent),
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'users', pathMatch: 'full' },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
-        path: 'airplanes',
+        path: 'dashboard',
         loadChildren: () =>
-          import('./features/airplanes/airplanes.routes').then((m) => m.AIRPLANES_ROUTES),
+          import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
       },
-      {
-        path: 'airports',
-        loadChildren: () =>
-          import('./features/airports/airports.routes').then((m) => m.AIRPORTS_ROUTES),
-      },
+      { path: 'tracking', loadComponent: demoPage, data: { kind: 'tracking' } },
+      { path: 'vehicles', loadComponent: demoPage, data: { kind: 'vehicles' } },
+      { path: 'trackers', loadComponent: demoPage, data: { kind: 'trackers' } },
+      { path: 'routes', loadComponent: demoPage, data: { kind: 'routes' } },
+      { path: 'geofences', loadComponent: demoPage, data: { kind: 'geofences' } },
+      { path: 'reports', loadComponent: demoPage, data: { kind: 'reports' } },
       {
         path: 'locations',
         loadChildren: () =>
@@ -39,32 +42,11 @@ export const routes: Routes = [
         loadChildren: () => import('./features/users/users.routes').then((m) => m.USERS_ROUTES),
       },
       {
-        path: 'fleet-schedule',
-        loadChildren: () =>
-          import('./features/fleet-schedule/fleet-schedule.routes').then(
-            (m) => m.FLEET_SCHEDULE_ROUTES,
-          ),
-      },
-      {
-        path: 'fleet-timeline',
-        loadComponent: () =>
-          import('./features/fleet-timeline/fleet-timeline.component').then(
-            (m) => m.FleetTimelineComponent
-          ),
-      },
-      {
-        path: 'fleet-timeline-all',
-        loadComponent: () =>
-          import('./features/fleet-timeline-all/fleet-timeline.component').then(
-            (m) => m.FleetTimelineComponent
-          ),
-      },
-      {
         path: 'personnel',
         loadChildren: () =>
           import('./features/personnel/personnel.routes').then((m) => m.PERSONNEL_ROUTES),
       },
-      { path: '**', redirectTo: 'users' },
+      { path: '**', redirectTo: 'dashboard' },
     ],
   },
   { path: '**', redirectTo: 'auth/login' },

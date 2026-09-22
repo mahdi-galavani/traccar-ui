@@ -74,7 +74,10 @@ export class UserListComponent extends BaseCrudPage<AppUserDto, string> {
   // post rol request
   onSaveRol(formValue: { roleId: string }): void {
     const roleId = formValue.roleId;
-    this.userRoleApi.loadByUser(roleId).subscribe((data) => {
+    const userId = this.selected()?.id;
+    if (!userId) return;
+
+    this.userRoleApi.loadByUser(userId).subscribe((data) => {
       this.roleApi.load().subscribe((roles) => {
         const role = roles.find((res) => res.id === formValue.roleId);
 

@@ -5,10 +5,6 @@
 export const API_BASE_PATH = {
   AUTH: '/api/auth',
   LOCATION: '/api/location',
-  AIRPORT: '/api/airport',
-  AIRPLANE: '/api/airplane',
-  FLEET_SCHEDULE: '/api/fleet-schedule',
-  FLIGHT: '/api/fleet-schedule/flight',
   BASE_INFO: '/api/base-info',
   BASE_INFO_HEADER: '/api/base-info-header',
   APP_PERSON: '/api/app-person',

@@ -1,0 +1,58 @@
+<section class="dashboard-page">
+  <div class="dashboard-hero">
+    <div>
+      <span class="eyebrow">TRACCAR FLEET OPERATIONS · DEMO MODE</span>
+      <h1>{{ 'dashboard.title' | translate }}</h1>
+      <p>{{ 'dashboard.welcome' | translate }}</p>
+    </div>
+    <a class="hero-action" routerLink="/tracking">{{ 'dashboard.openTracking' | translate }} <span>←</span></a>
+  </div>
+
+  <div class="stats-grid">
+    @for (stat of stats(); track stat.key) {
+      <article class="stat-card" [class]="'tone-' + stat.tone">
+        <div class="stat-icon">{{ stat.icon }}</div>
+        <div><span class="stat-label">{{ stat.key | translate }}</span><strong>{{ stat.value }}</strong></div>
+      </article>
+    }
+  </div>
+
+  <div class="dashboard-grid">
+    <section class="panel fleet-panel">
+      <div class="panel-heading">
+        <div><span class="panel-kicker">LIVE FLEET STATUS</span><h2>{{ 'dashboard.vehicleStatus' | translate }}</h2></div>
+        <a routerLink="/vehicles">{{ 'dashboard.viewAll' | translate }}</a>
+      </div>
+
+      <div class="vehicle-list">
+        @for (vehicle of vehicles(); track vehicle.id) {
+          <div class="vehicle-row">
+            <div class="vehicle-avatar">{{ vehicle.name?.slice(0, 1) }}</div>
+            <div class="vehicle-main"><strong>{{ vehicle.name }}</strong><span>{{ vehicle.plate }} · {{ vehicle.location }}</span></div>
+            <div class="vehicle-speed"><strong>{{ vehicle.speed }}</strong><span>km/h</span></div>
+            <span class="status-pill" [class]="'status-' + vehicle.status"><i></i>{{ statusKey(vehicle.status) | translate }}</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="panel overview-panel">
+      <div class="panel-heading"><div><span class="panel-kicker">SYSTEM OVERVIEW</span><h2>{{ 'dashboard.systemOverview' | translate }}</h2></div><span class="online-dot">● {{ 'dashboard.connected' | translate }}</span></div>
+      <div class="overview-list">
+        <div><span>{{ 'dashboard.activeTrackers' | translate }}</span><strong>{{ trackerCount() }}</strong></div>
+        <div><span>{{ 'dashboard.geofences' | translate }}</span><strong>{{ geofenceCount() }}</strong></div>
+        <div><span>{{ 'dashboard.gpsCoverage' | translate }}</span><strong>98.4%</strong></div>
+      </div>
+      <div class="system-note"><span>✦</span><div><strong>{{ 'dashboard.demoActive' | translate }}</strong><p>{{ 'dashboard.demoDescription' | translate }}</p></div></div>
+    </section>
+  </div>
+
+  <section class="panel events-panel">
+    <div class="panel-heading"><div><span class="panel-kicker">EVENT STREAM</span><h2>{{ 'dashboard.latestEvents' | translate }}</h2></div><a routerLink="/reports">{{ 'dashboard.viewReports' | translate }}</a></div>
+    <div class="event-grid">
+      @for (event of events(); track event.id) {
+        <div class="event-card" [class]="'event-' + event.severity"><span class="event-indicator"></span><div><strong>{{ event.title }}</strong><span>{{ event.vehicle }} · {{ event.time }}</span><small>{{ event.detail }}</small></div><em>{{ severityKey(event.severity) | translate }}</em></div>
+      }
+    </div>
+  </section>
+</section>

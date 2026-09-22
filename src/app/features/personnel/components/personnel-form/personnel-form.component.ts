@@ -22,7 +22,6 @@ export class PersonnelFormComponent implements OnInit, OnChanges {
   private baseInfoApi = inject(BaseInfoApiService);
 
   readonly jobOptions = signal<SelectOption[]>([]);
-  readonly aircraftTypeOptions = signal<SelectOption[]>([]);
 
   form = new FormGroup({
     id: new FormControl<string | null>(null),
@@ -32,17 +31,13 @@ export class PersonnelFormComponent implements OnInit, OnChanges {
     nationalCode: new FormControl<string>('', [Validators.required, Validators.minLength(1)]),
     phoneNumber: new FormControl<string | null>(null),
     jobId: new FormControl<number | null>(null),
-    aircraftTypeIds: new FormControl<number[]>([]),
   });
 
   ngOnInit(): void {
     this.baseInfoApi
-      .loadOptionsByHeaderCode(BASE_INFO_HEADER_CODE.CREW_JOB)
+      .loadOptionsByHeaderCode(BASE_INFO_HEADER_CODE.PERSONNEL_ROLE)
       .subscribe((opts) => this.jobOptions.set(opts));
 
-    this.baseInfoApi
-      .loadOptionsByHeaderCode(BASE_INFO_HEADER_CODE.AIRPLANE_TYPE)
-      .subscribe((opts) => this.aircraftTypeOptions.set(opts));
   }
 
   ngOnChanges(): void {
@@ -55,23 +50,10 @@ export class PersonnelFormComponent implements OnInit, OnChanges {
         nationalCode: this.model.nationalCode,
         phoneNumber: this.model.phoneNumber ?? null,
         jobId: this.model.job?.id ?? null,
-        aircraftTypeIds: this.model.aircraftTypes?.map((t) => t.id as number) ?? [],
       });
     } else {
-      this.form.reset({ aircraftTypeIds: [] });
+      this.form.reset();
     }
-  }
-
-  isTypeSelected(id: number): boolean {
-    return (this.form.get('aircraftTypeIds')?.value ?? []).includes(id);
-  }
-
-  toggleAircraftType(id: number): void {
-    const current: number[] = this.form.get('aircraftTypeIds')?.value ?? [];
-    const updated = current.includes(id)
-      ? current.filter((x) => x !== id)
-      : [...current, id];
-    this.form.get('aircraftTypeIds')?.setValue(updated);
   }
 
   isInvalid(key: string): boolean {
@@ -94,7 +76,6 @@ export class PersonnelFormComponent implements OnInit, OnChanges {
       nationalCode: v.nationalCode!,
       phoneNumber: v.phoneNumber ?? undefined,
       job: v.jobId ? { id: v.jobId } : undefined,
-      aircraftTypes: (v.aircraftTypeIds ?? []).map((id) => ({ id })),
     };
 
     this.saved.emit(dto);

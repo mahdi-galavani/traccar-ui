@@ -15,12 +15,12 @@ export class BaseInfoApiService extends BaseApiService<BaseInfoDto, number> {
   /**
    * Loads base-info items belonging to the header with the given code,
    * mapped to SelectOption[] for use directly in dynamic-form 'select' fields.
-   * Used by CRUD configs (e.g. airplane type/ownership/seatStyle lookups).
+   * Used by CRUD configs for vehicle, route, alert, and personnel lookups.
    */
   loadOptionsByHeaderCode(headerCode: string): Observable<SelectOption[]> {
     return this.headerApi.load().pipe(
       switchMap((headers) => {
-        const header = headers.find((h) => h.title === headerCode);
+        const header = headers.find((h) => h.title === headerCode || h.code === headerCode);
         if (!header?.id) {
           return of<SelectOption[]>([]);
         }

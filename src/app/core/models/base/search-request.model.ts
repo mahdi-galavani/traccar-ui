@@ -1,5 +1,5 @@
 /**
- * Mirrors SearchCriteria / SearchRequestDTO used by /fleet-schedule/search.
+ * Shared search request shape used by list and report screens.
  */
 export type SearchOperator =
   | 'EQUAL'
