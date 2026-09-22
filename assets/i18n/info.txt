@@ -1,0 +1,13 @@
+API بخش                کلید ترجمه
+
+/api/location/*        location.*
+/api/base-info/*       baseInfo.*
+/api/base-info-header/* baseInfoHeader.*
+/api/app-user/*        user.*
+/api/app-role/*        role.*
+/api/app-menu/*        menu.*
+/api/app-person/*      person.*
+/api/vehicle/*         vehicle.*
+/api/tracker/*         tracker.*
+/api/route/*           route.*
+/api/geofence/*        geofence.*

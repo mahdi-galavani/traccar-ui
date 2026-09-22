@@ -1,0 +1,35 @@
+{
+  "app": { "title": "سامانه مدیریت ناوگان" },
+  "common": {
+    "save": "ذخیره", "saved": "با موفقیت ذخیره شد.", "update": "به‌روزرسانی", "delete": "حذف", "deleted": "با موفقیت حذف شد", "cancel": "انصراف", "search": "جستجو", "filter": "فیلتر", "refresh": "بازخوانی", "export": "خروجی", "import": "ورودی", "print": "چاپ", "edit": "ویرایش", "view": "مشاهده", "add": "افزودن جدید", "back": "بازگشت", "next": "بعدی", "previous": "قبلی", "close": "بستن", "confirm": "تأیید", "yes": "بله", "no": "خیر", "loading": "در حال بارگذاری...", "noData": "اطلاعاتی موجود نیست", "actions": "عملیات", "status": "وضعیت", "enabled": "فعال", "disabled": "غیرفعال", "all": "همه", "select": "انتخاب", "submit": "ارسال", "reset": "بازنشانی", "clear": "پاک کردن", "details": "جزئیات", "settings": "تنظیمات", "profile": "پروفایل", "logout": "خروج", "login": "ورود", "dashboard": "داشبورد", "description": "توضیحات", "reports": "گزارش‌ها", "direction": "rtl"
+  },
+  "auth": {
+    "login": {
+      "title": "مرکز کنترل ناوگان",
+      "welcome_back": "برای دسترسی به داشبورد عملیاتی وارد شوید",
+      "visual_title": "مدیریت یکپارچه ناوگان و مسیریابی",
+      "visual_subtitle": "رصد زنده خودروها، مدیریت مسیرها و تحلیل عملکرد عملیات حمل‌ونقل."
+    },
+    "username": "نام کاربری", "password": "رمز عبور", "loginButton": "ورود امن", "invalid_credentials": "نام کاربری یا رمز عبور اشتباه است"
+  },
+  "validation": { "required": "این فیلد الزامی است", "minLength": "حداقل طول {{min}} کاراکتر است", "maxLength": "حداکثر طول {{max}} کاراکتر است", "email": "لطفاً یک ایمیل معتبر وارد کنید" },
+  "nav": {
+    "operations": "عملیات ناوگان", "liveTracking": "رصد زنده", "vehicles": "خودروها", "trackers": "دستگاه‌های ردیاب", "routes": "مسیرها", "geofences": "محدوده‌های جغرافیایی", "settings": "تنظیمات پایه", "locations": "موقعیت‌ها", "baseInfo": "اطلاعات پایه", "baseInfoHeader": "سرگروه‌های اطلاعات پایه", "accessManagement": "مدیریت دسترسی", "users": "کاربران", "roles": "نقش‌ها و دسترسی‌ها", "persons": "اشخاص", "personnel": "پرسنل", "reports": "گزارش‌ها و تحلیل"
+  },
+  "dashboard": {
+    "title": "سامانه مدیریت و مسیریابی ناوگان", "welcome": "کنترل مرکزی خودروها، ردیاب‌ها و مسیرهای عملیاتی", "totalVehicles": "کل خودروها", "onlineVehicles": "خودروهای آنلاین", "activeRoutes": "مسیرهای فعال", "activeAlerts": "هشدارهای فعال", "openTracking": "بازکردن رصد زنده", "vehicleStatus": "وضعیت خودروها", "viewAll": "مشاهده همه", "systemOverview": "نگاه کلی سامانه", "connected": "متصل", "activeTrackers": "ردیاب‌های فعال", "geofences": "محدوده‌های فعال", "gpsCoverage": "پوشش GPS", "demoActive": "حالت دمو فعال است", "demoDescription": "داده‌ها در مرورگر ذخیره می‌شوند و برای نمایش اولیه نیازی به بکند ندارند.", "latestEvents": "آخرین رویدادها", "viewReports": "گزارش‌ها", "online": "آنلاین", "idle": "توقف", "offline": "آفلاین", "critical": "بحرانی", "warning": "هشدار", "info": "اطلاع"
+  },
+  "demo": {
+    "vehiclesTitle": "مدیریت خودروهای ناوگان", "vehiclesDescription": "فهرست خودروها، وضعیت اتصال و موقعیت فعلی", "trackingTitle": "رصد زنده ناوگان", "trackingDescription": "مشاهده وضعیت زنده خودروها و ردیاب‌های فعال", "trackersTitle": "مدیریت دستگاه‌های ردیاب", "trackersDescription": "کنترل اتصال، سیگنال و پروتکل دستگاه‌ها", "routesTitle": "مدیریت مسیرها", "routesDescription": "طراحی و پایش مسیرهای عملیاتی", "geofencesTitle": "محدوده‌های جغرافیایی", "geofencesDescription": "تعریف محدوده‌ها، نقاط کنترلی و رویدادها", "reportsTitle": "گزارش‌ها و تحلیل عملکرد", "reportsDescription": "گزارش‌های عملیاتی و متریک‌های ناوگان", "backToDashboard": "بازگشت به داشبورد", "liveMap": "نقشه زنده", "activeVehicles": "خودروهای فعال", "moving": "در حال حرکت", "idle": "توقف", "offline": "آفلاین", "northZone": "منطقه شمال", "centralZone": "منطقه مرکزی", "eastZone": "منطقه شرق", "vehicle": "خودرو", "plate": "پلاک", "driver": "راننده", "location": "موقعیت", "speed": "سرعت", "tracker": "دستگاه ردیاب", "signal": "قدرت سیگنال", "route": "مسیر", "geofence": "محدوده جغرافیایی", "duration": "مدت", "assignedVehicles": "خودرو", "statusOnline": "فعال", "statusIdle": "توقف", "statusOffline": "غیرفعال", "openReport": "مشاهده گزارش", "dailyReport": "گزارش روزانه", "dailyReportDescription": "خلاصه تردد، مسافت و زمان توقف", "routePerformance": "عملکرد مسیرها", "routePerformanceDescription": "مقایسه مسیرهای برنامه‌ریزی شده", "alertReport": "تحلیل هشدارها", "alertReportDescription": "روند رویدادها و نقض قوانین"
+  },
+  "PERSONNEL": { "PAGE_TITLE": "پرسنل", "FORM_TITLE": "پرسنل", "NAME": "نام", "FAMILY": "نام خانوادگی", "NATIONAL_CODE": "کد ملی", "PHONE": "شماره تلفن", "JOB": "شغل" },
+  "baseInfoHeader": { "pageTitle": "سرگروه‌های اطلاعات پایه", "formTitle": "مدیریت سرگروه اطلاعات پایه", "total": "سرگروه", "searchPlaceholder": "جستجو در کد، عنوان و توضیحات...", "gridView": "مشاهده کارتی", "tableView": "مشاهده جدولی", "addNew": "افزودن سرگروه جدید", "noDescription": "توضیحاتی ثبت نشده است.", "viewItems": "مشاهده زیرمجموعه‌ها", "code": "کد سرگروه", "title": "عنوان سرگروه", "description": "توضیحات" },
+  "baseInfo": { "pageTitle": "اطلاعات پایه", "formTitle": "مدیریت اطلاعات پایه", "code": "کد", "title": "عنوان", "description": "توضیحات" },
+  "location": { "code": "کد موقعیت", "title": "عنوان موقعیت", "type": "نوع موقعیت", "enabled": "وضعیت فعال", "page_title": "مدیریت موقعیت‌های جغرافیایی", "root_title": "ساختار درختی موقعیت‌ها", "form_title": "فرم اطلاعات موقعیت جغرافیایی", "types": { "continent": "قاره", "country": "کشور", "province": "استان", "city": "شهر" } },
+  "role": { "page_title": "مدیریت نقش‌ها", "form_title": "فرم نقش", "list": "لیست نقش‌ها", "add": "افزودن نقش جدید", "edit": "ویرایش نقش", "delete": "حذف نقش", "details": "جزئیات نقش", "code": "کد نقش", "title": "عنوان نقش", "permissions": "دسترسی‌ها", "users": "کاربران دارای این نقش" },
+  "user": { "page_title": "مدیریت کاربران", "form_title": "فرم اطلاعات کاربر", "list": "لیست کاربران", "add": "افزودن کاربر جدید", "edit": "ویرایش کاربر", "delete": "حذف کاربر", "details": "جزئیات کاربر", "username": "نام کاربری", "password": "رمز عبور", "enabled": "حساب کاربری فعال", "roles": "نقش‌های کاربر", "person": "شخص مرتبط" },
+  "person": { "title": "مدیریت اشخاص", "list": "لیست اشخاص", "add": "افزودن شخص جدید", "edit": "ویرایش شخص", "delete": "حذف شخص", "details": "جزئیات شخص", "name": "نام", "family": "نام خانوادگی", "fullName": "نام کامل", "nationalCode": "کد ملی", "phone": "تلفن" },
+  "errors": { "general": "خطایی رخ داده است", "network": "خطای شبکه. اتصال خود را بررسی کنید", "unauthorized": "شما مجوز انجام این عملیات را ندارید", "notFound": "منبع مورد نظر یافت نشد", "validationError": "لطفاً فرم را بررسی کنید", "saveError": "خطا در ذخیره اطلاعات", "loadError": "خطا در بارگذاری اطلاعات", "deleteError": "خطا در حذف اطلاعات" },
+  "buttons": { "save": "ذخیره", "update": "به‌روزرسانی", "delete": "حذف", "cancel": "انصراف", "close": "بستن", "confirm": "تأیید", "search": "جستجو", "clear": "پاک کردن", "refresh": "بازخوانی" },
+  "messages": { "welcome": "به سامانه مدیریت ناوگان خوش آمدید", "noRecordsFound": "رکوردی یافت نشد", "loading": "در حال بارگذاری اطلاعات...", "operationSuccessful": "عملیات با موفقیت انجام شد", "operationFailed": "عملیات ناموفق بود" }
+}

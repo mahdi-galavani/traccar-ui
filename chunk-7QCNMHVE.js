@@ -1,0 +1,1 @@
+import"./chunk-LSIHGRHO.js";var o=[{path:"",loadComponent:()=>import("./chunk-CHHOCAK3.js").then(e=>e.UserListComponent)},{path:"roles",loadComponent:()=>import("./chunk-7ZFYWWOV.js").then(e=>e.RoleListComponent)}];export{o as USERS_ROUTES};

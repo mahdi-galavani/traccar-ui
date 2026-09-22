@@ -1,0 +1,1 @@
+var t={TOKEN:"auth_token",USER:"auth_user",LANG:"app_lang"};var e=["fa","en"],o="fa",E=["fa"],p={VEHICLE_TYPE:"vehicle-type",PERSONNEL_ROLE:"personnel-role",ROUTE_TYPE:"route-type",ALERT_TYPE:"alert-type"};export{t as a,e as b,o as c,E as d,p as e};

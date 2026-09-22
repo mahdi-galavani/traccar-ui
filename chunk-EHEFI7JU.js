@@ -1,0 +1,1 @@
+import{O as e,ec as r}from"./chunk-ZLPIMNVR.js";var o=class{http=e(r);load(){return this.http.get(`${this.resourcePath}/load`)}loadById(t){return this.http.get(`${this.resourcePath}/load/${t}`)}save(t){return this.http.post(`${this.resourcePath}/save`,t)}delete(t){return this.http.delete(`${this.resourcePath}/delete/${t}`)}};export{o as a};

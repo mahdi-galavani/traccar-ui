@@ -1,0 +1,1 @@
+import"./chunk-LSIHGRHO.js";var e=[{path:"login",loadComponent:()=>import("./chunk-E53ZGVNJ.js").then(o=>o.LoginComponent)},{path:"logout",loadComponent:()=>import("./chunk-ZFAGPVGT.js").then(o=>o.LogoutComponent)}];export{e as AUTH_ROUTES};

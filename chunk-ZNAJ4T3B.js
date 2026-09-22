@@ -1,0 +1,1 @@
+var p={AUTH:"/api/auth",LOCATION:"/api/location",BASE_INFO:"/api/base-info",BASE_INFO_HEADER:"/api/base-info-header",APP_PERSON:"/api/app-person",APP_MENU:"/api/app-menu",APP_USER:"/api/app-user",APP_ROLE:"/api/app-role",APP_USER_ROLE:"/api/app-user-role"},a="Authorization",A="Bearer";export{p as a,a as b,A as c};

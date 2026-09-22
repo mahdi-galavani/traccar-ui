@@ -1,0 +1,1 @@
+import{a}from"./chunk-EHEFI7JU.js";import{a as i}from"./chunk-ZNAJ4T3B.js";import{J as r,ka as o}from"./chunk-ZLPIMNVR.js";var p=class e extends a{resourcePath=i.APP_ROLE;static \u0275fac=(()=>{let t;return function(c){return(t||(t=o(e)))(c||e)}})();static \u0275prov=r({token:e,factory:e.\u0275fac,providedIn:"root"})};export{p as a};

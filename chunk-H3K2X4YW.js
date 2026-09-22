@@ -1,0 +1,1 @@
+import"./chunk-LSIHGRHO.js";var o=[{path:"",loadComponent:()=>import("./chunk-M67ZR7C7.js").then(e=>e.BaseInfoHeaderListComponent)},{path:":headerId/items",loadComponent:()=>import("./chunk-ROIBCUOS.js").then(e=>e.BaseInfoListComponent)}];export{o as BASE_INFO_ROUTES};
